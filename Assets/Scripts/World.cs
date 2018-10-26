@@ -45,4 +45,17 @@ public class World : MonoBehaviour {
             }
         }
     }
+
+    public Tab GetTabByDepth(int depth)
+    {
+        foreach(GameObject tabObject in tabs)
+        {
+            Tab tab = tabObject.GetComponent<Tab>();
+            if(tab.depth == depth)
+            {
+                return tab;
+            }
+        }
+        return null;
+    }
 }
