@@ -6,20 +6,31 @@ public class World : MonoBehaviour {
 
     public int numTabs = 8;
 
-    public GameObject[] tabs = new GameObject[8];
+    public List<SuperTab> superTabs = new List<SuperTab>();
 
 	// Use this for initialization
 	void Start () {
         //Initialize the Tab objects
 		for(int i = 0; i < numTabs; i++)
         {
-            tabs[i] = new GameObject("Tab" + i);
-            Tab tab = tabs[i].AddComponent<Tab>();
-            tab.depth = tabs.Length - 1 - i;
-            tab.headerRect = new Rect(i * (Screen.width / 8), 0, Screen.width / 8, Screen.height / 20);
-            tab.bodyRect = new Rect(0, Screen.height / 20, Screen.width, Screen.height - (Screen.height / 20));
-            tab.prevPos.Push(new Vector2(tab.headerRect.x, tab.headerRect.y));
-            tab.prevPos.Push(new Vector2(tab.bodyRect.x, tab.bodyRect.y));
+            GameObject superTabObject = new GameObject("SuperTab" + i);
+            SuperTab superTab = superTabObject.AddComponent<SuperTab>();
+            superTab.depth = i;
+            superTab.placement = i;
+            superTab.SetUpWholeRect(0, 0, Screen.width, Screen.height);
+            superTab.subTabs = new List<SubTab>();
+            superTabs.Add(superTab);
+
+            GameObject subTabObject = new GameObject("SubTab" + i);
+            SubTab subTab = subTabObject.AddComponent<SubTab>();
+            subTab.superTab = superTab;
+            subTab.quadrants = new Rect[4];
+            for(int j = 0; j < 4; j++)
+            {
+                subTab.quadrants[j] = new Rect();
+            }
+            subTab.SetUpWholeRect(superTab.wholeRect.x, superTab.wholeRect.y + superTab.headerRect.height, superTab.wholeRect.width, superTab.wholeRect.height - superTab.headerRect.height);
+            superTab.subTabs.Add(subTab);
         }
 	}
 	
@@ -28,32 +39,31 @@ public class World : MonoBehaviour {
 		
 	}
 
-    //Method which sets one tab's hasFocus variable to true, while setting all other tabs' hasFocus variable to false
-    public void SetTabDepths(Tab tab)
+    //Method which sets one SuperTab's depth is set to the lowest, and all others are made greater than
+    public void SetSuperTabToShallow(SuperTab superTab)
     {
-        int otherTabDepth = 1;
-        for(int i = tabs.Length - 1; i >= 0; i--)
+        int otherSuperTabDepth = 1;
+        for(int i = superTabs.Count - 1; i >= 0; i--)
         {
-            if (tabs[i].name.Equals(tab.gameObject.name))
+            if (superTabs[i].name.Equals(superTab.gameObject.name))
             {
-                tabs[i].GetComponent<Tab>().depth = 0;
+                superTabs[i].depth = 0;
             }
             else
             {
-                tabs[i].GetComponent<Tab>().depth = otherTabDepth;
-                otherTabDepth++;
+                superTabs[i].depth = otherSuperTabDepth;
+                otherSuperTabDepth++;
             }
         }
     }
 
-    public Tab GetTabByDepth(int depth)
+    public SuperTab GetSuperTabByDepth(int depth)
     {
-        foreach(GameObject tabObject in tabs)
+        foreach(SuperTab superTab in superTabs)
         {
-            Tab tab = tabObject.GetComponent<Tab>();
-            if(tab.depth == depth)
+            if(superTab.depth == depth)
             {
-                return tab;
+                return superTab;
             }
         }
         return null;
