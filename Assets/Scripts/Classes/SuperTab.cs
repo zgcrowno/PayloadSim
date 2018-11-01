@@ -1,0 +1,301 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SuperTab : Tab {
+    
+    public List<SubTab> subTabs; //The SubTabs of which this SuperTab is a parent
+
+    // Use this for initialization
+    new public void Start () {
+        base.Start();
+        SetUpWholeRect(0, 0, Screen.width, Screen.height);
+    }
+	
+	// Update is called once per frame
+	public void Update () {
+		
+	}
+
+    //Method that returns whether or not the SuperTab may be placed where it's currently dragged by the player
+    public override bool IsPlaceable()
+    {
+        if(pi.superTabs.Count > 1)
+        {
+            SuperTab superTabToBecomeParent = pi.GetSuperTabByDepth(pi.GetSuperTabsBelow(this).Count + 1);
+
+            if (superTabToBecomeParent.bodyRect.Contains(Event.current.mousePosition))
+            {
+                //This SuperTab's contents are being placed inside of another SuperTab
+                if (superTabToBecomeParent.subTabs.Count < 8 && subTabs.Count == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                //This SuperTab is simply being moved rather than its contents being nested within another
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //Method by which a tab is placed in a new location or its previously held one
+    public override void Place()
+    {
+        if (IsPlaceable())
+        {
+            SuperTab superTabToBecomeParent = pi.GetSuperTabByDepth(pi.GetSuperTabsBelow(this).Count + 1);
+
+            if(superTabToBecomeParent.bodyRect.Contains(Event.current.mousePosition))
+            {
+                bool addingAsSubTab = false;
+
+                //Placing this SuperTab's contents within another SuperTab
+                foreach(SubTab subTab in superTabToBecomeParent.subTabs)
+                {
+                    if(subTab.wholeRect.Contains(Event.current.mousePosition))
+                    {
+                        if(subTab.SideOfCursor() == SubTab.Left && subTab.HasSpace(SubTab.Lateral))
+                        {
+                            subTabs[0].SetUpWholeRect(subTab.wholeRect.x, 
+                                subTab.wholeRect.y, 
+                                subTab.wholeRect.width / 2, 
+                                subTab.wholeRect.height);
+                            subTab.SetUpWholeRect(subTab.wholeRect.x + (subTab.wholeRect.width / 2),
+                                subTab.wholeRect.y,
+                                subTab.wholeRect.width / 2,
+                                subTab.wholeRect.height);
+
+                            addingAsSubTab = true;
+                        }
+                        else if(subTab.SideOfCursor() == SubTab.Right && subTab.HasSpace(SubTab.Lateral))
+                        {
+                            subTabs[0].SetUpWholeRect(subTab.wholeRect.x + (subTab.wholeRect.width / 2),
+                                subTab.wholeRect.y,
+                                subTab.wholeRect.width / 2,
+                                subTab.wholeRect.height);
+                            subTab.SetUpWholeRect(subTab.wholeRect.x,
+                                subTab.wholeRect.y,
+                                subTab.wholeRect.width / 2,
+                                subTab.wholeRect.height);
+
+                            addingAsSubTab = true;
+                        }
+                        else if(subTab.SideOfCursor() == SubTab.UpperMiddle && subTab.HasSpace(SubTab.Vertical))
+                        {
+                            subTabs[0].SetUpWholeRect(subTab.wholeRect.x,
+                                subTab.wholeRect.y,
+                                subTab.wholeRect.width,
+                                subTab.wholeRect.height / 2);
+                            subTab.SetUpWholeRect(subTab.wholeRect.x,
+                                subTab.wholeRect.y + (subTab.wholeRect.height / 2),
+                                subTab.wholeRect.width,
+                                subTab.wholeRect.height / 2);
+
+                            addingAsSubTab = true;
+                        }
+                        else if(subTab.SideOfCursor() == SubTab.LowerMiddle && subTab.HasSpace(SubTab.Vertical))
+                        {
+                            subTabs[0].SetUpWholeRect(subTab.wholeRect.x,
+                                subTab.wholeRect.y + (subTab.wholeRect.height / 2),
+                                subTab.wholeRect.width,
+                                subTab.wholeRect.height / 2);
+                            subTab.SetUpWholeRect(subTab.wholeRect.x,
+                                subTab.wholeRect.y,
+                                subTab.wholeRect.width,
+                                subTab.wholeRect.height / 2);
+
+                            addingAsSubTab = true;
+                        }
+                    }
+                }
+
+                if(addingAsSubTab)
+                {
+                    AddAsSubTab(superTabToBecomeParent);
+                }
+                else
+                {
+                    SnapToPreviousPosition();
+                }
+            }
+            else
+            {
+                SnapHeaderToIndexPosition();
+            }
+        }
+        else
+        {
+            SnapToPreviousPosition();
+        }
+    }
+
+    public void AddAsSubTab(SuperTab superTabToBecomeParent)
+    {
+        subTabs[0].superTab = superTabToBecomeParent;
+        superTabToBecomeParent.subTabs.Add(subTabs[0]);
+        pi.superTabs.Remove(this);
+        pi.OrganizeSuperTabHeaders();
+        pi.SetSuperTabToDepth(pi.GetSuperTabByDepth(0), 0);
+        Destroy(gameObject);
+    }
+
+    public void SnapHeaderToIndexPosition()
+    {
+        //This SuperTab is simply being moved rather than its contents being nested within another
+        headerRect.x = wholeRect.x + (pi.GetSuperTabIndex(this) * headerRect.width);
+        headerRect.y = wholeRect.y;
+    }
+
+    public override void SetUpWholeRect(float x, float y, float width, float height)
+    {
+        wholeRect.x = x;
+        wholeRect.y = y;
+        wholeRect.width = width;
+        wholeRect.height = height;
+
+        prevWhole.x = x;
+        prevWhole.y = y;
+        prevWhole.width = width;
+        prevWhole.height = height;
+
+        headerRect.width = Screen.width / 8;
+        headerRect.height = Screen.height / 20;
+        headerRect.x = wholeRect.x + (pi.GetSuperTabIndex(this) * headerRect.width);
+        headerRect.y = wholeRect.y;
+
+        bodyRect.x = wholeRect.x;
+        bodyRect.y = wholeRect.y + headerRect.height;
+        bodyRect.width = wholeRect.width;
+        bodyRect.height = wholeRect.height - headerRect.height;
+    }
+
+    public override void Draw()
+    {
+        //Set the depth of this Tab in order to achieve the correct drawing order
+        GUI.depth = depth;
+
+        if (!beingDragged)
+        {
+            //Draw the tab's body
+            GUI.DrawTexture(bodyRect, Texture2D.blackTexture, ScaleMode.ScaleAndCrop, false);
+            GUI.DrawTexture(bodyRect, Texture2D.whiteTexture, ScaleMode.ScaleAndCrop, false, 0, Color.white, 1, 0);
+        }
+
+        //Draw the tab's header
+        if (this == pi.GetSuperTabByDepth(0))
+        {
+            GUI.DrawTexture(headerRect, Texture2D.whiteTexture, ScaleMode.ScaleAndCrop, false);
+            headerStyle.normal.textColor = Color.black;
+        }
+        else
+        {
+            GUI.DrawTexture(headerRect, Texture2D.blackTexture, ScaleMode.ScaleAndCrop, false);
+            headerStyle.normal.textColor = Color.white;
+        }
+        GUI.DrawTexture(headerRect, Texture2D.whiteTexture, ScaleMode.ScaleAndCrop, false, 0, Color.white, 1, 0);
+
+        GUI.Label(headerRect, headerText, headerStyle);
+    }
+
+    public override void Drag()
+    {
+        if (headerRect.Contains(Event.current.mousePosition)) //The mouse cursor is within the bounds of headerRect
+        {
+            if (Event.current.type == EventType.MouseDown)
+            {
+                pi.SetSuperTabToDepth(this, 0);
+                beingDragged = true;
+            }
+        }
+        if (beingDragged && Event.current.type == EventType.MouseUp)
+        {
+            beingDragged = false;
+
+            Place();
+        }
+        if (this == pi.GetSuperTabByDepth(0) && beingDragged && Event.current.type == EventType.MouseDrag)
+        {
+            headerRect.x = Event.current.mousePosition.x - (headerRect.width / 2);
+            headerRect.y = Event.current.mousePosition.y - (headerRect.height / 2);
+
+            foreach (SuperTab superTab in pi.superTabs)
+            {
+                if (superTab != this && superTab.headerRect.Contains(Event.current.mousePosition))
+                {
+                    CollectionsUtil.Swap(pi.superTabs, pi.GetSuperTabIndex(this), pi.GetSuperTabIndex(superTab));
+                    superTab.headerRect.x = wholeRect.x + (pi.GetSuperTabIndex(superTab) * headerRect.width);
+                    pi.SetSuperTabToDepth(superTab, 1);
+                }
+            }
+        }
+    }
+
+    //Method by which a SubTab's depth is set to anywhere from 0-7, these ints corresponding to the depth of the passed SubTab
+    //relative to all others, and all SubTabs possessing a depth >= the passed value are incremented incidentally
+    public void SetSubTabToDepth(SubTab subTab, int depth)
+    {
+        SubTab SubTabCurrentlyAtPassedDepth = GetSubTabByDepth(depth);
+        List<SubTab> SubTabsBelowThatCurrentlyAtPassedDepth = GetSubTabsBelow(SubTabCurrentlyAtPassedDepth);
+
+        int startingDepth = 0;
+
+        foreach (SubTab subt in SubTabsBelowThatCurrentlyAtPassedDepth)
+        {
+            startingDepth++;
+        }
+
+        subTab.depth = startingDepth;
+        startingDepth++;
+
+        foreach (SubTab subt in subTabs)
+        {
+            if (subt != subTab && !SubTabsBelowThatCurrentlyAtPassedDepth.Contains(subt))
+            {
+                subt.depth = startingDepth;
+                startingDepth++;
+            }
+        }
+    }
+
+    //Returns the SubTab whose depth is anywhere from 0-7, these ints corresponding to the depth of the passed SubTab
+    //relative to all others.
+    public SubTab GetSubTabByDepth(int depth)
+    {
+        SubTab subTabToReturn = null;
+
+        foreach (SubTab subTab in subTabs)
+        {
+            List<SubTab> subTabsBelow = GetSubTabsBelow(subTab);
+            if (subTabsBelow.Count == depth)
+            {
+                subTabToReturn = subTab;
+            }
+        }
+
+        return subTabToReturn;
+    }
+
+    //Returns a list containing all of those SuperTabs which have a depth less than the SuperTab passed as a parameter
+    public List<SubTab> GetSubTabsBelow(SubTab subTab)
+    {
+        List<SubTab> subTabsBelow = new List<SubTab>();
+        foreach (SubTab st in subTabs)
+        {
+            if (st.depth < subTab.depth)
+            {
+                subTabsBelow.Add(st);
+            }
+        }
+        return subTabsBelow;
+    }
+}
