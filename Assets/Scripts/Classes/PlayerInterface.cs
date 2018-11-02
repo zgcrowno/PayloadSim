@@ -4,22 +4,22 @@ using UnityEngine;
 
 public class PlayerInterface : MonoBehaviour {
 
+    public const int MaxSuperTabs = 8;
+
     public List<SuperTab> superTabs = new List<SuperTab>();
 
     // Use this for initialization
     void Start () {
         //Initialize the Tab objects for testing purposes
         int depth = 0;
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < SuperTab.MaxSubTabs; i++)
         {
-            GameObject superTabObject = new GameObject("SuperTab" + i);
-            SuperTab superTab = superTabObject.AddComponent<SuperTab>();
+            SuperTab superTab = new GameObject("SuperTab" + i).AddComponent<SuperTab>();
             superTab.subTabs = new List<SubTab>();
             superTab.headerText = "Some Text" + i;
             superTabs.Add(superTab);
-
-            GameObject subTabObject = new GameObject("SubTab" + i);
-            SubTab subTab = subTabObject.AddComponent<SubTab>();
+            
+            SubTab subTab = new GameObject("SubTab" + i).AddComponent<SubTab>();
             subTab.superTab = superTab;
             subTab.headerText = "More Text" + i;
             subTab.quadrants = new Rect[4];

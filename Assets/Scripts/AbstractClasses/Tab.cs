@@ -18,6 +18,7 @@ public abstract class Tab : MonoBehaviour {
     // Use this for initialization
     public void Start () {
         pi = GameObject.Find("/World").GetComponent<PlayerInterface>();
+
         headerStyle = new GUIStyle();
         headerStyle.fontSize = 25;
         headerStyle.font = (Font)Resources.Load("Fonts/FontCommodoreAngled");
@@ -49,6 +50,4 @@ public abstract class Tab : MonoBehaviour {
     public abstract void Drag();
 
     public abstract void Place();
-
-    public abstract bool IsPlaceable();
 }

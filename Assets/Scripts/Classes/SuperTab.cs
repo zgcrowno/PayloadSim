@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SuperTab : Tab {
+
+    public const int MaxSubTabs = 8;
     
     public List<SubTab> subTabs; //The SubTabs of which this SuperTab is a parent
 
@@ -13,115 +15,96 @@ public class SuperTab : Tab {
     }
 	
 	// Update is called once per frame
-	public void Update () {
+	new public void Update () {
 		
 	}
 
-    //Method that returns whether or not the SuperTab may be placed where it's currently dragged by the player
-    public override bool IsPlaceable()
+    //Method by which a tab is placed in a new location or its previously held one
+    public override void Place()
     {
-        if(pi.superTabs.Count > 1)
+        //This SuperTab is onle placeable if it isn't the only SuperTab currently in the PlayerInterface
+        if (pi.superTabs.Count > 1)
         {
+            //The SuperTab one unit deeper than this one
             SuperTab superTabToBecomeParent = pi.GetSuperTabByDepth(pi.GetSuperTabsBelow(this).Count + 1);
 
             if (superTabToBecomeParent.bodyRect.Contains(Event.current.mousePosition))
             {
                 //This SuperTab's contents are being placed inside of another SuperTab
-                if (superTabToBecomeParent.subTabs.Count < 8 && subTabs.Count == 1)
+                if (superTabToBecomeParent.subTabs.Count < MaxSubTabs && subTabs.Count == 1)
                 {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                //This SuperTab is simply being moved rather than its contents being nested within another
-                return true;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
+                    //This SuperTab may only be placed within another if this one only contains one SubTab, and the other has fewer than the max
 
-    //Method by which a tab is placed in a new location or its previously held one
-    public override void Place()
-    {
-        if (IsPlaceable())
-        {
-            SuperTab superTabToBecomeParent = pi.GetSuperTabByDepth(pi.GetSuperTabsBelow(this).Count + 1);
+                    //Using bool to avoid mutating collection while iterating through it
+                    bool addingAsSubTab = false;
 
-            if(superTabToBecomeParent.bodyRect.Contains(Event.current.mousePosition))
-            {
-                bool addingAsSubTab = false;
-
-                //Placing this SuperTab's contents within another SuperTab
-                foreach(SubTab subTab in superTabToBecomeParent.subTabs)
-                {
-                    if(subTab.wholeRect.Contains(Event.current.mousePosition))
+                    //Place this SuperTab's contents within another SuperTab if placeable criteria are met
+                    foreach (SubTab subTab in superTabToBecomeParent.subTabs)
                     {
-                        if(subTab.SideOfCursor() == SubTab.Left && subTab.HasSpace(SubTab.Lateral))
+                        if (subTab.wholeRect.Contains(Event.current.mousePosition))
                         {
-                            subTabs[0].SetUpWholeRect(subTab.wholeRect.x, 
-                                subTab.wholeRect.y, 
-                                subTab.wholeRect.width / 2, 
-                                subTab.wholeRect.height);
-                            subTab.SetUpWholeRect(subTab.wholeRect.x + (subTab.wholeRect.width / 2),
-                                subTab.wholeRect.y,
-                                subTab.wholeRect.width / 2,
-                                subTab.wholeRect.height);
+                            if (subTab.SideOfCursor() == SubTab.Left && subTab.HasSpace(SubTab.Lateral))
+                            {
+                                subTabs[0].SetUpWholeRect(subTab.wholeRect.x,
+                                    subTab.wholeRect.y,
+                                    subTab.wholeRect.width / 2,
+                                    subTab.wholeRect.height);
+                                subTab.SetUpWholeRect(subTab.wholeRect.x + (subTab.wholeRect.width / 2),
+                                    subTab.wholeRect.y,
+                                    subTab.wholeRect.width / 2,
+                                    subTab.wholeRect.height);
 
-                            addingAsSubTab = true;
-                        }
-                        else if(subTab.SideOfCursor() == SubTab.Right && subTab.HasSpace(SubTab.Lateral))
-                        {
-                            subTabs[0].SetUpWholeRect(subTab.wholeRect.x + (subTab.wholeRect.width / 2),
-                                subTab.wholeRect.y,
-                                subTab.wholeRect.width / 2,
-                                subTab.wholeRect.height);
-                            subTab.SetUpWholeRect(subTab.wholeRect.x,
-                                subTab.wholeRect.y,
-                                subTab.wholeRect.width / 2,
-                                subTab.wholeRect.height);
+                                addingAsSubTab = true;
+                            }
+                            else if (subTab.SideOfCursor() == SubTab.Right && subTab.HasSpace(SubTab.Lateral))
+                            {
+                                subTabs[0].SetUpWholeRect(subTab.wholeRect.x + (subTab.wholeRect.width / 2),
+                                    subTab.wholeRect.y,
+                                    subTab.wholeRect.width / 2,
+                                    subTab.wholeRect.height);
+                                subTab.SetUpWholeRect(subTab.wholeRect.x,
+                                    subTab.wholeRect.y,
+                                    subTab.wholeRect.width / 2,
+                                    subTab.wholeRect.height);
 
-                            addingAsSubTab = true;
-                        }
-                        else if(subTab.SideOfCursor() == SubTab.UpperMiddle && subTab.HasSpace(SubTab.Vertical))
-                        {
-                            subTabs[0].SetUpWholeRect(subTab.wholeRect.x,
-                                subTab.wholeRect.y,
-                                subTab.wholeRect.width,
-                                subTab.wholeRect.height / 2);
-                            subTab.SetUpWholeRect(subTab.wholeRect.x,
-                                subTab.wholeRect.y + (subTab.wholeRect.height / 2),
-                                subTab.wholeRect.width,
-                                subTab.wholeRect.height / 2);
+                                addingAsSubTab = true;
+                            }
+                            else if (subTab.SideOfCursor() == SubTab.Upper && subTab.HasSpace(SubTab.Vertical))
+                            {
+                                subTabs[0].SetUpWholeRect(subTab.wholeRect.x,
+                                    subTab.wholeRect.y,
+                                    subTab.wholeRect.width,
+                                    subTab.wholeRect.height / 2);
+                                subTab.SetUpWholeRect(subTab.wholeRect.x,
+                                    subTab.wholeRect.y + (subTab.wholeRect.height / 2),
+                                    subTab.wholeRect.width,
+                                    subTab.wholeRect.height / 2);
 
-                            addingAsSubTab = true;
-                        }
-                        else if(subTab.SideOfCursor() == SubTab.LowerMiddle && subTab.HasSpace(SubTab.Vertical))
-                        {
-                            subTabs[0].SetUpWholeRect(subTab.wholeRect.x,
-                                subTab.wholeRect.y + (subTab.wholeRect.height / 2),
-                                subTab.wholeRect.width,
-                                subTab.wholeRect.height / 2);
-                            subTab.SetUpWholeRect(subTab.wholeRect.x,
-                                subTab.wholeRect.y,
-                                subTab.wholeRect.width,
-                                subTab.wholeRect.height / 2);
+                                addingAsSubTab = true;
+                            }
+                            else if (subTab.SideOfCursor() == SubTab.Lower && subTab.HasSpace(SubTab.Vertical))
+                            {
+                                subTabs[0].SetUpWholeRect(subTab.wholeRect.x,
+                                    subTab.wholeRect.y + (subTab.wholeRect.height / 2),
+                                    subTab.wholeRect.width,
+                                    subTab.wholeRect.height / 2);
+                                subTab.SetUpWholeRect(subTab.wholeRect.x,
+                                    subTab.wholeRect.y,
+                                    subTab.wholeRect.width,
+                                    subTab.wholeRect.height / 2);
 
-                            addingAsSubTab = true;
+                                addingAsSubTab = true;
+                            }
                         }
                     }
-                }
-
-                if(addingAsSubTab)
-                {
-                    AddAsSubTab(superTabToBecomeParent);
+                    if (addingAsSubTab)
+                    {
+                        AddAsSubTab(superTabToBecomeParent);
+                    }
+                    else
+                    {
+                        SnapToPreviousPosition();
+                    }
                 }
                 else
                 {
@@ -130,7 +113,8 @@ public class SuperTab : Tab {
             }
             else
             {
-                SnapHeaderToIndexPosition();
+                //This SuperTab is simply being moved within the PlayerInterface's superTabs order rather than its contents being nested within another
+                SnapToPreviousPosition();
             }
         }
         else
@@ -145,7 +129,7 @@ public class SuperTab : Tab {
         superTabToBecomeParent.subTabs.Add(subTabs[0]);
         pi.superTabs.Remove(this);
         pi.OrganizeSuperTabHeaders();
-        pi.SetSuperTabToDepth(pi.GetSuperTabByDepth(0), 0);
+        pi.SetSuperTabToDepth(superTabToBecomeParent, 0);
         Destroy(gameObject);
     }
 
@@ -168,7 +152,7 @@ public class SuperTab : Tab {
         prevWhole.width = width;
         prevWhole.height = height;
 
-        headerRect.width = Screen.width / 8;
+        headerRect.width = Screen.width / PlayerInterface.MaxSuperTabs;
         headerRect.height = Screen.height / 20;
         headerRect.x = wholeRect.x + (pi.GetSuperTabIndex(this) * headerRect.width);
         headerRect.y = wholeRect.y;
@@ -297,5 +281,19 @@ public class SuperTab : Tab {
             }
         }
         return subTabsBelow;
+    }
+
+    //Returns whether or not this SuperTab has any space within its bodyRect not taken up by a SubTab
+    public bool HasDeadSpace()
+    {
+        foreach(SubTab subTab in subTabs)
+        {
+            if(subTab.HasDeadSpaceOnAnySide())
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
