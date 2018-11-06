@@ -42,7 +42,7 @@ public abstract class Tab : MonoBehaviour {
         SetUpWholeRect(prevWhole.x, prevWhole.y, prevWhole.width, prevWhole.height);
     }
 
-    //Method which sets up the wholeRect's values, and afterwards, the values of the header, body and prevWhole rects which are dependent on them (and the quadrants for SubTabs)
+    //Method which sets up the wholeRect's values, and afterwards, the values of the header, body and prevWhole rects which are dependent on them (and the quadrants and cursorChangeRects for SubTabs)
     public abstract void SetUpWholeRect(float x, float y, float width, float height);
 
     public abstract void Draw();

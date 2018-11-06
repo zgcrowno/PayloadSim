@@ -10,14 +10,18 @@ public class SubTab : Tab {
     public const int Right = 1; //Represents the right side of the SubTab
     public const int Upper = 2; //Represents the upper middle side of the SubTab
     public const int Lower = 3; //Represents the lower middle side of the SubTab
+    public const int ResizeOffset = 5;
+    public const int HeaderRectOffset = 20;
     
     public SuperTab superTab; //The SuperTab of which this SubTab is a child
     public Rect[] quadrants; //The left, right, middle-top and middle-bottom quadrants by which is determined the placement of subsequent SubTabs within the overarching SuperTab
+    public Rect[] cursorChangeRects; //The left, right, top, bottom, bottom-left, top-left, top-right and bottom-right rects within which the mouse cursor will change to one of four different resize cursors
     
     public float minWidth; //The minimum allowable width of the SubTab
     public float minHeight; //The minimum allowable height of the SubTab
     public float maxWidth; //The maximum allowable width of the SubTab
     public float maxHeight; //The maximum allowable height of the SubTab
+    public bool beingResized; //The bool representing whether or not this Tab is currently being resized with the mouse by the player
 
     // Use this for initialization
     new public void Start () {
@@ -99,7 +103,7 @@ public class SubTab : Tab {
         prevWhole.width = width;
         prevWhole.height = height;
 
-        headerRect.x = wholeRect.x + (wholeRect.width / 20);
+        headerRect.x = wholeRect.x + HeaderRectOffset;
         headerRect.y = wholeRect.y;
         headerRect.width = Screen.width / PlayerInterface.MaxSuperTabs;
         headerRect.height = Screen.height / 20;
@@ -125,6 +129,54 @@ public class SubTab : Tab {
         quadrants[3].y = wholeRect.y + (wholeRect.height / 2);
         quadrants[3].width = wholeRect.width / 3;
         quadrants[3].height = wholeRect.height / 2;
+
+        //Left cursorChangeRect
+        cursorChangeRects[0].x = bodyRect.x;
+        cursorChangeRects[0].y = bodyRect.y + ResizeOffset;
+        cursorChangeRects[0].width = ResizeOffset;
+        cursorChangeRects[0].height = bodyRect.height - (ResizeOffset * 2);
+
+        //Right cursorChangeRect
+        cursorChangeRects[1].x = bodyRect.x + bodyRect.width - ResizeOffset;
+        cursorChangeRects[1].y = bodyRect.y + ResizeOffset;
+        cursorChangeRects[1].width = ResizeOffset;
+        cursorChangeRects[1].height = bodyRect.height - (ResizeOffset * 2);
+
+        //Top cursorChangeRect
+        cursorChangeRects[2].x = bodyRect.x + ResizeOffset;
+        cursorChangeRects[2].y = bodyRect.y;
+        cursorChangeRects[2].width = bodyRect.width - (ResizeOffset * 2);
+        cursorChangeRects[2].height = ResizeOffset;
+
+        //Bottom cursorChangeRect
+        cursorChangeRects[3].x = bodyRect.x + ResizeOffset;
+        cursorChangeRects[3].y = bodyRect.y + bodyRect.height - ResizeOffset;
+        cursorChangeRects[3].width = bodyRect.width - (ResizeOffset * 2);
+        cursorChangeRects[3].height = ResizeOffset;
+
+        //Bottom-left cursorChangeRect
+        cursorChangeRects[4].x = bodyRect.x;
+        cursorChangeRects[4].y = bodyRect.y + bodyRect.height - ResizeOffset;
+        cursorChangeRects[4].width = ResizeOffset;
+        cursorChangeRects[4].height = ResizeOffset;
+
+        //Top-left cursorChangeRect
+        cursorChangeRects[5].x = bodyRect.x;
+        cursorChangeRects[5].y = bodyRect.y;
+        cursorChangeRects[5].width = ResizeOffset;
+        cursorChangeRects[5].height = ResizeOffset;
+
+        //Top-right cursorChangeRect
+        cursorChangeRects[6].x = bodyRect.x + bodyRect.width - ResizeOffset;
+        cursorChangeRects[6].y = bodyRect.y;
+        cursorChangeRects[6].width = ResizeOffset;
+        cursorChangeRects[6].height = ResizeOffset;
+
+        //Bottom-right cursorChangeRect
+        cursorChangeRects[7].x = bodyRect.x + bodyRect.width - ResizeOffset;
+        cursorChangeRects[7].y = bodyRect.y + bodyRect.height - ResizeOffset;
+        cursorChangeRects[7].width = ResizeOffset;
+        cursorChangeRects[7].height = ResizeOffset;
     }
 
     public override void Draw()
@@ -148,17 +200,32 @@ public class SubTab : Tab {
 
     public override void Drag()
     {
-        if (superTab == pi.GetSuperTabByDepth(0) && headerRect.Contains(Event.current.mousePosition)) //The mouse cursor is within the bounds of headerRect
+        if (superTab == pi.GetSuperTabByDepth(0))
         {
-            if (Event.current.type == EventType.MouseDown)
+            if (headerRect.Contains(Event.current.mousePosition)) //The mouse cursor is within the bounds of headerRect
             {
-                superTab.SetSubTabToDepth(this, 0);
-                beingDragged = true;
+                if (Event.current.type == EventType.MouseDown)
+                {
+                    superTab.SetSubTabToDepth(this, 0);
+                    beingDragged = true;
+                }
+            }
+            else 
+            {
+                foreach(Rect cursorChangeRect in cursorChangeRects)
+                {
+                    if(cursorChangeRect.Contains(Event.current.mousePosition) && Event.current.type == EventType.MouseDown)
+                    {
+                        superTab.SetSubTabToDepth(this, 0);
+                        beingResized = true;
+                    }
+                }
             }
         }
         if (beingDragged && Event.current.type == EventType.MouseUp)
         {
             beingDragged = false;
+            beingResized = false;
 
             Place();
         }
@@ -177,6 +244,10 @@ public class SubTab : Tab {
                     superTab.SetSubTabToDepth(subTab, 1);
                 }
             }
+        }
+        else if(this == superTab.GetSubTabByDepth(0) && beingResized && Event.current.type == EventType.MouseDrag)
+        {
+            
         }
     }
 
@@ -327,7 +398,7 @@ public class SubTab : Tab {
                 SetUpWholeRect(wholeRect.x,
                                wholeRect.y,
                                wholeRect.width,
-                               subTabBelow.wholeRect.y - (wholeRect.y + wholeRect.height));
+                               subTabBelow.wholeRect.y - wholeRect.y);
             }
             else
             {
@@ -409,6 +480,36 @@ public class SubTab : Tab {
         return subTabIsLeftAdjacent || subTabIsRightAdjacent || subTabIsAboveAdjacent || subTabIsBelowAdjacent;
     }
 
+    //Returns whether or not the passed SubTab is adjacent to this one on the passed side
+    public bool SubTabIsSideAdjacent(SubTab subTab, int side)
+    {
+        switch(side)
+        {
+            case Left:
+                return subTab.wholeRect.x + subTab.wholeRect.width == wholeRect.x
+                                    && wholeRect.y >= subTab.wholeRect.y
+                                    && wholeRect.y < subTab.wholeRect.y + subTab.wholeRect.height;
+                break;
+            case Right:
+                return wholeRect.x + wholeRect.width == subTab.wholeRect.x
+                                     && wholeRect.y >= subTab.wholeRect.y
+                                     && wholeRect.y < subTab.wholeRect.y + subTab.wholeRect.height;
+                break;
+            case Upper:
+                return subTab.wholeRect.y + subTab.wholeRect.height == wholeRect.y
+                                     && wholeRect.x >= subTab.wholeRect.x
+                                     && wholeRect.x < subTab.wholeRect.x;
+                break;
+            case Lower:
+                return wholeRect.y + wholeRect.height == subTab.wholeRect.y
+                                     && wholeRect.x >= subTab.wholeRect.x
+                                     && wholeRect.x < subTab.wholeRect.x;
+                break;
+        }
+
+        return false;
+    }
+
     //Returns the first SubTab which is on the passed side of this SubTab (but not necessarily adjacent to it)
     public SubTab GetSubTabToSide(int side)
     {
@@ -467,12 +568,28 @@ public class SubTab : Tab {
 
         foreach(SubTab subTab in superTab.subTabs)
         {
-            if(SubTabIsAdjacent(subTab))
+            if(subTab != this && SubTabIsAdjacent(subTab))
             {
                 adjacentSubTabs.Add(subTab);
             }
         }
 
         return adjacentSubTabs;
+    }
+
+    //Returns a list containing all of those SubTabs adjacent to this one on a given side
+    public List<SubTab> GetSideAdjacentSubTabs(int side)
+    {
+        List<SubTab> sideAdjacentSubTabs = new List<SubTab>();
+
+        foreach (SubTab subTab in superTab.subTabs)
+        {
+            if (subTab != this && SubTabIsSideAdjacent(subTab, side))
+            {
+                sideAdjacentSubTabs.Add(subTab);
+            }
+        }
+
+        return sideAdjacentSubTabs;
     }
 }
