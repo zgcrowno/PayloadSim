@@ -27,7 +27,7 @@ public class PlayerInterface : MonoBehaviour {
             subTab.superTab = superTab;
             subTab.headerText = "More Text" + i;
             subTab.quadrants = new Rect[4];
-            subTab.cursorChangeRects = new Rect[8];
+            subTab.resizeRects = new Rect[8];
             for (int j = 0; j < 4; j++)
             {
                 subTab.quadrants[j] = new Rect();
@@ -158,29 +158,29 @@ public class PlayerInterface : MonoBehaviour {
         {
             if(!subTab.headerRect.Contains(Event.current.mousePosition))
             {
-                if (subTab.cursorChangeRects[0].Contains(Event.current.mousePosition)
-               || subTab.cursorChangeRects[1].Contains(Event.current.mousePosition))
+                if (subTab.resizeRects[0].Contains(Event.current.mousePosition)
+               || subTab.resizeRects[1].Contains(Event.current.mousePosition))
                 {
                     //Left or right
                     cursorToUse = resizeHorizontalCursor;
                     hotSpot = new Vector2(resizeHorizontalCursor.width / 2, 5);
                 }
-                else if (subTab.cursorChangeRects[2].Contains(Event.current.mousePosition)
-                        || subTab.cursorChangeRects[3].Contains(Event.current.mousePosition))
+                else if (subTab.resizeRects[2].Contains(Event.current.mousePosition)
+                        || subTab.resizeRects[3].Contains(Event.current.mousePosition))
                 {
                     //Top or bottom
                     cursorToUse = resizeVerticalCursor;
                     hotSpot = new Vector2(5, resizeVerticalCursor.height / 2);
                 }
-                else if (subTab.cursorChangeRects[4].Contains(Event.current.mousePosition)
-                        || subTab.cursorChangeRects[6].Contains(Event.current.mousePosition))
+                else if (subTab.resizeRects[4].Contains(Event.current.mousePosition)
+                        || subTab.resizeRects[6].Contains(Event.current.mousePosition))
                 {
                     //Bottom-left or top-right
                     cursorToUse = resizeUpRightCursor;
                     hotSpot = new Vector2(11.5f, 11.5f);
                 }
-                else if (subTab.cursorChangeRects[5].Contains(Event.current.mousePosition)
-                        || subTab.cursorChangeRects[7].Contains(Event.current.mousePosition))
+                else if (subTab.resizeRects[5].Contains(Event.current.mousePosition)
+                        || subTab.resizeRects[7].Contains(Event.current.mousePosition))
                 {
                     //Top-left or bottom-right
                     cursorToUse = resizeUpLeftCursor;

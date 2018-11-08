@@ -191,39 +191,6 @@ public class SuperTab : Tab {
         GUI.Label(headerRect, headerText, headerStyle);
     }
 
-    public override void Drag()
-    {
-        if (headerRect.Contains(Event.current.mousePosition)) //The mouse cursor is within the bounds of headerRect
-        {
-            if (Event.current.type == EventType.MouseDown)
-            {
-                pi.SetSuperTabToDepth(this, 0);
-                beingDragged = true;
-            }
-        }
-        if (beingDragged && Event.current.type == EventType.MouseUp)
-        {
-            beingDragged = false;
-
-            Place();
-        }
-        if (this == pi.GetSuperTabByDepth(0) && beingDragged && Event.current.type == EventType.MouseDrag)
-        {
-            headerRect.x = Event.current.mousePosition.x - (headerRect.width / 2);
-            headerRect.y = Event.current.mousePosition.y - (headerRect.height / 2);
-
-            foreach (SuperTab superTab in pi.superTabs)
-            {
-                if (superTab != this && superTab.headerRect.Contains(Event.current.mousePosition))
-                {
-                    CollectionsUtil.Swap(pi.superTabs, pi.GetSuperTabIndex(this), pi.GetSuperTabIndex(superTab));
-                    superTab.headerRect.x = wholeRect.x + (pi.GetSuperTabIndex(superTab) * headerRect.width);
-                    pi.SetSuperTabToDepth(superTab, 1);
-                }
-            }
-        }
-    }
-
     //Method by which a SubTab's depth is set to anywhere from 0-7, these ints corresponding to the depth of the passed SubTab
     //relative to all others, and all SubTabs possessing a depth >= the passed value are incremented incidentally
     public void SetSubTabToDepth(SubTab subTab, int depth)
@@ -295,5 +262,52 @@ public class SuperTab : Tab {
         }
 
         return false;
+    }
+
+    public override void MouseDown()
+    {
+        if (Event.current.type == EventType.MouseDown)
+        {
+            if (headerRect.Contains(Event.current.mousePosition))
+            {
+                pi.SetSuperTabToDepth(this, 0);
+                beingDragged = true;
+            }
+        }
+    }
+
+    public override void MouseDrag()
+    {
+        if (Event.current.type == EventType.MouseDrag)
+        {
+            if(this == pi.GetSuperTabByDepth(0) && beingDragged)
+            {
+                headerRect.x = Event.current.mousePosition.x - (headerRect.width / 2);
+                headerRect.y = Event.current.mousePosition.y - (headerRect.height / 2);
+
+                foreach (SuperTab superTab in pi.superTabs)
+                {
+                    if (superTab != this && superTab.headerRect.Contains(Event.current.mousePosition))
+                    {
+                        CollectionsUtil.Swap(pi.superTabs, pi.GetSuperTabIndex(this), pi.GetSuperTabIndex(superTab));
+                        superTab.headerRect.x = wholeRect.x + (pi.GetSuperTabIndex(superTab) * headerRect.width);
+                        pi.SetSuperTabToDepth(superTab, 1);
+                    }
+                }
+            }
+        }
+    }
+
+    public override void MouseUp()
+    {
+        if (Event.current.type == EventType.MouseUp)
+        {
+            if(beingDragged)
+            {
+                beingDragged = false;
+
+                Place();
+            }
+        }
     }
 }

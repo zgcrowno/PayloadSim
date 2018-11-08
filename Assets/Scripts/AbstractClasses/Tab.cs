@@ -30,11 +30,11 @@ public abstract class Tab : MonoBehaviour {
 		
 	}
 
-    private void OnGUI()
+    public void OnGUI()
     {
         Draw();
 
-        Drag();
+        MouseInput();
     }
 
     public void SnapToPreviousPosition()
@@ -42,12 +42,23 @@ public abstract class Tab : MonoBehaviour {
         SetUpWholeRect(prevWhole.x, prevWhole.y, prevWhole.width, prevWhole.height);
     }
 
+    public void MouseInput()
+    {
+        MouseDown();
+        MouseDrag();
+        MouseUp();
+    }
+
     //Method which sets up the wholeRect's values, and afterwards, the values of the header, body and prevWhole rects which are dependent on them (and the quadrants and cursorChangeRects for SubTabs)
     public abstract void SetUpWholeRect(float x, float y, float width, float height);
 
     public abstract void Draw();
 
-    public abstract void Drag();
-
     public abstract void Place();
+
+    public abstract void MouseDown();
+
+    public abstract void MouseUp();
+
+    public abstract void MouseDrag();
 }
