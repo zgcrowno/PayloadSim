@@ -5,7 +5,9 @@ using UnityEngine;
 public class SuperTab : Tab {
 
     public const int MaxSubTabs = 8;
-    
+    public const int Ascending = 0;
+    public const int Descending = 1;
+
     public List<SubTab> subTabs; //The SubTabs of which this SuperTab is a parent
 
     // Use this for initialization
@@ -308,6 +310,50 @@ public class SuperTab : Tab {
 
                 Place();
             }
+        }
+    }
+
+    public new void FillDeadSpace()
+    {
+        foreach(SubTab subTab in subTabs)
+        {
+            subTab.FillDeadSpace();
+        }
+    }
+
+    public void SortSubTabsByDepth(int ascOrDesc)
+    {
+        SubTab temp;
+        int j;
+
+        switch(ascOrDesc)
+        {
+            case Ascending:
+                for (int i = 1; i <= subTabs.Count - 1; i++)
+                {
+                    temp = subTabs[i];
+                    j = i - 1;
+                    while (j >= 0 && subTabs[j].depth > temp.depth)
+                    {
+                        subTabs[j + 1] = subTabs[j];
+                        j--;
+                    }
+                    subTabs[j + 1] = temp;
+                }
+                break;
+            case Descending:
+                for (int i = 1; i <= subTabs.Count - 1; i++)
+                {
+                    temp = subTabs[i];
+                    j = i - 1;
+                    while (j >= 0 && subTabs[j].depth < temp.depth)
+                    {
+                        subTabs[j + 1] = subTabs[j];
+                        j--;
+                    }
+                    subTabs[j + 1] = temp;
+                }
+                break;
         }
     }
 }
