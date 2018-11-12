@@ -16,6 +16,9 @@ public class SubTab : Tab {
     public const int UpperRight = 6;
     public const int LowerRight = 7;
     public const int None = 8;
+    public const int First = 0;
+    public const int Second = 1;
+    public const int Third = 2;
     public const int ResizeOffset = 5;
     public const int HeaderRectOffset = 20;
     
@@ -404,38 +407,18 @@ public class SubTab : Tab {
         switch(side)
         {
             case Left:
-                //return FloatUtil.Equals(wholeRect.x, subTab.wholeRect.x + subTab.wholeRect.width)
-                //       && (wholeRect.Contains(new Vector2(wholeRect.x, subTab.wholeRect.y))
-                //           || wholeRect.Contains(new Vector2(wholeRect.x, subTab.wholeRect.y + subTab.wholeRect.height))
-                //           || subTab.wholeRect.Contains(new Vector2(subTab.wholeRect.x, wholeRect.y))
-                //           || subTab.wholeRect.Contains(new Vector2(subTab.wholeRect.x, wholeRect.y + wholeRect.height)));
                 return FloatUtil.Equals(wholeRect.x, subTab.wholeRect.x + subTab.wholeRect.width)
                        && subTab.wholeRect.Overlaps(new Rect(wholeRect.x - wholeRect.width, wholeRect.y, wholeRect.width, wholeRect.height));
                 break;
             case Right:
-                //return FloatUtil.Equals(subTab.wholeRect.x, wholeRect.x + wholeRect.width)
-                //       && (wholeRect.Contains(new Vector2(wholeRect.x, subTab.wholeRect.y))
-                //           || wholeRect.Contains(new Vector2(wholeRect.x, subTab.wholeRect.y + subTab.wholeRect.height))
-                //           || subTab.wholeRect.Contains(new Vector2(subTab.wholeRect.x, wholeRect.y))
-                //           || subTab.wholeRect.Contains(new Vector2(subTab.wholeRect.x, wholeRect.y + wholeRect.height)));
                 return FloatUtil.Equals(subTab.wholeRect.x, wholeRect.x + wholeRect.width)
                        && subTab.wholeRect.Overlaps(new Rect(wholeRect.x + wholeRect.width, wholeRect.y, wholeRect.width, wholeRect.height));
                 break;
             case Upper:
-                //return FloatUtil.Equals(wholeRect.y, subTab.wholeRect.y + subTab.wholeRect.height)
-                //       && (wholeRect.Contains(new Vector2(subTab.wholeRect.x, wholeRect.y))
-                //           || wholeRect.Contains(new Vector2(subTab.wholeRect.x + subTab.wholeRect.width, wholeRect.y))
-                //           || subTab.wholeRect.Contains(new Vector2(wholeRect.x, subTab.wholeRect.y))
-                //           || subTab.wholeRect.Contains(new Vector2(wholeRect.x + wholeRect.width, subTab.wholeRect.y)));
                 return FloatUtil.Equals(wholeRect.y, subTab.wholeRect.y + subTab.wholeRect.height)
                        && subTab.wholeRect.Overlaps(new Rect(wholeRect.x, wholeRect.y - wholeRect.height, wholeRect.width, wholeRect.height));
                 break;
             case Lower:
-                //return FloatUtil.Equals(subTab.wholeRect.y, wholeRect.y + wholeRect.height)
-                //       && (wholeRect.Contains(new Vector2(subTab.wholeRect.x, wholeRect.y))
-                //           || wholeRect.Contains(new Vector2(subTab.wholeRect.x + subTab.wholeRect.width, wholeRect.y))
-                //           || subTab.wholeRect.Contains(new Vector2(wholeRect.x, subTab.wholeRect.y))
-                //           || subTab.wholeRect.Contains(new Vector2(wholeRect.x + wholeRect.width, subTab.wholeRect.y)));
                 return FloatUtil.Equals(subTab.wholeRect.y, wholeRect.y + wholeRect.height)
                        && subTab.wholeRect.Overlaps(new Rect(wholeRect.x, wholeRect.y + wholeRect.height, wholeRect.width, wholeRect.height));
                 break;
@@ -632,1018 +615,474 @@ public class SubTab : Tab {
         return sideCollinearSubTabs;
     }
 
-    //TODO: Refactor/simplify this method since all of its cases have roughly the same form
-    public void Resize()
+    public float GetResizeMinMaxValue(int side, int pass, SubTab adjacentSubTab, float val)
+    {
+        switch(side)
+        {
+            case Left:
+                switch(pass)
+                {
+                    case First:
+                        if (FloatUtil.GT(adjacentSubTab.wholeRect.x + minWidth, val))
+                        {
+                            val = adjacentSubTab.wholeRect.x + minWidth;
+                        }
+                        break;
+                    case Second:
+                        if (FloatUtil.GT(adjacentSubTab.wholeRect.x + minWidth, val))
+                        {
+                            val = adjacentSubTab.wholeRect.x + minWidth;
+                        }
+                        break;
+                    case Third:
+                        if (FloatUtil.GT(adjacentSubTab.wholeRect.x + minWidth, val))
+                        {
+                            val = adjacentSubTab.wholeRect.x + minWidth;
+                        }
+                        break;
+                }
+                break;
+            case Right:
+                switch (pass)
+                {
+                    case First:
+                        if (FloatUtil.GT(val, adjacentSubTab.wholeRect.x + adjacentSubTab.wholeRect.width - minWidth - wholeRect.x))
+                        {
+                            val = adjacentSubTab.wholeRect.x + adjacentSubTab.wholeRect.width - minWidth - wholeRect.x;
+                        }
+                        break;
+                    case Second:
+                        if (FloatUtil.GT(adjacentSubTab.wholeRect.x + minWidth - wholeRect.x, val))
+                        {
+                            val = adjacentSubTab.wholeRect.x + minWidth - wholeRect.x;
+                        }
+                        break;
+                    case Third:
+                        if (FloatUtil.GT(val, adjacentSubTab.wholeRect.x + adjacentSubTab.wholeRect.width - minWidth - wholeRect.x))
+                        {
+                            val = adjacentSubTab.wholeRect.x + adjacentSubTab.wholeRect.width - minWidth - wholeRect.x;
+                        }
+                        break;
+                }
+                break;
+            case Upper:
+                switch (pass)
+                {
+                    case First:
+                        if (FloatUtil.GT(adjacentSubTab.wholeRect.y + minHeight, val))
+                        {
+                            val = adjacentSubTab.wholeRect.y + minHeight;
+                        }
+                        break;
+                    case Second:
+                        if (FloatUtil.GT(val, adjacentSubTab.wholeRect.y + adjacentSubTab.wholeRect.height - minHeight))
+                        {
+                            val = adjacentSubTab.wholeRect.y + adjacentSubTab.wholeRect.height - minHeight;
+                        }
+                        break;
+                    case Third:
+                        if (FloatUtil.GT(adjacentSubTab.wholeRect.y + minHeight, val))
+                        {
+                            val = adjacentSubTab.wholeRect.y + minHeight;
+                        }
+                        break;
+                }
+                break;
+            case Lower:
+                switch (pass)
+                {
+                    case First:
+                        if (FloatUtil.GT(val, adjacentSubTab.wholeRect.y + adjacentSubTab.wholeRect.height - minHeight - wholeRect.y))
+                        {
+                            val = adjacentSubTab.wholeRect.y + adjacentSubTab.wholeRect.height - minHeight - wholeRect.y;
+                        }
+                        break;
+                    case Second:
+                        if (FloatUtil.GT(adjacentSubTab.wholeRect.y + minHeight - wholeRect.y, val))
+                        {
+                            val = adjacentSubTab.wholeRect.y + minHeight - wholeRect.y;
+                        }
+                        break;
+                    case Third:
+                        if (FloatUtil.GT(val, adjacentSubTab.wholeRect.y + adjacentSubTab.wholeRect.height - minHeight - wholeRect.y))
+                        {
+                            val = adjacentSubTab.wholeRect.y + adjacentSubTab.wholeRect.height - minHeight - wholeRect.y;
+                        }
+                        break;
+                }
+                break;
+        }
+
+        return val;
+    }
+
+    public float GetResizeNewValue(int side, float minVal, float maxVal, Vector2 mousePos)
+    {
+        float retVal = 0;
+
+        switch (side)
+        {
+            case Left:
+                if (FloatUtil.GTE(mousePos.x, minVal) && FloatUtil.LTE(mousePos.x, maxVal))
+                {
+                    retVal = mousePos.x;
+                }
+                else if (FloatUtil.LT(mousePos.x, minVal))
+                {
+                    retVal = minVal;
+                }
+                else if (FloatUtil.GT(mousePos.x, maxVal))
+                {
+                    retVal = maxVal;
+                }
+                break;
+            case Right:
+                if (FloatUtil.GTE(mousePos.x, wholeRect.x + minVal) && FloatUtil.LTE(mousePos.x, wholeRect.x + maxVal))
+                {
+                    retVal = mousePos.x - wholeRect.x;
+                }
+                else if (FloatUtil.LT(mousePos.x, wholeRect.x + minVal))
+                {
+                    retVal = minVal;
+                }
+                else if (FloatUtil.GT(mousePos.x, wholeRect.x + maxVal))
+                {
+                    retVal = maxVal;
+                }
+                break;
+            case Upper:
+                if (FloatUtil.GTE(mousePos.y, minVal) && FloatUtil.LTE(mousePos.y, maxVal))
+                {
+                    retVal = mousePos.y;
+                }
+                else if (FloatUtil.LT(mousePos.y, minVal))
+                {
+                    retVal = minVal;
+                }
+                else if (FloatUtil.GT(mousePos.y, maxVal))
+                {
+                    retVal = maxVal;
+                }
+                break;
+            case Lower:
+                if (FloatUtil.GTE(mousePos.y, wholeRect.y + minVal) && FloatUtil.LTE(mousePos.y, wholeRect.y + maxVal))
+                {
+                    retVal = mousePos.y - wholeRect.y;
+                }
+                else if (FloatUtil.LT(mousePos.y, wholeRect.y + minVal))
+                {
+                    retVal = minVal;
+                }
+                else if (FloatUtil.GT(mousePos.y, wholeRect.y + maxVal))
+                {
+                    retVal = maxVal;
+                }
+                break;
+        }
+
+        return retVal;
+    }
+
+    public void SetResizeMinMaxValues(int side, int firstAdjacentSide, int secondAdjacentSide, float minVal, float maxVal, List<SubTab> firstAdjacentSubTabs, List<SubTab> secondAdjacentSubTabs, List<SubTab> thirdAdjacentSubTabs)
+    {
+        foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
+        {
+            secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(secondAdjacentSide);
+            secondAdjacentSubTabs.Remove(this);
+
+            if (side == Left || side == Upper)
+            {
+                minVal = GetResizeMinMaxValue(side, First, firstAdjacentSubTab, minVal);
+            }
+            else // side == Right || side == Lower
+            {
+                maxVal = GetResizeMinMaxValue(side, First, firstAdjacentSubTab, maxVal);
+            }
+
+            foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
+            {
+                thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(firstAdjacentSide);
+                thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
+
+                if (side == Left || side == Upper)
+                {
+                    maxVal = GetResizeMinMaxValue(side, Second, secondAdjacentSubTab, maxVal);
+                }
+                else // side == Right || side == Lower
+                {
+                    minVal = GetResizeMinMaxValue(side, Second, secondAdjacentSubTab, minVal);
+                }
+
+                foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
+                {
+                    if (side == Left || side == Upper)
+                    {
+                        minVal = GetResizeMinMaxValue(side, Third, thirdAdjacentSubTab, minVal);
+                    }
+                    else // side == Right || side == Lower
+                    {
+                        maxVal = GetResizeMinMaxValue(side, Third, thirdAdjacentSubTab, maxVal);
+                    }
+                }
+            }
+        }
+    }
+
+    public void SetResizeAdjacentWholeRects(int side, int firstAdjacentSide, int secondAdjacentSide, List<SubTab> firstAdjacentSubTabs, List<SubTab> secondAdjacentSubTabs, List<SubTab> thirdAdjacentSubTabs)
+    {
+        foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
+        {
+            secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(secondAdjacentSide);
+            secondAdjacentSubTabs.Remove(this);
+
+            switch (side)
+            {
+                case Left:
+                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.prevWhole.y, wholeRect.x - firstAdjacentSubTab.wholeRect.x, firstAdjacentSubTab.prevWhole.height);
+                    break;
+                case Right:
+                    firstAdjacentSubTab.SetUpWholeRect(wholeRect.x + wholeRect.width, firstAdjacentSubTab.prevWhole.y, (firstAdjacentSubTab.prevWhole.x + firstAdjacentSubTab.prevWhole.width) - (wholeRect.x + wholeRect.width), firstAdjacentSubTab.prevWhole.height);
+                    break;
+                case Upper:
+                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.prevWhole.y, firstAdjacentSubTab.prevWhole.width, wholeRect.y - firstAdjacentSubTab.wholeRect.y);
+                    break;
+                case Lower:
+                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, wholeRect.y + wholeRect.height, firstAdjacentSubTab.prevWhole.width, (firstAdjacentSubTab.prevWhole.y + firstAdjacentSubTab.prevWhole.height) - (wholeRect.y + wholeRect.height));
+                    break;
+            }
+
+            foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
+            {
+                thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(firstAdjacentSide);
+                thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
+
+                switch (side)
+                {
+                    case Left:
+                        secondAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width, secondAdjacentSubTab.prevWhole.y, (secondAdjacentSubTab.prevWhole.x + secondAdjacentSubTab.prevWhole.width) - (secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width), secondAdjacentSubTab.prevWhole.height);
+                        break;
+                    case Right:
+                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.y, firstAdjacentSubTab.wholeRect.x - secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.height);
+                        break;
+                    case Upper:
+                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height, secondAdjacentSubTab.prevWhole.width, (secondAdjacentSubTab.prevWhole.y + secondAdjacentSubTab.prevWhole.height) - (firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height));
+                        break;
+                    case Lower:
+                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.y, secondAdjacentSubTab.prevWhole.width, firstAdjacentSubTab.wholeRect.y - secondAdjacentSubTab.prevWhole.y);
+                        break;
+                }
+
+                foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
+                {
+                    switch (side)
+                    {
+                        case Left:
+                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, thirdAdjacentSubTab.prevWhole.y, secondAdjacentSubTab.wholeRect.x - thirdAdjacentSubTab.wholeRect.x, thirdAdjacentSubTab.prevWhole.height);
+                            break;
+                        case Right:
+                            thirdAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width, thirdAdjacentSubTab.prevWhole.y, (thirdAdjacentSubTab.prevWhole.x + thirdAdjacentSubTab.prevWhole.width) - (secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width), thirdAdjacentSubTab.prevWhole.height);
+                            break;
+                        case Upper:
+                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, thirdAdjacentSubTab.prevWhole.y, thirdAdjacentSubTab.prevWhole.width, secondAdjacentSubTab.wholeRect.y - thirdAdjacentSubTab.wholeRect.y);
+                            break;
+                        case Lower:
+                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height, thirdAdjacentSubTab.prevWhole.width, (thirdAdjacentSubTab.prevWhole.y + thirdAdjacentSubTab.prevWhole.height) - (secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height));
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void ResizeSide(int side)
     {
         List<SubTab> firstAdjacentSubTabs = new List<SubTab>();
         List<SubTab> secondAdjacentSubTabs = new List<SubTab>();
         List<SubTab> thirdAdjacentSubTabs = new List<SubTab>();
-        List<SubTab> relevantAdjacentSubTabs;
 
         Vector2 mousePos = Event.current.mousePosition;
 
-        float minX = superTab.bodyRect.x;
-        float maxX = superTab.bodyRect.x + superTab.bodyRect.width - minWidth;
+        int firstAdjacentSide = Left;
+        int secondAdjacentSide = Left;
+
+        float minVal = 0;
+        float maxVal = 0;
+        
         float newX = prevWhole.x;
-        float minY = superTab.bodyRect.y;
-        float maxY = superTab.bodyRect.y + superTab.bodyRect.height - minHeight;
         float newY = prevWhole.y;
-        float minimumWidth = minWidth;
-        float maximumWidth = maxWidth;
         float newWidth = prevWhole.width;
-        float minimumHeight = minHeight;
-        float maximumHeight = maxHeight;
         float newHeight = prevWhole.height;
 
+        switch (side)
+        {
+            case Left:
+                firstAdjacentSide = Left;
+                secondAdjacentSide = Right;
+
+                minVal = superTab.bodyRect.x;
+                maxVal = wholeRect.x + wholeRect.width - minWidth;
+                break;
+            case Right:
+                firstAdjacentSide = Right;
+                secondAdjacentSide = Left;
+
+                minVal = minWidth;
+                maxVal = maxWidth;
+                break;
+            case Upper:
+                firstAdjacentSide = Upper;
+                secondAdjacentSide = Lower;
+
+                minVal = superTab.bodyRect.y;
+                maxVal = wholeRect.y + wholeRect.height - minHeight;
+                break;
+            case Lower:
+                firstAdjacentSide = Lower;
+                secondAdjacentSide = Upper;
+
+                minVal = minHeight;
+                maxVal = maxHeight;
+                break;
+        }
+
+        firstAdjacentSubTabs = GetSideAdjacentSubTabs(firstAdjacentSide);
+
+        foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
+        {
+            secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(secondAdjacentSide);
+            secondAdjacentSubTabs.Remove(this);
+
+            if(side == Left || side == Upper)
+            {
+                minVal = GetResizeMinMaxValue(side, First, firstAdjacentSubTab, minVal);
+            }
+            else // side == Right || side == Lower
+            {
+                maxVal = GetResizeMinMaxValue(side, First, firstAdjacentSubTab, maxVal);
+            }
+
+            foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
+            {
+                thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(firstAdjacentSide);
+                thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
+
+                if (side == Left || side == Upper)
+                {
+                    maxVal = GetResizeMinMaxValue(side, Second, secondAdjacentSubTab, maxVal);
+                }
+                else // side == Right || side == Lower
+                {
+                    minVal = GetResizeMinMaxValue(side, Second, secondAdjacentSubTab, minVal);
+                }
+
+                foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
+                {
+                    if (side == Left || side == Upper)
+                    {
+                        minVal = GetResizeMinMaxValue(side, Third, thirdAdjacentSubTab, minVal);
+                    }
+                    else // side == Right || side == Lower
+                    {
+                        maxVal = GetResizeMinMaxValue(side, Third, thirdAdjacentSubTab, maxVal);
+                    }
+                }
+            }
+        }
+        switch (side)
+        {
+            case Left:
+                if (firstAdjacentSubTabs.Count < 1)
+                {
+                    maxVal = wholeRect.x;
+                }
+                else if (FloatUtil.LT(wholeRect.x + wholeRect.width - minWidth, maxVal))
+                {
+                    maxVal = wholeRect.x + wholeRect.width - minWidth;
+                }
+
+                newX = GetResizeNewValue(side, minVal, maxVal, mousePos);
+                newY = prevWhole.y;
+                newWidth = prevWhole.width + (prevWhole.x - newX);
+                newHeight = prevWhole.height;
+                break;
+            case Right:
+                if (firstAdjacentSubTabs.Count < 1)
+                {
+                    minVal = wholeRect.width;
+                }
+
+                newX = prevWhole.x;
+                newY = prevWhole.y;
+                newWidth = GetResizeNewValue(side, minVal, maxVal, mousePos);
+                newHeight = prevWhole.height;
+                break;
+            case Upper:
+                if (firstAdjacentSubTabs.Count < 1)
+                {
+                    maxVal = wholeRect.y;
+                }
+                else if (FloatUtil.LT(wholeRect.y + wholeRect.height - minHeight, maxVal))
+                {
+                    maxVal = wholeRect.y + wholeRect.height - minHeight;
+                }
+
+                newX = prevWhole.x;
+                newY = GetResizeNewValue(side, minVal, maxVal, mousePos);
+                newWidth = prevWhole.width;
+                newHeight = prevWhole.height + (prevWhole.y - newY);
+                break;
+            case Lower:
+                if (firstAdjacentSubTabs.Count < 1)
+                {
+                    minVal = wholeRect.height;
+                }
+
+                newX = prevWhole.x;
+                newY = prevWhole.y;
+                newWidth = prevWhole.width;
+                newHeight = GetResizeNewValue(side, minVal, maxVal, mousePos);
+                break;
+        }
+
+        SetUpWholeRect(newX, newY, newWidth, newHeight);
+
+        SetResizeAdjacentWholeRects(side, firstAdjacentSide, secondAdjacentSide, firstAdjacentSubTabs, secondAdjacentSubTabs, thirdAdjacentSubTabs);
+
+        superTab.SortSubTabsByDepth(SuperTab.Descending);
+        superTab.FillDeadSpace();
+    }
+    
+    public void Resize()
+    {
         switch(resizingWhat)
         {
             case Left:
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Left);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.GT(firstAdjacentSubTab.wholeRect.x + minWidth, minX))
-                    {
-                        minX = firstAdjacentSubTab.wholeRect.x + minWidth;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.LT(secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width - minWidth, maxX))
-                        {
-                            maxX = secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width - minWidth;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.GT(thirdAdjacentSubTab.wholeRect.x + minWidth, minX))
-                            {
-                                minX = thirdAdjacentSubTab.wholeRect.x + minWidth;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    maxX = wholeRect.x;
-                }
-                else if (FloatUtil.LT(wholeRect.x + wholeRect.width - minWidth, maxX))
-                {
-                    maxX = wholeRect.x + wholeRect.width - minWidth;
-                }
-
-                if (FloatUtil.GTE(mousePos.x, minX) && FloatUtil.LTE(mousePos.x, maxX))
-                {
-                    newX = mousePos.x;
-                }
-                else if (FloatUtil.LT(mousePos.x, minX))
-                {
-                    newX = minX;
-                }
-                else if (FloatUtil.GTE(mousePos.x, maxX))
-                {
-                    newX = maxX;
-                }
-
-                newY = prevWhole.y;
-                newWidth = prevWhole.width + (prevWhole.x - newX);
-                newHeight = prevWhole.height;
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.prevWhole.y, wholeRect.x - firstAdjacentSubTab.wholeRect.x, firstAdjacentSubTab.prevWhole.height);
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width, secondAdjacentSubTab.prevWhole.y, (secondAdjacentSubTab.prevWhole.x + secondAdjacentSubTab.prevWhole.width) - (secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width), secondAdjacentSubTab.prevWhole.height);
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, thirdAdjacentSubTab.prevWhole.y, secondAdjacentSubTab.wholeRect.x - thirdAdjacentSubTab.wholeRect.x, thirdAdjacentSubTab.prevWhole.height);
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
+                ResizeSide(Left);
                 break;
             case Right:
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Right);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.LT(firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width - minimumWidth - wholeRect.x, maximumWidth))
-                    {
-                        maximumWidth = firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width - minimumWidth - wholeRect.x;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.GT(secondAdjacentSubTab.wholeRect.x + minWidth, firstAdjacentSubTab.wholeRect.x + minimumWidth))
-                        {
-                            minimumWidth = secondAdjacentSubTab.wholeRect.x + minWidth - firstAdjacentSubTab.wholeRect.x;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.LT(thirdAdjacentSubTab.wholeRect.x + thirdAdjacentSubTab.wholeRect.width - minimumWidth - secondAdjacentSubTab.wholeRect.x, maximumWidth))
-                            {
-                                maximumWidth = thirdAdjacentSubTab.wholeRect.x + thirdAdjacentSubTab.wholeRect.width - minimumWidth - secondAdjacentSubTab.wholeRect.x;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    minimumWidth = wholeRect.width;
-                }
-
-                if (FloatUtil.GTE(mousePos.x, wholeRect.x + minimumWidth) && FloatUtil.LTE(mousePos.x, wholeRect.x + maximumWidth))
-                {
-                    newWidth = mousePos.x - wholeRect.x;
-                }
-                else if (FloatUtil.LT(mousePos.x, wholeRect.x + minimumWidth))
-                {
-                    newWidth = minimumWidth;
-                }
-                else if (FloatUtil.GTE(mousePos.x, wholeRect.x + maximumWidth))
-                {
-                    newWidth = maximumWidth;
-                }
-
-                newX = prevWhole.x;
-                newY = prevWhole.y;
-                newHeight = prevWhole.height;
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(wholeRect.x + wholeRect.width, firstAdjacentSubTab.prevWhole.y, (firstAdjacentSubTab.prevWhole.x + firstAdjacentSubTab.prevWhole.width) - (wholeRect.x + wholeRect.width), firstAdjacentSubTab.prevWhole.height);
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.y, firstAdjacentSubTab.wholeRect.x - secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.height);
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width, thirdAdjacentSubTab.prevWhole.y, (thirdAdjacentSubTab.prevWhole.x + thirdAdjacentSubTab.prevWhole.width) - (secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width), thirdAdjacentSubTab.prevWhole.height);
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
+                ResizeSide(Right);
                 break;
             case Upper:
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Upper);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.GT(firstAdjacentSubTab.wholeRect.y + minHeight, minY))
-                    {
-                        minY = firstAdjacentSubTab.wholeRect.y + minHeight;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.LT(secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height - minHeight, maxY))
-                        {
-                            maxY = secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height - minHeight;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.GT(thirdAdjacentSubTab.wholeRect.y + minHeight, minY))
-                            {
-                                minY = thirdAdjacentSubTab.wholeRect.y + minHeight;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    maxY = wholeRect.y;
-                }
-                else if (FloatUtil.LT(wholeRect.y + wholeRect.height - minHeight, maxY))
-                {
-                    maxY = wholeRect.y + wholeRect.height - minHeight;
-                }
-
-                if (FloatUtil.GTE(mousePos.y, minY) && FloatUtil.LTE(mousePos.y, maxY))
-                {
-                    newY = mousePos.y;
-                }
-                else if (FloatUtil.LT(mousePos.y, minY))
-                {
-                    newY = minY;
-                }
-                else if (FloatUtil.GTE(mousePos.y, maxY))
-                {
-                    newY = maxY;
-                }
-
-                newX = prevWhole.x;
-                newWidth = prevWhole.width;
-                newHeight = prevWhole.height + (prevWhole.y - newY);
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.prevWhole.y, firstAdjacentSubTab.prevWhole.width, wholeRect.y - firstAdjacentSubTab.wholeRect.y);
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height, secondAdjacentSubTab.prevWhole.width, (secondAdjacentSubTab.prevWhole.y + secondAdjacentSubTab.prevWhole.height) - (firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height));
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, thirdAdjacentSubTab.prevWhole.y, thirdAdjacentSubTab.prevWhole.width, secondAdjacentSubTab.wholeRect.y - thirdAdjacentSubTab.wholeRect.y);
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
+                ResizeSide(Upper);
                 break;
             case Lower:
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Lower);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.LT(firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height - minimumHeight - wholeRect.y, maximumHeight))
-                    {
-                        maximumHeight = firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height - minimumHeight - wholeRect.y;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.GT(secondAdjacentSubTab.wholeRect.y + minHeight, firstAdjacentSubTab.wholeRect.y + minimumHeight))
-                        {
-                            minimumHeight = secondAdjacentSubTab.wholeRect.y + minHeight - firstAdjacentSubTab.wholeRect.y;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.LT(thirdAdjacentSubTab.wholeRect.y + thirdAdjacentSubTab.wholeRect.height - minimumHeight - secondAdjacentSubTab.wholeRect.y, maximumHeight))
-                            {
-                                maximumHeight = thirdAdjacentSubTab.wholeRect.y + thirdAdjacentSubTab.wholeRect.height - minimumHeight - secondAdjacentSubTab.wholeRect.y;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    minimumHeight = wholeRect.height;
-                }
-
-                if (FloatUtil.GTE(mousePos.y, wholeRect.y + minimumHeight) && FloatUtil.LTE(mousePos.y, wholeRect.y + maximumHeight))
-                {
-                    newHeight = mousePos.y - wholeRect.y;
-                }
-                else if (FloatUtil.LT(mousePos.y, wholeRect.y + minimumHeight))
-                {
-                    newHeight = minimumHeight;
-                }
-                else if (FloatUtil.GTE(mousePos.y, wholeRect.y + maximumHeight))
-                {
-                    newHeight = maximumHeight;
-                }
-
-                newX = prevWhole.x;
-                newY = prevWhole.y;
-                newWidth = prevWhole.width;
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, wholeRect.y + wholeRect.height, firstAdjacentSubTab.prevWhole.width, (firstAdjacentSubTab.prevWhole.y + firstAdjacentSubTab.prevWhole.height) - (wholeRect.y + wholeRect.height));
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.y, secondAdjacentSubTab.prevWhole.width, firstAdjacentSubTab.wholeRect.y - secondAdjacentSubTab.prevWhole.y);
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height, thirdAdjacentSubTab.prevWhole.width, (thirdAdjacentSubTab.prevWhole.y + thirdAdjacentSubTab.prevWhole.height) - (secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height));
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
+                ResizeSide(Lower);
                 break;
             case LowerLeft:
-                //Regular Left case, as above
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Left);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.GT(firstAdjacentSubTab.wholeRect.x + minWidth, minX))
-                    {
-                        minX = firstAdjacentSubTab.wholeRect.x + minWidth;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.LT(secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width - minWidth, maxX))
-                        {
-                            maxX = secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width - minWidth;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.GT(thirdAdjacentSubTab.wholeRect.x + minWidth, minX))
-                            {
-                                minX = thirdAdjacentSubTab.wholeRect.x + minWidth;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    maxX = wholeRect.x;
-                }
-                else if (FloatUtil.LT(wholeRect.x + wholeRect.width - minWidth, maxX))
-                {
-                    maxX = wholeRect.x + wholeRect.width - minWidth;
-                }
-
-                if (FloatUtil.GTE(mousePos.x, minX) && FloatUtil.LTE(mousePos.x, maxX))
-                {
-                    newX = mousePos.x;
-                }
-                else if (FloatUtil.LT(mousePos.x, minX))
-                {
-                    newX = minX;
-                }
-                else if (FloatUtil.GTE(mousePos.x, maxX))
-                {
-                    newX = maxX;
-                }
-
-                newY = prevWhole.y;
-                newWidth = prevWhole.width + (prevWhole.x - newX);
-                newHeight = prevWhole.height;
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.prevWhole.y, wholeRect.x - firstAdjacentSubTab.wholeRect.x, firstAdjacentSubTab.prevWhole.height);
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width, secondAdjacentSubTab.prevWhole.y, (secondAdjacentSubTab.prevWhole.x + secondAdjacentSubTab.prevWhole.width) - (secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width), secondAdjacentSubTab.prevWhole.height);
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, thirdAdjacentSubTab.prevWhole.y, secondAdjacentSubTab.wholeRect.x - thirdAdjacentSubTab.wholeRect.x, thirdAdjacentSubTab.prevWhole.height);
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
-
-                //Regular Lower case, as above
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Lower);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.LT(firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height - minimumHeight - wholeRect.y, maximumHeight))
-                    {
-                        maximumHeight = firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height - minimumHeight - wholeRect.y;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.GT(secondAdjacentSubTab.wholeRect.y + minHeight, firstAdjacentSubTab.wholeRect.y + minimumHeight))
-                        {
-                            minimumHeight = secondAdjacentSubTab.wholeRect.y + minHeight - firstAdjacentSubTab.wholeRect.y;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.LT(thirdAdjacentSubTab.wholeRect.y + thirdAdjacentSubTab.wholeRect.height - minimumHeight - secondAdjacentSubTab.wholeRect.y, maximumHeight))
-                            {
-                                maximumHeight = thirdAdjacentSubTab.wholeRect.y + thirdAdjacentSubTab.wholeRect.height - minimumHeight - secondAdjacentSubTab.wholeRect.y;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    minimumHeight = wholeRect.height;
-                }
-
-                if (FloatUtil.GTE(mousePos.y, wholeRect.y + minimumHeight) && FloatUtil.LTE(mousePos.y, wholeRect.y + maximumHeight))
-                {
-                    newHeight = mousePos.y - wholeRect.y;
-                }
-                else if (FloatUtil.LT(mousePos.y, wholeRect.y + minimumHeight))
-                {
-                    newHeight = minimumHeight;
-                }
-                else if (FloatUtil.GTE(mousePos.y, wholeRect.y + maximumHeight))
-                {
-                    newHeight = maximumHeight;
-                }
-
-                newX = prevWhole.x;
-                newY = prevWhole.y;
-                newWidth = prevWhole.width;
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, wholeRect.y + wholeRect.height, firstAdjacentSubTab.prevWhole.width, (firstAdjacentSubTab.prevWhole.y + firstAdjacentSubTab.prevWhole.height) - (wholeRect.y + wholeRect.height));
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.y, secondAdjacentSubTab.prevWhole.width, firstAdjacentSubTab.wholeRect.y - secondAdjacentSubTab.prevWhole.y);
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height, thirdAdjacentSubTab.prevWhole.width, (thirdAdjacentSubTab.prevWhole.y + thirdAdjacentSubTab.prevWhole.height) - (secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height));
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
+                ResizeSide(Left);
+                ResizeSide(Lower);
                 break;
             case UpperLeft:
-                //Regular Left case, as above
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Left);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.GT(firstAdjacentSubTab.wholeRect.x + minWidth, minX))
-                    {
-                        minX = firstAdjacentSubTab.wholeRect.x + minWidth;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.LT(secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width - minWidth, maxX))
-                        {
-                            maxX = secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width - minWidth;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.GT(thirdAdjacentSubTab.wholeRect.x + minWidth, minX))
-                            {
-                                minX = thirdAdjacentSubTab.wholeRect.x + minWidth;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    maxX = wholeRect.x;
-                }
-                else if (FloatUtil.LT(wholeRect.x + wholeRect.width - minWidth, maxX))
-                {
-                    maxX = wholeRect.x + wholeRect.width - minWidth;
-                }
-
-                if (FloatUtil.GTE(mousePos.x, minX) && FloatUtil.LTE(mousePos.x, maxX))
-                {
-                    newX = mousePos.x;
-                }
-                else if (FloatUtil.LT(mousePos.x, minX))
-                {
-                    newX = minX;
-                }
-                else if (FloatUtil.GTE(mousePos.x, maxX))
-                {
-                    newX = maxX;
-                }
-
-                newY = prevWhole.y;
-                newWidth = prevWhole.width + (prevWhole.x - newX);
-                newHeight = prevWhole.height;
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.prevWhole.y, wholeRect.x - firstAdjacentSubTab.wholeRect.x, firstAdjacentSubTab.prevWhole.height);
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width, secondAdjacentSubTab.prevWhole.y, (secondAdjacentSubTab.prevWhole.x + secondAdjacentSubTab.prevWhole.width) - (secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width), secondAdjacentSubTab.prevWhole.height);
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, thirdAdjacentSubTab.prevWhole.y, secondAdjacentSubTab.wholeRect.x - thirdAdjacentSubTab.wholeRect.x, thirdAdjacentSubTab.prevWhole.height);
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
-
-                //Regular Upper case, as above
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Upper);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.GT(firstAdjacentSubTab.wholeRect.y + minHeight, minY))
-                    {
-                        minY = firstAdjacentSubTab.wholeRect.y + minHeight;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.LT(secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height - minHeight, maxY))
-                        {
-                            maxY = secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height - minHeight;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.GT(thirdAdjacentSubTab.wholeRect.y + minHeight, minY))
-                            {
-                                minY = thirdAdjacentSubTab.wholeRect.y + minHeight;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    maxY = wholeRect.y;
-                }
-                else if (FloatUtil.LT(wholeRect.y + wholeRect.height - minHeight, maxY))
-                {
-                    maxY = wholeRect.y + wholeRect.height - minHeight;
-                }
-
-                if (FloatUtil.GTE(mousePos.y, minY) && FloatUtil.LTE(mousePos.y, maxY))
-                {
-                    newY = mousePos.y;
-                }
-                else if (FloatUtil.LT(mousePos.y, minY))
-                {
-                    newY = minY;
-                }
-                else if (FloatUtil.GTE(mousePos.y, maxY))
-                {
-                    newY = maxY;
-                }
-
-                newX = prevWhole.x;
-                newWidth = prevWhole.width;
-                newHeight = prevWhole.height + (prevWhole.y - newY);
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.prevWhole.y, firstAdjacentSubTab.prevWhole.width, wholeRect.y - firstAdjacentSubTab.wholeRect.y);
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height, secondAdjacentSubTab.prevWhole.width, (secondAdjacentSubTab.prevWhole.y + secondAdjacentSubTab.prevWhole.height) - (firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height));
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, thirdAdjacentSubTab.prevWhole.y, thirdAdjacentSubTab.prevWhole.width, secondAdjacentSubTab.wholeRect.y - thirdAdjacentSubTab.wholeRect.y);
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
+                ResizeSide(Left);
+                ResizeSide(Upper);
                 break;
             case UpperRight:
-                //Regular Right case, as above
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Right);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.LT(firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width - minimumWidth - wholeRect.x, maximumWidth))
-                    {
-                        maximumWidth = firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width - minimumWidth - wholeRect.x;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.GT(secondAdjacentSubTab.wholeRect.x + minWidth, firstAdjacentSubTab.wholeRect.x + minimumWidth))
-                        {
-                            minimumWidth = secondAdjacentSubTab.wholeRect.x + minWidth - firstAdjacentSubTab.wholeRect.x;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.LT(thirdAdjacentSubTab.wholeRect.x + thirdAdjacentSubTab.wholeRect.width - minimumWidth - secondAdjacentSubTab.wholeRect.x, maximumWidth))
-                            {
-                                maximumWidth = thirdAdjacentSubTab.wholeRect.x + thirdAdjacentSubTab.wholeRect.width - minimumWidth - secondAdjacentSubTab.wholeRect.x;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    minimumWidth = wholeRect.width;
-                }
-
-                if (FloatUtil.GTE(mousePos.x, wholeRect.x + minimumWidth) && FloatUtil.LTE(mousePos.x, wholeRect.x + maximumWidth))
-                {
-                    newWidth = mousePos.x - wholeRect.x;
-                }
-                else if (FloatUtil.LT(mousePos.x, wholeRect.x + minimumWidth))
-                {
-                    newWidth = minimumWidth;
-                }
-                else if (FloatUtil.GTE(mousePos.x, wholeRect.x + maximumWidth))
-                {
-                    newWidth = maximumWidth;
-                }
-
-                newX = prevWhole.x;
-                newY = prevWhole.y;
-                newHeight = prevWhole.height;
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(wholeRect.x + wholeRect.width, firstAdjacentSubTab.prevWhole.y, (firstAdjacentSubTab.prevWhole.x + firstAdjacentSubTab.prevWhole.width) - (wholeRect.x + wholeRect.width), firstAdjacentSubTab.prevWhole.height);
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.y, firstAdjacentSubTab.wholeRect.x - secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.height);
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width, thirdAdjacentSubTab.prevWhole.y, (thirdAdjacentSubTab.prevWhole.x + thirdAdjacentSubTab.prevWhole.width) - (secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width), thirdAdjacentSubTab.prevWhole.height);
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
-
-                //Regular Upper case, as above
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Upper);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.GT(firstAdjacentSubTab.wholeRect.y + minHeight, minY))
-                    {
-                        minY = firstAdjacentSubTab.wholeRect.y + minHeight;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.LT(secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height - minHeight, maxY))
-                        {
-                            maxY = secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height - minHeight;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.GT(thirdAdjacentSubTab.wholeRect.y + minHeight, minY))
-                            {
-                                minY = thirdAdjacentSubTab.wholeRect.y + minHeight;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    maxY = wholeRect.y;
-                }
-                else if (FloatUtil.LT(wholeRect.y + wholeRect.height - minHeight, maxY))
-                {
-                    maxY = wholeRect.y + wholeRect.height - minHeight;
-                }
-
-                if (FloatUtil.GTE(mousePos.y, minY) && FloatUtil.LTE(mousePos.y, maxY))
-                {
-                    newY = mousePos.y;
-                }
-                else if (FloatUtil.LT(mousePos.y, minY))
-                {
-                    newY = minY;
-                }
-                else if (FloatUtil.GTE(mousePos.y, maxY))
-                {
-                    newY = maxY;
-                }
-
-                newX = prevWhole.x;
-                newWidth = prevWhole.width;
-                newHeight = prevWhole.height + (prevWhole.y - newY);
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.prevWhole.y, firstAdjacentSubTab.prevWhole.width, wholeRect.y - firstAdjacentSubTab.wholeRect.y);
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height, secondAdjacentSubTab.prevWhole.width, (secondAdjacentSubTab.prevWhole.y + secondAdjacentSubTab.prevWhole.height) - (firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height));
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, thirdAdjacentSubTab.prevWhole.y, thirdAdjacentSubTab.prevWhole.width, secondAdjacentSubTab.wholeRect.y - thirdAdjacentSubTab.wholeRect.y);
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
+                ResizeSide(Right);
+                ResizeSide(Upper);
                 break;
             case LowerRight:
-                //Regular Right case, as above
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Right);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.LT(firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width - minimumWidth - wholeRect.x, maximumWidth))
-                    {
-                        maximumWidth = firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width - minimumWidth - wholeRect.x;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.GT(secondAdjacentSubTab.wholeRect.x + minWidth, firstAdjacentSubTab.wholeRect.x + minimumWidth))
-                        {
-                            minimumWidth = secondAdjacentSubTab.wholeRect.x + minWidth - firstAdjacentSubTab.wholeRect.x;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.LT(thirdAdjacentSubTab.wholeRect.x + thirdAdjacentSubTab.wholeRect.width - minimumWidth - secondAdjacentSubTab.wholeRect.x, maximumWidth))
-                            {
-                                maximumWidth = thirdAdjacentSubTab.wholeRect.x + thirdAdjacentSubTab.wholeRect.width - minimumWidth - secondAdjacentSubTab.wholeRect.x;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    minimumWidth = wholeRect.width;
-                }
-
-                if (FloatUtil.GTE(mousePos.x, wholeRect.x + minimumWidth) && FloatUtil.LTE(mousePos.x, wholeRect.x + maximumWidth))
-                {
-                    newWidth = mousePos.x - wholeRect.x;
-                }
-                else if (FloatUtil.LT(mousePos.x, wholeRect.x + minimumWidth))
-                {
-                    newWidth = minimumWidth;
-                }
-                else if (FloatUtil.GTE(mousePos.x, wholeRect.x + maximumWidth))
-                {
-                    newWidth = maximumWidth;
-                }
-
-                newX = prevWhole.x;
-                newY = prevWhole.y;
-                newHeight = prevWhole.height;
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Left);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(wholeRect.x + wholeRect.width, firstAdjacentSubTab.prevWhole.y, (firstAdjacentSubTab.prevWhole.x + firstAdjacentSubTab.prevWhole.width) - (wholeRect.x + wholeRect.width), firstAdjacentSubTab.prevWhole.height);
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Right);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.y, firstAdjacentSubTab.wholeRect.x - secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.height);
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width, thirdAdjacentSubTab.prevWhole.y, (thirdAdjacentSubTab.prevWhole.x + thirdAdjacentSubTab.prevWhole.width) - (secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width), thirdAdjacentSubTab.prevWhole.height);
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
-
-                //Regular Lower case, as above
-                firstAdjacentSubTabs = GetSideAdjacentSubTabs(Lower);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    if (FloatUtil.LT(firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height - minimumHeight - wholeRect.y, maximumHeight))
-                    {
-                        maximumHeight = firstAdjacentSubTab.wholeRect.y + firstAdjacentSubTab.wholeRect.height - minimumHeight - wholeRect.y;
-                    }
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        if (FloatUtil.GT(secondAdjacentSubTab.wholeRect.y + minHeight, firstAdjacentSubTab.wholeRect.y + minimumHeight))
-                        {
-                            minimumHeight = secondAdjacentSubTab.wholeRect.y + minHeight - firstAdjacentSubTab.wholeRect.y;
-                        }
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            if (FloatUtil.LT(thirdAdjacentSubTab.wholeRect.y + thirdAdjacentSubTab.wholeRect.height - minimumHeight - secondAdjacentSubTab.wholeRect.y, maximumHeight))
-                            {
-                                maximumHeight = thirdAdjacentSubTab.wholeRect.y + thirdAdjacentSubTab.wholeRect.height - minimumHeight - secondAdjacentSubTab.wholeRect.y;
-                            }
-                        }
-                    }
-                }
-                if (firstAdjacentSubTabs.Count < 1)
-                {
-                    minimumHeight = wholeRect.height;
-                }
-
-                if (FloatUtil.GTE(mousePos.y, wholeRect.y + minimumHeight) && FloatUtil.LTE(mousePos.y, wholeRect.y + maximumHeight))
-                {
-                    newHeight = mousePos.y - wholeRect.y;
-                }
-                else if (FloatUtil.LT(mousePos.y, wholeRect.y + minimumHeight))
-                {
-                    newHeight = minimumHeight;
-                }
-                else if (FloatUtil.GTE(mousePos.y, wholeRect.y + maximumHeight))
-                {
-                    newHeight = maximumHeight;
-                }
-
-                newX = prevWhole.x;
-                newY = prevWhole.y;
-                newWidth = prevWhole.width;
-
-                SetUpWholeRect(newX, newY, newWidth, newHeight);
-
-                foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
-                {
-                    secondAdjacentSubTabs = firstAdjacentSubTab.GetSideAdjacentSubTabs(Upper);
-                    secondAdjacentSubTabs.Remove(this);
-
-                    firstAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.prevWhole.x, wholeRect.y + wholeRect.height, firstAdjacentSubTab.prevWhole.width, (firstAdjacentSubTab.prevWhole.y + firstAdjacentSubTab.prevWhole.height) - (wholeRect.y + wholeRect.height));
-
-                    foreach (SubTab secondAdjacentSubTab in secondAdjacentSubTabs)
-                    {
-                        thirdAdjacentSubTabs = secondAdjacentSubTab.GetSideAdjacentSubTabs(Lower);
-                        thirdAdjacentSubTabs.Remove(firstAdjacentSubTab);
-
-                        secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.y, secondAdjacentSubTab.prevWhole.width, firstAdjacentSubTab.wholeRect.y - secondAdjacentSubTab.prevWhole.y);
-
-                        foreach (SubTab thirdAdjacentSubTab in thirdAdjacentSubTabs)
-                        {
-                            thirdAdjacentSubTab.SetUpWholeRect(thirdAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height, thirdAdjacentSubTab.prevWhole.width, (thirdAdjacentSubTab.prevWhole.y + thirdAdjacentSubTab.prevWhole.height) - (secondAdjacentSubTab.wholeRect.y + secondAdjacentSubTab.wholeRect.height));
-                        }
-                    }
-                }
-
-                superTab.SortSubTabsByDepth(SuperTab.Descending);
-                superTab.FillDeadSpace();
+                ResizeSide(Right);
+                ResizeSide(Lower);
                 break;
         }
     }
