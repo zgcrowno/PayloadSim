@@ -47,44 +47,32 @@ public class SubTab : Tab {
 	new public void Update () {
         
 	}
-
-    new public void OnGUI()
-    {
-        base.OnGUI();
-    }
-
-    //Method which returns whether or not this SubTab has space for another SubTab on a given side
+    
+    /*
+     * Method which returns whether or not this SubTab has space for another SubTab on a given side
+     * @param side An int representing the side (left/right or top/bottom) on which this SubTab may or may not have space for another SubTab
+     * @return a bool representing whether or not this SubTab has any space on the specified side
+     */
     public bool HasSpace(int side)
     {
         if(side == Lateral)
         {
             float widthAfterPlacement = wholeRect.width / 2;
 
-            if (FloatUtil.LT(widthAfterPlacement, minWidth))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return FloatUtil.GTE(widthAfterPlacement, minWidth);
         }
         else //side == Vertical
         {
             float heightAfterPlacement = wholeRect.height / 2;
 
-            if (FloatUtil.LT(heightAfterPlacement, minHeight))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return FloatUtil.GTE(heightAfterPlacement, minHeight);
         }
     }
-
-    //Method which returns the side of the SubTab's wholeRect on which the mouse cursor currently resides
+    
+    /*
+     * Method which returns the side of the SubTab's wholeRect on which the mouse cursor currently resides
+     * @return an int representing the side of the SubTab's wholeRect on which the mouse cursor currently resides
+     */
     public int SideOfCursor()
     {
         if(quadrants[0].Contains(Event.current.mousePosition))
@@ -104,7 +92,14 @@ public class SubTab : Tab {
             return Lower;
         }
     }
-
+    
+    /*
+     * Sets up all of this SubTab's rects and quadrants based on values passed for the wholeRect datum
+     * @param x The x-coordinate to be applied to this SubTab's wholeRect
+     * @param y The y-coordinate to be applied to this SubTab's wholeRect
+     * @param width The width to be applied to this SubTab's wholeRect
+     * @param height The height to be applied to this SubTab's wholeRect
+     */
     public override void SetUpWholeRect(float x, float y, float width, float height)
     {
         wholeRect.x = x;
@@ -192,15 +187,22 @@ public class SubTab : Tab {
         resizeRects[7].width = ResizeOffset;
         resizeRects[7].height = ResizeOffset;
     }
-
+    
+    /*
+     * Method by which this SubTab's GUI elements are drawn on the screen
+     */
     public override void Draw()
     {
         GUI.depth = depth;
 
         if (!superTab.beingDragged)
         {
+            //Only draw this SubTab's GUI elements if its superTab object is not being dragged, and therefore condensed to only its header
+
             if(!beingDragged)
             {
+                //If this SubTab is being dragged, only its header is visible
+
                 GUI.DrawTexture(bodyRect, Texture2D.blackTexture, ScaleMode.ScaleAndCrop, false, 0);
                 GUI.DrawTexture(bodyRect, Texture2D.whiteTexture, ScaleMode.ScaleAndCrop, false, 0, Color.white, 1, 0);
             }
@@ -211,8 +213,10 @@ public class SubTab : Tab {
             GUI.Label(headerRect, headerText, headerStyle);
         }
     }
-
-    //Method by which a tab is placed in a new location or its previously held one
+    
+    /*
+     * Method by which a tab is placed in a new location or its previously held one
+     */
     public override void Place()
     {
         //This SubTab is onle placeable if it's being moved within its current superTab or it's being added to the PlayerInterface's superTabs list, and that list is not full
@@ -232,9 +236,16 @@ public class SubTab : Tab {
             //If not placeable, the SubTab is simply snapped back to its previous position
             SnapToPreviousPosition();
         }
+
+        //Ensure that in the event this SubTab is removed from its current superTab's subTabs collection, the dead space left by its absence will be filled by one or more other SubTabs
         base.FillDeadSpace();
     }
-
+    
+    /*
+     * Method by which this SubTab is added to the PlayerInterface object's header as a SuperTab
+     * 
+     * @param superTabToBecomeParent A SuperTab object which will be formatted from this SubTab's data
+     */
     public void AddAsSuperTab(SuperTab superTabToBecomeParent)
     {
         superTab.subTabs.Remove(this);
@@ -255,8 +266,12 @@ public class SubTab : Tab {
         pi.OrganizeSuperTabHeaders();
         pi.SetSuperTabToDepth(superTab, 0);
     }
-
-    //Returns whether or not this SubTab has dead/unoccupied/overlapped space adjacent to it (meaning the superTab has dead space which must be filled)
+    
+    /*
+     * Returns whether or not this SubTab has dead/unoccupied/overlapped space adjacent to it (meaning the superTab has dead space which must be filled)
+     * @param side The side of this SubTab on which we're checking for dead/unoccupied/overlapped space
+     * @return A bool representing whether or not any dead/unoccupied/overlapped space was found
+     */
     public bool HasDeadSpaceToSide(int side)
     {
         if(HasSideAdjacentSubTab(side))
@@ -284,14 +299,19 @@ public class SubTab : Tab {
             return false;
         }
     }
-
-    //Returns whether or not this SubTab has dead/unoccupied space adjacent to any of its sides
+    
+    /*
+     * Returns whether or not this SubTab has dead/unoccupied space adjacent to any of its sides
+     * @return A bool representing whether or not any dead/unoccupied/overlapped space was found on any of this SubTab's four sides
+     */
     public bool HasDeadSpaceOnAnySide()
     {
         return HasDeadSpaceToSide(Left) || HasDeadSpaceToSide(Right) || HasDeadSpaceToSide(Upper) || HasDeadSpaceToSide(Lower);
     }
 
-    //Method by which a SubTab alters its own wholeRect to fill up any dead/unoccupied space which is adjacent to it
+    /*
+     * Method by which a SubTab alters its own wholeRect to fill up any dead/unoccupied/overlapped space which is adjacent to it
+     */
     public new void FillDeadSpace()
     {
         if (depth != 0) //Ensure depth is not equal to zero so that SubTab does not try to fill dead space created by modifying itself
@@ -374,8 +394,12 @@ public class SubTab : Tab {
             }
         }
     }
-
-    //Returns whether or not this SubTab has an adjacent one to its passed side
+    
+    /*
+     * Returns whether or not this SubTab has an adjacent one to its passed side
+     * @param side The side on which we're checking for an adjacent SubTab
+     * @return A bool representing whether or not any adjacent SubTab was found on the passed side
+     */
     public bool HasSideAdjacentSubTab(int side)
     {
         foreach(SubTab subTab in superTab.subTabs)
@@ -392,7 +416,11 @@ public class SubTab : Tab {
         return false;
     }
 
-    //Returns whether or not the passed SubTab is adjacent to this one
+    /*
+     * Returns whether or not the passed SubTab is adjacent to this one
+     * @param subTab The SubTab for which we're checking for adjacency
+     * @return A bool representing whether or not the passed SubTab is adjacent to this one
+     */
     public bool SubTabIsAdjacent(SubTab subTab)
     {
         return SubTabIsSideAdjacent(subTab, Left) 
@@ -401,7 +429,12 @@ public class SubTab : Tab {
                || SubTabIsSideAdjacent(subTab, Lower);
     }
 
-    //Returns whether or not the passed SubTab is adjacent to this one on the passed side
+    /*
+     * Returns whether or not the passed SubTab is adjacent to this one on the passed side
+     * @param subTab The SubTab for which we're checking for adjacency
+     * @param side The side of this SubTab on which we're checking for adjacency with subTab
+     * @return A bool representing whether or not the passed SubTab is adjacent to this one on the passed side
+     */
     public bool SubTabIsSideAdjacent(SubTab subTab, int side)
     {
         switch(side)
@@ -427,7 +460,12 @@ public class SubTab : Tab {
         return false;
     }
 
-    //Returns whether or not the passed SubTab's passed side is collinear with the passed side of this SubTab
+    /*
+     * Returns whether or not the passed SubTab's passed side is collinear with the passed side of this SubTab
+     * @param subTab The SubTab for which we're checking for collinearity
+     * @param side The side of both this SubTab and the passed SubTab on which we're checking for collinearity
+     * @return A bool representing whether or not the passed SubTab's passed side is collinear with this SubTab's passed side
+     */
     public bool SubTabIsSideCollinear(SubTab subTab, int side)
     {
         switch(side)
@@ -449,7 +487,12 @@ public class SubTab : Tab {
         return false;
     }
 
-    //Returns whether or not the passed SubTab's side-opposite side is collinear with the passed side of this SubTab
+    /*
+     * Returns whether or not the passed SubTab's side-opposite side is collinear with the passed side of this SubTab
+     * @param subTab The SubTab for which we're checking for collinearity
+     * @param side The side of this SubTab on which we're checking for collinearity with the opposite side of the passed SubTab
+     * @return A bool representing whether or not this SubTab's passed side is collinear with the passed SubTab's opposite side
+     */
     public bool SubTabIsOppositeSideCollinear(SubTab subTab, int side)
     {
         switch(side)
@@ -471,7 +514,11 @@ public class SubTab : Tab {
         return false;
     }
 
-    //Returns the nearest SubTab which is on the passed side of this SubTab (but not necessarily adjacent to it), or NULL, if no SubTab is found which fits the criteria
+    /*
+     * Returns the nearest SubTab which is on the passed side of this SubTab (but not necessarily adjacent to it), or NULL if no SubTab is found which fits the criteria
+     * @param side The side of this SubTab on which we're checking for another nearby SubTab
+     * @return The nearest SubTab which is on the passed side of this SubTab (but not necessarily adjacent to it), or NULL if no SubTab is found which fits the criteria
+     */
     public SubTab GetNearestSubTabToSide(int side)
     {
         SubTab subTabToReturn = null;
@@ -550,8 +597,11 @@ public class SubTab : Tab {
 
         return subTabToReturn;
     }
-
-    //Returns a list containing all of this SubTab's adjacent SubTabs
+    
+    /*
+     * Returns a list containing all of this SubTab's adjacent SubTabs
+     * @return A list containing all of this SubTab's adjacent SubTabs
+     */
     public List<SubTab> GetAdjacentSubTabs()
     {
         List<SubTab> adjacentSubTabs = new List<SubTab>();
@@ -567,7 +617,11 @@ public class SubTab : Tab {
         return adjacentSubTabs;
     }
 
-    //Returns a list containing all of those SubTabs adjacent to this one on a given side
+    /*
+     * Returns a list containing all of those SubTabs adjacent to this one on a given side
+     * @param side An int representing the side of this SubTab on which we're looking for adjacent SubTabs
+     * @return A list containing all of those SubTabs adjacent to this one on the passed side
+     */
     public List<SubTab> GetSideAdjacentSubTabs(int side)
     {
         List<SubTab> sideAdjacentSubTabs = new List<SubTab>();
@@ -583,7 +637,11 @@ public class SubTab : Tab {
         return sideAdjacentSubTabs;
     }
 
-    //Returns a list containing all of those SubTabs whose passed side is collinear with this SubTab's passed side
+    /*
+     * Returns a list containing all of those SubTabs whose passed side is collinear with this SubTab's passed side
+     * @param side An int representing the side of this SubTab on which we're looking for collinear SubTabs
+     * @return A list containing all of those SubTabs whose passed side is collinear with this SubTab's passed side
+     */
     public List<SubTab> GetSideCollinearSubTabs(int side)
     {
         List<SubTab> sideCollinearSubTabs = new List<SubTab>();
@@ -599,7 +657,11 @@ public class SubTab : Tab {
         return sideCollinearSubTabs;
     }
 
-    //Returns a list containing all of those SubTabs whose side-parameter-opposite sides are collinear with this SubTab's passed side
+    /*
+     * Returns a list containing all of those SubTabs whose side-parameter-opposite sides are collinear with this SubTab's passed side
+     * @param side An int representing the side of this SubTab on which we're looking for collinear SubTabs
+     * @return A list containing all of those SubTabs whose side-parameter-opposite side is collinear with this SubTab's passed side
+     */
     public List<SubTab> GetSideOppositeCollinearSubTabs(int side)
     {
         List<SubTab> sideCollinearSubTabs = new List<SubTab>();
@@ -615,6 +677,14 @@ public class SubTab : Tab {
         return sideCollinearSubTabs;
     }
 
+    /*
+     * Returns a float representing the min or max resize value determined by the passed parameters
+     * @param side An int representing the side of this SubTab which is being resized
+     * @param pass An int representing which resize pass we're on (first, second, third), and thus which adjacent SubTabs we're iterating through
+     * @param adjacentSubTab The adjacent SubTab we're currently consulting in our resizing of this one
+     * @param val The min or max resize value that has been determined up to the point this method is called
+     * @return A float representing the min or max resize value determined by the passed parameters
+     */
     public float GetResizeMinMaxValue(int side, int pass, SubTab adjacentSubTab, float val)
     {
         switch(side)
@@ -629,9 +699,9 @@ public class SubTab : Tab {
                         }
                         break;
                     case Second:
-                        if (FloatUtil.GT(adjacentSubTab.wholeRect.x + minWidth, val))
+                        if (FloatUtil.GT(val, adjacentSubTab.wholeRect.x + adjacentSubTab.wholeRect.width - minWidth))
                         {
-                            val = adjacentSubTab.wholeRect.x + minWidth;
+                            val = adjacentSubTab.wholeRect.x + adjacentSubTab.wholeRect.width - minWidth;
                         }
                         break;
                     case Third:
@@ -716,8 +786,19 @@ public class SubTab : Tab {
         return val;
     }
 
+
+    /*
+     * Returns a float representing the new x, y, width or height value to be applied to wholeRect in the Resize() method
+     * @param side An int representing the side of this SubTab which is being resized
+     * @param minVal The minimum value which must be held by the returned float
+     * @param maxVal The maximum value which must be held by the returned float
+     * @param mousePos A Vector2 representing the mouse cursor's position on the screen
+     * @return A float representing the new x, y, width or height value to be applied to wholeRect in the Resize() method
+     */
     public float GetResizeNewValue(int side, float minVal, float maxVal, Vector2 mousePos)
     {
+        List<SubTab> relevantAdjacentSubTabs;
+
         float retVal = 0;
 
         switch (side)
@@ -726,6 +807,32 @@ public class SubTab : Tab {
                 if (FloatUtil.GTE(mousePos.x, minVal) && FloatUtil.LTE(mousePos.x, maxVal))
                 {
                     retVal = mousePos.x;
+
+                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Upper);
+                    foreach (SubTab subTab in relevantAdjacentSubTabs)
+                    {
+                        if (FloatUtil.LT(Mathf.Abs(mousePos.x - subTab.wholeRect.x), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.x;
+                        }
+                        else if (FloatUtil.LT(Mathf.Abs(mousePos.x - (subTab.wholeRect.x + subTab.wholeRect.width)), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.x + subTab.wholeRect.width;
+                        }
+                    }
+
+                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Lower);
+                    foreach (SubTab subTab in relevantAdjacentSubTabs)
+                    {
+                        if (FloatUtil.LT(Mathf.Abs(mousePos.x - subTab.wholeRect.x), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.x;
+                        }
+                        else if (FloatUtil.LT(Mathf.Abs(mousePos.x - (subTab.wholeRect.x + subTab.wholeRect.width)), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.x + subTab.wholeRect.width;
+                        }
+                    }
                 }
                 else if (FloatUtil.LT(mousePos.x, minVal))
                 {
@@ -740,6 +847,32 @@ public class SubTab : Tab {
                 if (FloatUtil.GTE(mousePos.x, wholeRect.x + minVal) && FloatUtil.LTE(mousePos.x, wholeRect.x + maxVal))
                 {
                     retVal = mousePos.x - wholeRect.x;
+
+                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Upper);
+                    foreach (SubTab subTab in relevantAdjacentSubTabs)
+                    {
+                        if (FloatUtil.LT(Mathf.Abs(mousePos.x - subTab.wholeRect.x), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.x - wholeRect.x;
+                        }
+                        else if (FloatUtil.LT(Mathf.Abs(mousePos.x - (subTab.wholeRect.x + subTab.wholeRect.width)), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.x + subTab.wholeRect.width - wholeRect.x;
+                        }
+                    }
+
+                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Lower);
+                    foreach (SubTab subTab in relevantAdjacentSubTabs)
+                    {
+                        if (FloatUtil.LT(Mathf.Abs(mousePos.x - subTab.wholeRect.x), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.x - wholeRect.x;
+                        }
+                        else if (FloatUtil.LT(Mathf.Abs(mousePos.x - (subTab.wholeRect.x + subTab.wholeRect.width)), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.x + subTab.wholeRect.width - wholeRect.x;
+                        }
+                    }
                 }
                 else if (FloatUtil.LT(mousePos.x, wholeRect.x + minVal))
                 {
@@ -754,6 +887,32 @@ public class SubTab : Tab {
                 if (FloatUtil.GTE(mousePos.y, minVal) && FloatUtil.LTE(mousePos.y, maxVal))
                 {
                     retVal = mousePos.y;
+
+                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Left);
+                    foreach (SubTab subTab in relevantAdjacentSubTabs)
+                    {
+                        if (FloatUtil.LT(Mathf.Abs(mousePos.y - subTab.wholeRect.y), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.y;
+                        }
+                        else if (FloatUtil.LT(Mathf.Abs(mousePos.y - (subTab.wholeRect.y + subTab.wholeRect.height)), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.y + subTab.wholeRect.height;
+                        }
+                    }
+
+                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Right);
+                    foreach (SubTab subTab in relevantAdjacentSubTabs)
+                    {
+                        if (FloatUtil.LT(Mathf.Abs(mousePos.y - subTab.wholeRect.y), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.y;
+                        }
+                        else if (FloatUtil.LT(Mathf.Abs(mousePos.y - (subTab.wholeRect.y + subTab.wholeRect.height)), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.y + subTab.wholeRect.height;
+                        }
+                    }
                 }
                 else if (FloatUtil.LT(mousePos.y, minVal))
                 {
@@ -768,6 +927,32 @@ public class SubTab : Tab {
                 if (FloatUtil.GTE(mousePos.y, wholeRect.y + minVal) && FloatUtil.LTE(mousePos.y, wholeRect.y + maxVal))
                 {
                     retVal = mousePos.y - wholeRect.y;
+
+                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Left);
+                    foreach (SubTab subTab in relevantAdjacentSubTabs)
+                    {
+                        if (FloatUtil.LT(Mathf.Abs(mousePos.y - subTab.wholeRect.y), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.y - wholeRect.y;
+                        }
+                        else if (FloatUtil.LT(Mathf.Abs(mousePos.y - (subTab.wholeRect.y + subTab.wholeRect.height)), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.y + subTab.wholeRect.height - wholeRect.y;
+                        }
+                    }
+
+                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Right);
+                    foreach (SubTab subTab in relevantAdjacentSubTabs)
+                    {
+                        if (FloatUtil.LT(Mathf.Abs(mousePos.y - subTab.wholeRect.y), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.y - wholeRect.y;
+                        }
+                        else if (FloatUtil.LT(Mathf.Abs(mousePos.y - (subTab.wholeRect.y + subTab.wholeRect.height)), ResizeOffset))
+                        {
+                            retVal = subTab.wholeRect.y + subTab.wholeRect.height - wholeRect.y;
+                        }
+                    }
                 }
                 else if (FloatUtil.LT(mousePos.y, wholeRect.y + minVal))
                 {
@@ -783,6 +968,17 @@ public class SubTab : Tab {
         return retVal;
     }
 
+    /*
+     * Sets the minimum and maximum values to be held by this SubTab's x, y, width, and/or height properties as it's being resized
+     * @param side An int representing the side of this SubTab which is being resized
+     * @param firstAdjacentSide An int representing the side(s) of this SubTab's first group of adjacent SubTabs which are being resized in response to this SubTab's resizing
+     * @param secondAdjacentSide An int representing the side(s) of this SubTab's second group of adjacent SubTabs which are being resized in response to this SubTab's resizing
+     * @param minVal The minimum value to be modified
+     * @param maxVal The maximum value to be modified
+     * @param firstAdjacentSubTabs The first group of adjacentSubTabs which are being resized in response to this SubTab's resizing
+     * @param secondAdjacentSubTabs The second group of adjacentSubTabs which are being resized in response to this SubTab's resizing
+     * @param thirdAdjacentSubTabs The third group of adjacentSubTabs which are being resized in response to this SubTab's resizing
+     */
     public void SetResizeMinMaxValues(int side, int firstAdjacentSide, int secondAdjacentSide, float minVal, float maxVal, List<SubTab> firstAdjacentSubTabs, List<SubTab> secondAdjacentSubTabs, List<SubTab> thirdAdjacentSubTabs)
     {
         foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
@@ -828,6 +1024,15 @@ public class SubTab : Tab {
         }
     }
 
+    /*
+     * Sets up the wholeRects for all of those adjacent SubTabs which are being resized in response to this one's resizing
+     * @param side An int representing the side of this SubTab which is being resized
+     * @param firstAdjacentSide An int representing the side(s) of this SubTab's first group of adjacent SubTabs which are being resized in response to this SubTab's resizing
+     * @param secondAdjacentSide An int representing the side(s) of this SubTab's second group of adjacent SubTabs which are being resized in response to this SubTab's resizing
+     * @param firstAdjacentSubTabs The first group of adjacentSubTabs which are being resized in response to this SubTab's resizing
+     * @param secondAdjacentSubTabs The second group of adjacentSubTabs which are being resized in response to this SubTab's resizing
+     * @param thirdAdjacentSubTabs The third group of adjacentSubTabs which are being resized in response to this SubTab's resizing
+     */
     public void SetResizeAdjacentWholeRects(int side, int firstAdjacentSide, int secondAdjacentSide, List<SubTab> firstAdjacentSubTabs, List<SubTab> secondAdjacentSubTabs, List<SubTab> thirdAdjacentSubTabs)
     {
         foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
@@ -859,7 +1064,7 @@ public class SubTab : Tab {
                 switch (side)
                 {
                     case Left:
-                        secondAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width, secondAdjacentSubTab.prevWhole.y, (secondAdjacentSubTab.prevWhole.x + secondAdjacentSubTab.prevWhole.width) - (secondAdjacentSubTab.wholeRect.x + secondAdjacentSubTab.wholeRect.width), secondAdjacentSubTab.prevWhole.height);
+                        secondAdjacentSubTab.SetUpWholeRect(firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width, secondAdjacentSubTab.prevWhole.y, (secondAdjacentSubTab.prevWhole.x + secondAdjacentSubTab.prevWhole.width) - (firstAdjacentSubTab.wholeRect.x + firstAdjacentSubTab.wholeRect.width), secondAdjacentSubTab.prevWhole.height);
                         break;
                     case Right:
                         secondAdjacentSubTab.SetUpWholeRect(secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.y, firstAdjacentSubTab.wholeRect.x - secondAdjacentSubTab.prevWhole.x, secondAdjacentSubTab.prevWhole.height);
@@ -894,6 +1099,10 @@ public class SubTab : Tab {
         }
     }
 
+    /*
+     * Resizes one particular side of this SubTab
+     * @param side An int representing the side of this SubTab which is being resized
+     */
     public void ResizeSide(int side)
     {
         List<SubTab> firstAdjacentSubTabs = new List<SubTab>();
@@ -1047,11 +1256,11 @@ public class SubTab : Tab {
         SetUpWholeRect(newX, newY, newWidth, newHeight);
 
         SetResizeAdjacentWholeRects(side, firstAdjacentSide, secondAdjacentSide, firstAdjacentSubTabs, secondAdjacentSubTabs, thirdAdjacentSubTabs);
-
-        superTab.SortSubTabsByDepth(SuperTab.Descending);
-        superTab.FillDeadSpace();
     }
-    
+
+    /*
+     * Resizes various sides of this SubTab based on the value of its resizingWhat property
+     */
     public void Resize()
     {
         switch(resizingWhat)
@@ -1087,6 +1296,9 @@ public class SubTab : Tab {
         }
     }
 
+    /*
+     * Executes those behaviors associated with a MouseDown event
+     */
     public override void MouseDown()
     {
         if(Event.current.type == EventType.MouseDown)
@@ -1113,6 +1325,9 @@ public class SubTab : Tab {
         }
     }
 
+    /*
+     * Executes those behaviors associated with a MouseDrag event
+     */
     public override void MouseDrag()
     {
         if(Event.current.type == EventType.MouseDrag)
@@ -1143,16 +1358,21 @@ public class SubTab : Tab {
         }
     }
 
+    /*
+     * Executes those behaviors associated with a MouseUp event
+     */
     public override void MouseUp()
     {
         if(Event.current.type == EventType.MouseUp)
         {
-            if(beingDragged || resizingWhat != None)
+            if(beingDragged)
             {
                 beingDragged = false;
-                resizingWhat = None;
-
                 Place();
+            }
+            else if(resizingWhat != None)
+            {
+                resizingWhat = None;
             }
         }
     }

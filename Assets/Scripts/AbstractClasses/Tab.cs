@@ -37,11 +37,17 @@ public abstract class Tab : MonoBehaviour {
         MouseInput();
     }
 
+    /*
+     * Method by which a Tab's wholeRect is assigned those values held by its prevWhole datum
+     */
     public void SnapToPreviousPosition()
     {
         SetUpWholeRect(prevWhole.x, prevWhole.y, prevWhole.width, prevWhole.height);
     }
 
+    /*
+     * Method by which mouse input is read, and associated behaviors executed accordingly
+     */
     public void MouseInput()
     {
         MouseDown();
@@ -49,6 +55,9 @@ public abstract class Tab : MonoBehaviour {
         MouseUp();
     }
 
+    /*
+     * Method by which all of pi.superTabs is iterated through in order for every superTab to fill any dead space within its body
+     */
     public void FillDeadSpace()
     {
         foreach (SuperTab superTab in pi.superTabs)
@@ -56,8 +65,7 @@ public abstract class Tab : MonoBehaviour {
             superTab.FillDeadSpace();
         }
     }
-
-    //Method which sets up the wholeRect's values, and afterwards, the values of the header, body and prevWhole rects which are dependent on them (and the quadrants and cursorChangeRects for SubTabs)
+    
     public abstract void SetUpWholeRect(float x, float y, float width, float height);
 
     public abstract void Draw();

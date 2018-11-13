@@ -20,8 +20,10 @@ public class SuperTab : Tab {
 	new public void Update () {
 		
 	}
-
-    //Method by which a tab is placed in a new location or its previously held one
+    
+    /*
+     * Method by which a tab is placed in a new location or its previously held one
+     */
     public override void Place()
     {
         //This SuperTab is onle placeable if it isn't the only SuperTab currently in the PlayerInterface
@@ -125,6 +127,10 @@ public class SuperTab : Tab {
         }
     }
 
+    /*
+     * Method by which this SuperTab is added to another SuperTab object's body as a SubTab
+     * @param superTabToBecomeParent A SuperTab object which will become the parent of the SubTab formulated from this SuperTab
+     */
     public void AddAsSubTab(SuperTab superTabToBecomeParent)
     {
         subTabs[0].superTab = superTabToBecomeParent;
@@ -135,6 +141,9 @@ public class SuperTab : Tab {
         Destroy(gameObject);
     }
 
+    /*
+     * Method by which this SuperTab's header's coordinates are modified based upon this SuperTab's placement within pi.superTabs
+     */
     public void SnapHeaderToIndexPosition()
     {
         //This SuperTab is simply being moved rather than its contents being nested within another
@@ -142,6 +151,13 @@ public class SuperTab : Tab {
         headerRect.y = wholeRect.y;
     }
 
+    /*
+     * Sets up all of this SuperTab's rects based on values passed for the wholeRect datum
+     * @param x The x-coordinate to be applied to this SuperTab's wholeRect
+     * @param y The y-coordinate to be applied to this SuperTab's wholeRect
+     * @param width The width to be applied to this SuperTab's wholeRect
+     * @param height The height to be applied to this SuperTab's wholeRect
+     */
     public override void SetUpWholeRect(float x, float y, float width, float height)
     {
         wholeRect.x = x;
@@ -165,6 +181,9 @@ public class SuperTab : Tab {
         bodyRect.height = wholeRect.height - headerRect.height;
     }
 
+    /*
+     * Method by which this SuperTab's GUI elements are drawn on the screen
+     */
     public override void Draw()
     {
         //Set the depth of this Tab in order to achieve the correct drawing order
@@ -192,9 +211,12 @@ public class SuperTab : Tab {
 
         GUI.Label(headerRect, headerText, headerStyle);
     }
-
-    //Method by which a SubTab's depth is set to anywhere from 0-7, these ints corresponding to the depth of the passed SubTab
-    //relative to all others, and all SubTabs possessing a depth >= the passed value are incremented incidentally
+    
+    /*
+     * Method by which a SubTab's depth is set to anywhere from 0-7, these ints corresponding to the depth of the passed SubTab relative to all others, and all SubTabs possessing a depth >= the passed value are incremented incidentally
+     * @param subTab The SubTab whose depth we're setting
+     * @param depth The depth to which we're setting the passed SubTab
+     */
     public void SetSubTabToDepth(SubTab subTab, int depth)
     {
         SubTab SubTabCurrentlyAtPassedDepth = GetSubTabByDepth(depth);
@@ -219,9 +241,12 @@ public class SuperTab : Tab {
             }
         }
     }
-
-    //Returns the SubTab whose depth is anywhere from 0-7, these ints corresponding to the depth of the passed SubTab
-    //relative to all others.
+    
+    /*
+     * Returns the SubTab whose depth is anywhere from 0-7, these ints corresponding to the depth of the passed SubTab relative to all others
+     * @param depth The depth by which we're searching for a SubTab
+     * @return The SubTab whose depth matches the passed depth
+     */
     public SubTab GetSubTabByDepth(int depth)
     {
         SubTab subTabToReturn = null;
@@ -238,7 +263,11 @@ public class SuperTab : Tab {
         return subTabToReturn;
     }
 
-    //Returns a list containing all of those SuperTabs which have a depth less than the SuperTab passed as a parameter
+    /*
+     * Returns a list containing all of those SubTabs which have a depth less than the SubTab passed as a parameter
+     * @param subTab The SubTab below whose depth we're grabbing all of the other SubTabs
+     * @return A list of SubTabs whose depths are less than the passed SubTab
+     */
     public List<SubTab> GetSubTabsBelow(SubTab subTab)
     {
         List<SubTab> subTabsBelow = new List<SubTab>();
@@ -252,7 +281,10 @@ public class SuperTab : Tab {
         return subTabsBelow;
     }
 
-    //Returns whether or not this SuperTab has any space within its bodyRect not taken up by a SubTab
+    /*
+     * Returns whether or not this SuperTab has any space within its bodyRect not taken up by a SubTab
+     * @return A bool representing whether or not this SuperTab has any space within its bodyRect not taken up by a SubTab
+     */
     public bool HasDeadSpace()
     {
         foreach(SubTab subTab in subTabs)
@@ -266,6 +298,9 @@ public class SuperTab : Tab {
         return false;
     }
 
+    /*
+     * Executes those behaviors associated with a MouseDown event
+     */
     public override void MouseDown()
     {
         if (Event.current.type == EventType.MouseDown)
@@ -278,6 +313,9 @@ public class SuperTab : Tab {
         }
     }
 
+    /*
+     * Executes those behaviors associated with a MouseDrag event
+     */
     public override void MouseDrag()
     {
         if (Event.current.type == EventType.MouseDrag)
@@ -300,6 +338,9 @@ public class SuperTab : Tab {
         }
     }
 
+    /*
+     * Executes those behaviors associated with a MouseUp event
+     */
     public override void MouseUp()
     {
         if (Event.current.type == EventType.MouseUp)
@@ -313,6 +354,9 @@ public class SuperTab : Tab {
         }
     }
 
+    /*
+     * Method by which a SuperTab alters its own bodyRect to fill up any dead/unoccupied/overlapped space which is adjacent to it
+     */
     public new void FillDeadSpace()
     {
         foreach(SubTab subTab in subTabs)
@@ -321,6 +365,10 @@ public class SuperTab : Tab {
         }
     }
 
+    /*
+     * Method by which a SuperTab sorts its subTabs list by depth, either ascending or descending
+     * @param ascOrDesc An int representing whether this SuperTab's subTabs list is to be sorted in ascending or descending order
+     */
     public void SortSubTabsByDepth(int ascOrDesc)
     {
         SubTab temp;

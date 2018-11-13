@@ -56,8 +56,10 @@ public class PlayerInterface : MonoBehaviour {
     {
         SetAppropriateCursor();
     }
-
-    //Method by which SuperTab headers are organized so as to be always next to one another, thus disallowing dead space amongst SuperTab headers
+    
+    /*
+     * Method by which SuperTab headers are organized so as to be always next to one another, thus disallowing dead space amongst SuperTab headers
+     */
     public void OrganizeSuperTabHeaders()
     {
         foreach (SuperTab superTab in superTabs)
@@ -66,8 +68,11 @@ public class PlayerInterface : MonoBehaviour {
         }
     }
 
-    //Method by which a SuperTab's depth is set to anywhere from 0-7, these ints corresponding to the depth of the passed SuperTab
-    //relative to all others, and all SuperTabs possessing a depth >= the passed value are incremented incidentally
+    /*
+     * Method by which a SuperTab's depth is set to anywhere from 0-7, these ints corresponding to the depth of the passed SuperTab relative to all others, and all SuperTabs possessing a depth >= the passed value are incremented incidentally
+     * @param superTab The SuperTab whose depth we're setting
+     * @param depth The depth to which we're setting the passed SuperTab
+     */
     public void SetSuperTabToDepth(SuperTab superTab, int depth)
     {
         SuperTab SuperTabCurrentlyAtPassedDepth = GetSuperTabByDepth(depth);
@@ -110,14 +115,21 @@ public class PlayerInterface : MonoBehaviour {
         }
     }
 
-    //Returns the index of the passed SuperTab
+    /*
+     * Returns the index of the passed SuperTab in superTabs
+     * @param superTab The SuperTab whose index we're returning
+     * @return The index of the passed SuperTab in superTabs
+     */
     public int GetSuperTabIndex(SuperTab superTab)
     {
         return superTabs.IndexOf(superTab);
     }
-
-    //Returns the SuperTab whose depth is anywhere from 0-7, these ints corresponding to the depth of the passed SuperTab
-    //relative to all others.
+    
+    /*
+     * Returns the SuperTab whose depth is anywhere from 0-7, these ints corresponding to the depth of the passed SuperTab relative to all others
+     * @param depth The depth by which we're grabbing the SuperTab
+     * @return The SuperTab whose depth corresponds to the passed depth
+     */
     public SuperTab GetSuperTabByDepth(int depth)
     {
         SuperTab superTabToReturn = null;
@@ -134,7 +146,11 @@ public class PlayerInterface : MonoBehaviour {
         return superTabToReturn;
     }
 
-    //Returns a list containing all of those SuperTabs which have a depth less than the SuperTab passed as a parameter
+    /*
+    * Returns a list containing all of those SuperTabs which have a depth less than the SuperTab passed as a parameter
+    * @param superTab The SuperTab below whose depth we're grabbing all of the other SuperTabs
+    * @return A list of SuperTabs whose depths are less than the passed SuperTab
+    */
     public List<SuperTab> GetSuperTabsBelow(SuperTab superTab)
     {
         List<SuperTab> superTabsBelow = new List<SuperTab>();
@@ -148,6 +164,9 @@ public class PlayerInterface : MonoBehaviour {
         return superTabsBelow;
     }
 
+    /*
+    * Ensures that the mouse cursor is set to the Texture2D object appropriate for the occasion
+    */
     public void SetAppropriateCursor()
     {
         SuperTab currentSuperTab = GetSuperTabByDepth(0);
@@ -159,28 +178,36 @@ public class PlayerInterface : MonoBehaviour {
             if(!subTab.headerRect.Contains(Event.current.mousePosition))
             {
                 if (subTab.resizeRects[0].Contains(Event.current.mousePosition)
-               || subTab.resizeRects[1].Contains(Event.current.mousePosition))
+                    || subTab.resizeRects[1].Contains(Event.current.mousePosition)
+                    || subTab.resizingWhat == SubTab.Left
+                    || subTab.resizingWhat == SubTab.Right)
                 {
                     //Left or right
                     cursorToUse = resizeHorizontalCursor;
                     hotSpot = new Vector2(resizeHorizontalCursor.width / 2, 5);
                 }
                 else if (subTab.resizeRects[2].Contains(Event.current.mousePosition)
-                        || subTab.resizeRects[3].Contains(Event.current.mousePosition))
+                         || subTab.resizeRects[3].Contains(Event.current.mousePosition)
+                         || subTab.resizingWhat == SubTab.Upper
+                         || subTab.resizingWhat == SubTab.Lower)
                 {
                     //Top or bottom
                     cursorToUse = resizeVerticalCursor;
                     hotSpot = new Vector2(5, resizeVerticalCursor.height / 2);
                 }
                 else if (subTab.resizeRects[4].Contains(Event.current.mousePosition)
-                        || subTab.resizeRects[6].Contains(Event.current.mousePosition))
+                         || subTab.resizeRects[6].Contains(Event.current.mousePosition)
+                         || subTab.resizingWhat == SubTab.LowerLeft
+                         || subTab.resizingWhat == SubTab.UpperRight)
                 {
                     //Bottom-left or top-right
                     cursorToUse = resizeUpRightCursor;
                     hotSpot = new Vector2(11.5f, 11.5f);
                 }
                 else if (subTab.resizeRects[5].Contains(Event.current.mousePosition)
-                        || subTab.resizeRects[7].Contains(Event.current.mousePosition))
+                         || subTab.resizeRects[7].Contains(Event.current.mousePosition)
+                         || subTab.resizingWhat == SubTab.UpperLeft
+                         || subTab.resizingWhat == SubTab.LowerRight)
                 {
                     //Top-left or bottom-right
                     cursorToUse = resizeUpLeftCursor;
