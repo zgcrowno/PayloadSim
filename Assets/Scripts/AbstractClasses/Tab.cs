@@ -15,17 +15,22 @@ public abstract class Tab : MonoBehaviour {
     public int depth; //Integer representing the order in which different Tabs will be drawn, thus allowing for overlay
     public string headerText; //The text to be displayed in this Tab's header
 
-    // Use this for initialization
-    public void Start () {
+    public void Awake()
+    {
         pi = GameObject.Find("/World").GetComponent<PlayerInterface>();
 
-        headerStyle = new GUIStyle();
-        headerStyle.fontSize = 25;
-        headerStyle.font = (Font)Resources.Load("Fonts/FontCommodoreAngled");
-        headerStyle.alignment = TextAnchor.MiddleLeft;
+        headerStyle = new GUIStyle
+        {
+            fontSize = 25,
+            font = (Font)Resources.Load("Fonts/FontCommodoreAngled"),
+            alignment = TextAnchor.MiddleLeft
+        };
+    }
+    
+    public void Start () {
+        
     }
 	
-	// Update is called once per frame
 	public void Update () {
 		
 	}

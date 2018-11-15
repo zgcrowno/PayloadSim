@@ -11,29 +11,53 @@ public class PlayerInterface : MonoBehaviour {
     public Texture2D resizeVerticalCursor;
     public Texture2D resizeUpLeftCursor;
     public Texture2D resizeUpRightCursor;
-
-    // Use this for initialization
+    
     void Start () {
         //Initialize the Tab objects for testing purposes
         int depth = 0;
-        for (int i = 0; i < SuperTab.MaxSubTabs; i++)
+        for(int i = 0; i < MaxSuperTabs; i++)
         {
-            SuperTab superTab = new GameObject("SuperTab" + i).AddComponent<SuperTab>();
-            superTab.subTabs = new List<SubTab>();
-            superTab.headerText = "Some Text" + i;
+            SuperTab superTab = new GameObject().AddComponent<SuperTab>();
             superTabs.Add(superTab);
-            
-            SubTab subTab = new GameObject("SubTab" + i).AddComponent<SubTab>();
-            subTab.superTab = superTab;
-            subTab.headerText = "More Text" + i;
-            subTab.quadrants = new Rect[4];
-            subTab.resizeRects = new Rect[8];
-            for (int j = 0; j < 4; j++)
+            SubTab subTab = new SubTab();
+            switch(i)
             {
-                subTab.quadrants[j] = new Rect();
+                case 0:
+                    subTab = new GameObject("InputSubTab").AddComponent<InputTab>();
+                    superTab.gameObject.name = "InputSuperTab";
+                    break;
+                case 1:
+                    subTab = new GameObject("OutputSubTab").AddComponent<OutputTab>();
+                    superTab.gameObject.name = "OutputSuperTab";
+                    break;
+                case 2:
+                    subTab = new GameObject("FocusSubTab").AddComponent<FocusTab>();
+                    superTab.gameObject.name = "FocusSuperTab";
+                    break;
+                case 3:
+                    subTab = new GameObject("LevelsSubTab").AddComponent<LevelsTab>();
+                    superTab.gameObject.name = "LevelsSuperTab";
+                    break;
+                case 4:
+                    subTab = new GameObject("ScriptsSubTab").AddComponent<ScriptsTab>();
+                    superTab.gameObject.name = "ScriptsSuperTab";
+                    break;
+                case 5:
+                    subTab = new GameObject("ProgramSubTab").AddComponent<ProgramTab>();
+                    superTab.gameObject.name = "ProgramSuperTab";
+                    break;
+                case 6:
+                    subTab = new GameObject("NotesSubTab").AddComponent<NotesTab>();
+                    superTab.gameObject.name = "NotesSuperTab";
+                    break;
+                case 7:
+                    subTab = new GameObject("HelpSubTab").AddComponent<HelpTab>();
+                    superTab.gameObject.name = "HelpSuperTab";
+                    break;
             }
+            subTab.superTab = superTab;
+            superTab.headerText = subTab.headerText;
             superTab.subTabs.Add(subTab);
-
             subTab.depth = depth;
             depth++;
             superTab.depth = depth;
@@ -47,7 +71,6 @@ public class PlayerInterface : MonoBehaviour {
         resizeUpRightCursor = (Texture2D)Resources.Load("Textures/resizeUpRight");
     }
 	
-	// Update is called once per frame
 	void Update () {
 		
 	}
