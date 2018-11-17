@@ -9,7 +9,6 @@ public abstract class Tab : MonoBehaviour {
     public Rect prevWhole; //The Rect containing the coordinates and dimensions previously held by this Tab
     public Rect headerRect; //The Rect making up this Tab's header
     public Rect bodyRect; //The Rect making up this Tab's body
-    public GUIStyle headerStyle; //The GUIStyle object by which the appearance of the headerText will be determined
 
     public bool beingDragged; //The bool representing whether or not this Tab is currently being dragged with the mouse by the player
     public int depth; //Integer representing the order in which different Tabs will be drawn, thus allowing for overlay
@@ -18,13 +17,6 @@ public abstract class Tab : MonoBehaviour {
     public void Awake()
     {
         pi = GameObject.Find("/World").GetComponent<PlayerInterface>();
-
-        headerStyle = new GUIStyle
-        {
-            fontSize = 25,
-            font = (Font)Resources.Load("Fonts/FontCommodoreAngled"),
-            alignment = TextAnchor.MiddleLeft
-        };
     }
     
     public void Start () {

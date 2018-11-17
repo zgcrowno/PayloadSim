@@ -204,16 +204,16 @@ public class SuperTab : Tab {
         if (this == pi.GetSuperTabByDepth(0))
         {
             GUI.DrawTexture(headerRect, Texture2D.whiteTexture, ScaleMode.ScaleAndCrop, false);
-            headerStyle.normal.textColor = Color.black;
+            pi.headerFontStyle.normal.textColor = Color.black;
         }
         else
         {
             GUI.DrawTexture(headerRect, Texture2D.blackTexture, ScaleMode.ScaleAndCrop, false);
-            headerStyle.normal.textColor = Color.white;
+            pi.headerFontStyle.normal.textColor = Color.white;
         }
         GUI.DrawTexture(headerRect, Texture2D.whiteTexture, ScaleMode.ScaleAndCrop, false, 0, Color.white, 1, 0);
 
-        GUI.Label(headerRect, headerText, headerStyle);
+        GUI.Label(headerRect, headerText, pi.headerFontStyle);
     }
     
     /*

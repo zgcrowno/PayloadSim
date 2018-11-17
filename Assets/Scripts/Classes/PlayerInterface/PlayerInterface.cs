@@ -7,12 +7,52 @@ public class PlayerInterface : MonoBehaviour {
     public const int MaxSuperTabs = 8;
 
     public List<SuperTab> superTabs = new List<SuperTab>();
+
+    public Font font;
+    public GUIStyle regularFontStyle; //The style to be used for text within SubTabs
+    public GUIStyle headerFontStyle; //The style to be used for text within headerRects
     public Texture2D resizeHorizontalCursor;
     public Texture2D resizeVerticalCursor;
     public Texture2D resizeUpLeftCursor;
     public Texture2D resizeUpRightCursor;
+
+    public float regularCharWidth; //The width of a character of regularFontStyle
+    public float regularCharHeight; //The height of a character of regularFontStyle
+    public float headerCharWidth; //The width of a character of headerFontStyle
+    public float headerCharHeight; //The height of a character of headerFontStyle
     
     void Start () {
+        //Load the font
+        font = (Font)Resources.Load("Fonts/FontCommodoreAngled");
+
+        //Set up the font styles, character widths and character heights
+        regularFontStyle = new GUIStyle
+        {
+            fontSize = 22,
+            font = font,
+            alignment = TextAnchor.LowerLeft,
+            wordWrap = true,
+            clipping = TextClipping.Clip,
+            normal = new GUIStyleState
+            {
+                textColor = Color.white
+            }
+        };
+        headerFontStyle = new GUIStyle
+        {
+            fontSize = 25,
+            font = font,
+            alignment = TextAnchor.MiddleLeft,
+            normal = new GUIStyleState
+            {
+                textColor = Color.white
+            }
+        };
+        regularCharWidth = regularFontStyle.CalcSize(new GUIContent(" ")).x;
+        regularCharHeight = regularFontStyle.CalcHeight(new GUIContent(" "), regularCharWidth);
+        headerCharWidth = headerFontStyle.CalcSize(new GUIContent(" ")).x;
+        headerCharHeight = headerFontStyle.CalcHeight(new GUIContent(" "), headerCharWidth);
+
         //Initialize the Tab objects for testing purposes
         int depth = 0;
         for(int i = 0; i < MaxSuperTabs; i++)

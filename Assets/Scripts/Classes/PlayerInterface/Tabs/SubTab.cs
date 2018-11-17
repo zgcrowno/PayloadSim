@@ -216,8 +216,8 @@ public class SubTab : Tab {
             GUI.DrawTexture(headerRect, Texture2D.blackTexture, ScaleMode.ScaleAndCrop, false, 0);
             GUI.DrawTexture(headerRect, Texture2D.whiteTexture, ScaleMode.ScaleAndCrop, false, 0, Color.white, 1, 0);
 
-            headerStyle.normal.textColor = Color.white;
-            GUI.Label(headerRect, headerText, headerStyle);
+            pi.headerFontStyle.normal.textColor = Color.white;
+            GUI.Label(headerRect, headerText, pi.headerFontStyle);
         }
     }
     
@@ -1341,7 +1341,7 @@ public class SubTab : Tab {
         {
             if(this == superTab.GetSubTabByDepth(0))
             {
-                if(beingDragged)
+                if (beingDragged)
                 {
                     headerRect.x = Event.current.mousePosition.x - (headerRect.width / 2);
                     headerRect.y = Event.current.mousePosition.y - (headerRect.height / 2);
