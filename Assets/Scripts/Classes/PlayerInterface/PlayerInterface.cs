@@ -8,6 +8,7 @@ public class PlayerInterface : MonoBehaviour {
 
     public List<SuperTab> superTabs = new List<SuperTab>();
 
+    public GameObject canvas;
     public Font font;
     public GUIStyle regularFontStyle; //The style to be used for text within SubTabs
     public GUIStyle headerFontStyle; //The style to be used for text within headerRects
@@ -22,6 +23,9 @@ public class PlayerInterface : MonoBehaviour {
     public float headerCharHeight; //The height of a character of headerFontStyle
     
     void Start () {
+        //Load the canvas
+        canvas = GameObject.Find("/World/Canvas");
+
         //Load the font
         font = (Font)Resources.Load("Fonts/FontCommodoreAngled");
 

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public abstract class Tab : MonoBehaviour {
 
+    public GameObject header;
+    public GameObject body;
+
     public PlayerInterface pi; //The overarching PlayerInterface of which all Tabs are children
     public Rect wholeRect; //The Rect making up the entirety of this Tab
     public Rect prevWhole; //The Rect containing the coordinates and dimensions previously held by this Tab
@@ -17,6 +20,10 @@ public abstract class Tab : MonoBehaviour {
     public void Awake()
     {
         pi = GameObject.Find("/World").GetComponent<PlayerInterface>();
+        header = Instantiate(Resources.Load("Prefabs/HeaderPrefab") as GameObject);
+        body = Instantiate(Resources.Load("Prefabs/BodyPrefab") as GameObject);
+        header.transform.SetParent(pi.canvas.transform);
+        body.transform.SetParent(pi.canvas.transform);
     }
     
     public void Start () {

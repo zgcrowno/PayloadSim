@@ -183,6 +183,15 @@ public class SuperTab : Tab {
         bodyRect.y = wholeRect.y + headerRect.height;
         bodyRect.width = wholeRect.width;
         bodyRect.height = wholeRect.height - headerRect.height;
+
+        //SOMETHING ALONG THESE LINES IS WHAT NEEDS TO BE DONE, BUT I'LL HAVE TO CHANGE THE WAY I'VE BEEN DOING Y-COORDINATE ARITHMETIC
+        //BECAUSE GUI (0, 0) IS IN THE UPPER LEFT, WHEREAS UI (0, 0) IS IN THE LOWER LEFT...I THINK...
+        RectTransform headerRT = header.GetComponent<RectTransform>();
+        RectTransform bodyRT = body.GetComponent<RectTransform>();
+        headerRT.anchoredPosition = new Vector2(wholeRect.x + (pi.GetSuperTabIndex(this) * headerRect.width), wholeRect.y);
+        bodyRT.anchoredPosition = new Vector2(wholeRect.x, wholeRect.y - headerRect.height);
+        headerRT.sizeDelta = new Vector2(Screen.width / PlayerInterface.MaxSuperTabs, Screen.height / 20);
+        bodyRT.sizeDelta = new Vector2(wholeRect.width, wholeRect.height - headerRect.height);
     }
 
     /*
