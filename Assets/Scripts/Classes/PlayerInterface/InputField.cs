@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class InputField : MonoBehaviour {
+public class InputField : MonoBehaviour
+{
 
     public const float CaretVisibilityLimit = 30; //The caretVisibilityTimer value to reach before negating caretIsVisible
     public const string FieldName = "input";
@@ -26,7 +28,7 @@ public class InputField : MonoBehaviour {
     void Awake()
     {
         pi = GameObject.Find("/World").GetComponent<PlayerInterface>();
-        
+
         caretOverlayStyle = new GUIStyle
         {
             fontSize = 22,
@@ -42,28 +44,25 @@ public class InputField : MonoBehaviour {
 
         caretTexture = Texture2D.whiteTexture;
     }
-    
-    void Start () {
-		
-	}
-	
-	void FixedUpdate () {
+
+    void Start()
+    {
+
+    }
+
+    void FixedUpdate()
+    {
         caretVisibilityTimer++;
 
-        if(caretVisibilityTimer >= CaretVisibilityLimit)
+        if (caretVisibilityTimer >= CaretVisibilityLimit)
         {
             caretVisibilityTimer = 0;
             caretIsVisible = !caretIsVisible;
         }
-	}
+    }
 
     public void Draw()
     {
-        //Set the control name of input's TextArea so we can access it by name farther down
-        GUI.SetNextControlName(FieldName);
-
-        input = GUI.TextArea(fieldRect, input, pi.regularFontStyle);
-
         //Instantiate this TextEditor object so we can access required caret information
         TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
 
@@ -77,13 +76,24 @@ public class InputField : MonoBehaviour {
         caretRect.width = pi.regularCharWidth;
         caretRect.height = pi.regularCharHeight;
 
+        //Set the control name of input's TextArea so we can access it by name farther down
+        GUI.SetNextControlName(FieldName);
+
+        input = GUI.TextArea(fieldRect, input, pi.regularFontStyle);
+        if (caretRect.x > fieldRect.x + fieldRect.width && input.Substring(caretIndex - 1).Equals(" "))
+        {
+            //Player attempted added a space at the end of the line
+            input = input.Remove(caretIndex - 1);
+            input = input.Insert(caretIndex - 1, "\n");
+        }
+
         //Draw the caret
         if (caretIsVisible && GUI.GetNameOfFocusedControl().Equals(FieldName))
         {
             //This InputField has focus, and caretIsVisible == true
 
             GUI.DrawTexture(caretRect, caretTexture);
-            if(caretIndex < input.Length)
+            if (caretIndex < input.Length)
             {
                 //Ensure that text is still legible even when covered by caret
 

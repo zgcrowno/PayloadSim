@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputTab : SubTab {
+public class InputTab : SubTab
+{
 
     public const string HeaderText = "INPUT";
 
@@ -23,9 +24,9 @@ public class InputTab : SubTab {
     {
         base.Awake();
         headerText = HeaderText;
-        
+
         inputField = gameObject.AddComponent<InputField>();
-        
+
         prevInputsStyle = new GUIStyle
         {
             fontSize = 22,
@@ -48,24 +49,26 @@ public class InputTab : SubTab {
         }
     }
 
-	// Use this for initialization
-	new public void Start () {
+    // Use this for initialization
+    new public void Start()
+    {
         base.Start();
 
         //Not using bodyRect's exact values so as to avoid interference between textarea events and mouse events (MouseDown, MouseDrag and MouseUp have likely already been "used", and therefore reserved by TextArea) when resizing and dragging (and also to provide light text padding where needed)
         inputField.fieldRect = new Rect(bodyRect.x + ResizeOffset, bodyRect.y + (headerRect.height / 2) + ResizeOffset, bodyRect.width - (2 * ResizeOffset), bodyRect.height - (2 * ResizeOffset) - (headerRect.height / 2));
-        
+
         inputFieldTextHeight = pi.regularFontStyle.CalcHeight(new GUIContent(inputField.input), inputField.fieldRect.width);
         prevInputsTextHeight = pi.regularFontStyle.CalcHeight(new GUIContent(prevInputs), inputField.fieldRect.width);
 
         prevInputsRect = new Rect(inputField.fieldRect.x, inputField.fieldRect.y + inputField.fieldRect.height - inputFieldTextHeight - prevInputsTextHeight, inputField.fieldRect.width, prevInputsTextHeight);
         scrollRect = new Rect(inputField.fieldRect.x, Mathf.Min(inputField.fieldRect.y, prevInputsRect.y), inputField.fieldRect.width, Mathf.Max(inputField.fieldRect.height, inputField.fieldRect.y + inputField.fieldRect.height - prevInputsRect.y));
     }
-	
-	// Update is called once per frame
-	new public void Update () {
-        
-	}
+
+    // Update is called once per frame
+    new public void Update()
+    {
+
+    }
 
     public override void Draw()
     {
@@ -78,7 +81,7 @@ public class InputTab : SubTab {
         //Have to use GUIStyle.none to prevent scrollbars from being utilized
         scrollPos = GUI.BeginScrollView(inputField.fieldRect, scrollPos, scrollRect, GUIStyle.none, GUIStyle.none);
 
-        if(!beingDragged)
+        if (!beingDragged)
         {
             inputField.Draw();
             GUI.Label(prevInputsRect, prevInputs, prevInputsStyle);
