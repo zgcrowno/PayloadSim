@@ -1,62 +1,63 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public abstract class Tab : MonoBehaviour {
+public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler {
 
-    public GameObject header;
+    public PlayerInterface pi; //The overarching PlayerInterface of whose object all Tabs are children
     public GameObject body;
+    public GameObject header;
+    public RectTransform rt; //The RectTransform of the whole Tab
+    public RectTransform prt; //The RectTransform representing rt's previously held values (for snapping back to previous position)
+    public RectTransform brt; //The RectTransform of this tab's body
+    public RectTransform hrt; //The RectTransform of this tab's header
+    public Text headerText;
 
-    public PlayerInterface pi; //The overarching PlayerInterface of which all Tabs are children
-    public Rect wholeRect; //The Rect making up the entirety of this Tab
-    public Rect prevWhole; //The Rect containing the coordinates and dimensions previously held by this Tab
-    public Rect headerRect; //The Rect making up this Tab's header
-    public Rect bodyRect; //The Rect making up this Tab's body
-
-    public bool beingDragged; //The bool representing whether or not this Tab is currently being dragged with the mouse by the player
-    public int depth; //Integer representing the order in which different Tabs will be drawn, thus allowing for overlay
-    public string headerText; //The text to be displayed in this Tab's header
+    public bool beingDragged;
 
     public void Awake()
     {
-        pi = GameObject.Find("/World").GetComponent<PlayerInterface>();
-        header = Instantiate(Resources.Load("Prefabs/HeaderPrefab") as GameObject);
+        pi = GameObject.Find("/PlayerInterfacePrefab").GetComponent<PlayerInterface>();
         body = Instantiate(Resources.Load("Prefabs/BodyPrefab") as GameObject);
-        header.transform.SetParent(pi.canvas.transform);
-        body.transform.SetParent(pi.canvas.transform);
+        header = Instantiate(Resources.Load("Prefabs/HeaderPrefab") as GameObject);
+        body.transform.SetParent(gameObject.transform);
+        header.transform.SetParent(gameObject.transform);
+        rt = GetComponent<RectTransform>();
+        prt = rt;
+        brt = body.GetComponent<RectTransform>();
+        hrt = header.GetComponent<RectTransform>();
+        headerText = header.transform.Find("Text").GetComponent<Text>();
+
+        beingDragged = false;
     }
-    
+
     public void Start () {
         
     }
-	
-	public void Update () {
-		
-	}
 
-    public void OnGUI()
+    public void OnPointerClick(PointerEventData ped)
     {
-        Draw();
-
-        MouseInput();
+        
     }
 
     /*
-     * Method by which a Tab's wholeRect is assigned those values held by its prevWhole datum
+     * Method by which a Tab's and its associated body's and header's RectTransforms are assigned the values they previously held
      */
     public void SnapToPreviousPosition()
     {
-        SetUpWholeRect(prevWhole.x, prevWhole.y, prevWhole.width, prevWhole.height);
+        SetUp(new Vector2(prt.anchoredPosition.x, prt.anchoredPosition.y),
+            new Vector2(prt.sizeDelta.x, prt.sizeDelta.y));
     }
 
     /*
-     * Method by which mouse input is read, and associated behaviors executed accordingly
+     * Returns whether or not this Tab object is in front of all of its siblings
+     * @return A bool representing whether or not this Tab object is in front of all of its siblings
      */
-    public void MouseInput()
+    public bool IsFrontmost()
     {
-        MouseDown();
-        MouseDrag();
-        MouseUp();
+        return transform.GetSiblingIndex() == transform.parent.childCount - 1;
     }
 
     /*
@@ -64,21 +65,19 @@ public abstract class Tab : MonoBehaviour {
      */
     public void FillDeadSpace()
     {
-        foreach (SuperTab superTab in pi.superTabs)
+        foreach (GameObject superTab in pi.superTabs)
         {
-            superTab.FillDeadSpace();
+            superTab.GetComponent<SuperTab>().FillDeadSpace();
         }
     }
-    
-    public abstract void SetUpWholeRect(float x, float y, float width, float height);
 
-    public abstract void Draw();
+    public abstract void OnPointerDown(PointerEventData ped);
+
+    public abstract void OnDrag(PointerEventData ped);
+
+    public abstract void OnPointerUp(PointerEventData ped);
+
+    public abstract void SetUp(Vector2 pos, Vector2 size);
 
     public abstract void Place();
-
-    public abstract void MouseDown();
-
-    public abstract void MouseUp();
-
-    public abstract void MouseDrag();
 }

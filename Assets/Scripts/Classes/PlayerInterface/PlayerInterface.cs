@@ -4,108 +4,72 @@ using UnityEngine;
 
 public class PlayerInterface : MonoBehaviour {
 
+    public const int MinSuperTabs = 1;
     public const int MaxSuperTabs = 8;
 
-    public List<SuperTab> superTabs = new List<SuperTab>();
+    public List<GameObject> superTabs = new List<GameObject>(MaxSuperTabs);
 
-    public GameObject canvas;
-    public Font font;
-    public GUIStyle regularFontStyle; //The style to be used for text within SubTabs
-    public GUIStyle headerFontStyle; //The style to be used for text within headerRects
+    public Canvas canvas;
     public Texture2D resizeHorizontalCursor;
     public Texture2D resizeVerticalCursor;
     public Texture2D resizeUpLeftCursor;
     public Texture2D resizeUpRightCursor;
-
-    public float regularCharWidth; //The width of a character of regularFontStyle
-    public float regularCharHeight; //The height of a character of regularFontStyle
-    public float headerCharWidth; //The width of a character of headerFontStyle
-    public float headerCharHeight; //The height of a character of headerFontStyle
     
     void Start () {
         //Load the canvas
-        canvas = GameObject.Find("/World/Canvas");
-
-        //Load the font
-        font = (Font)Resources.Load("Fonts/FontCommodoreAngled");
-
-        //Set up the font styles, character widths and character heights
-        regularFontStyle = new GUIStyle
-        {
-            fontSize = 22,
-            font = font,
-            alignment = TextAnchor.LowerLeft,
-            wordWrap = true,
-            clipping = TextClipping.Clip,
-            normal = new GUIStyleState
-            {
-                textColor = Color.white
-            }
-        };
-        headerFontStyle = new GUIStyle
-        {
-            fontSize = 25,
-            font = font,
-            alignment = TextAnchor.MiddleLeft,
-            normal = new GUIStyleState
-            {
-                textColor = Color.white
-            }
-        };
-        regularCharWidth = regularFontStyle.CalcSize(new GUIContent(" ")).x;
-        regularCharHeight = regularFontStyle.CalcHeight(new GUIContent(" "), regularCharWidth);
-        headerCharWidth = headerFontStyle.CalcSize(new GUIContent(" ")).x;
-        headerCharHeight = headerFontStyle.CalcHeight(new GUIContent(" "), headerCharWidth);
+        canvas = GameObject.Find("/Canvas").GetComponent<Canvas>();
 
         //Initialize the Tab objects for testing purposes
-        int depth = 0;
         for(int i = 0; i < MaxSuperTabs; i++)
         {
-            SuperTab superTab = new GameObject().AddComponent<SuperTab>();
+            GameObject superTab = Instantiate(Resources.Load("Prefabs/SuperTabPrefab") as GameObject);
             superTabs.Add(superTab);
-            SubTab subTab = new SubTab();
-            switch(i)
+            GameObject subTab = new GameObject();
+            switch (i)
             {
                 case 0:
-                    subTab = new GameObject("InputSubTab").AddComponent<InputTab>();
+                    subTab = Instantiate(Resources.Load("Prefabs/InputTabPrefab") as GameObject);
+                    subTab.gameObject.name = "InputSubTab";
                     superTab.gameObject.name = "InputSuperTab";
                     break;
                 case 1:
-                    subTab = new GameObject("OutputSubTab").AddComponent<OutputTab>();
+                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab.gameObject.name = "OutputSubTab";
                     superTab.gameObject.name = "OutputSuperTab";
                     break;
                 case 2:
-                    subTab = new GameObject("FocusSubTab").AddComponent<FocusTab>();
+                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab.gameObject.name = "FocusSubTab";
                     superTab.gameObject.name = "FocusSuperTab";
                     break;
                 case 3:
-                    subTab = new GameObject("LevelsSubTab").AddComponent<LevelsTab>();
+                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab.gameObject.name = "LevelsSubTab";
                     superTab.gameObject.name = "LevelsSuperTab";
                     break;
                 case 4:
-                    subTab = new GameObject("ScriptsSubTab").AddComponent<ScriptsTab>();
+                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab.gameObject.name = "ScriptsSubTab";
                     superTab.gameObject.name = "ScriptsSuperTab";
                     break;
                 case 5:
-                    subTab = new GameObject("ProgramSubTab").AddComponent<ProgramTab>();
+                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab.gameObject.name = "ProgramSubTab";
                     superTab.gameObject.name = "ProgramSuperTab";
                     break;
                 case 6:
-                    subTab = new GameObject("NotesSubTab").AddComponent<NotesTab>();
+                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab.gameObject.name = "NotesSubTab";
                     superTab.gameObject.name = "NotesSuperTab";
                     break;
                 case 7:
-                    subTab = new GameObject("HelpSubTab").AddComponent<HelpTab>();
+                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab.gameObject.name = "HelpSubTab";
                     superTab.gameObject.name = "HelpSuperTab";
                     break;
             }
-            subTab.superTab = superTab;
-            superTab.headerText = subTab.headerText;
-            superTab.subTabs.Add(subTab);
-            subTab.depth = depth;
-            depth++;
-            superTab.depth = depth;
-            depth++;
+            subTab.GetComponent<SubTab>().superTab = superTab;
+            superTab.GetComponent<SuperTab>().subTabs.Add(subTab);
         }
 
         //Set up various cursor textures
@@ -114,76 +78,10 @@ public class PlayerInterface : MonoBehaviour {
         resizeUpLeftCursor = (Texture2D)Resources.Load("Textures/resizeUpLeft");
         resizeUpRightCursor = (Texture2D)Resources.Load("Textures/resizeUpRight");
     }
-	
-	void Update () {
-		
-	}
 
-    public void OnGUI()
+    void FixedUpdate()
     {
-        //Disable GUI caret flashing and visibility so I can implement my own caret
-        GUI.skin.settings.cursorColor = Color.clear;
-        GUI.skin.settings.cursorFlashSpeed = 0;
-
         SetAppropriateCursor();
-    }
-    
-    /*
-     * Method by which SuperTab headers are organized so as to be always next to one another, thus disallowing dead space amongst SuperTab headers
-     */
-    public void OrganizeSuperTabHeaders()
-    {
-        foreach (SuperTab superTab in superTabs)
-        {
-            superTab.headerRect.x = superTab.wholeRect.x + (GetSuperTabIndex(superTab) * superTab.headerRect.width);
-        }
-    }
-
-    /*
-     * Method by which a SuperTab's depth is set to anywhere from 0-7, these ints corresponding to the depth of the passed SuperTab relative to all others, and all SuperTabs possessing a depth >= the passed value are incremented incidentally
-     * @param superTab The SuperTab whose depth we're setting
-     * @param depth The depth to which we're setting the passed SuperTab
-     */
-    public void SetSuperTabToDepth(SuperTab superTab, int depth)
-    {
-        SuperTab SuperTabCurrentlyAtPassedDepth = GetSuperTabByDepth(depth);
-        List<SuperTab> SuperTabsBelowThatCurrentlyAtPassedDepth = GetSuperTabsBelow(SuperTabCurrentlyAtPassedDepth);
-
-        int startingDepth = 0;
-
-        foreach (SuperTab supt in SuperTabsBelowThatCurrentlyAtPassedDepth)
-        {
-            startingDepth++;
-
-            foreach(SubTab subt in supt.subTabs)
-            {
-                startingDepth++;
-            }
-        }
-
-        foreach(SubTab subt in superTab.subTabs)
-        {
-            subt.depth = startingDepth;
-            startingDepth++;
-        }
-
-        superTab.depth = startingDepth;
-        startingDepth++;
-
-        foreach(SuperTab st in superTabs)
-        {
-            if(st != superTab && !SuperTabsBelowThatCurrentlyAtPassedDepth.Contains(st))
-            {
-                foreach(SubTab subt in st.subTabs)
-                {
-                    subt.depth = startingDepth;
-                    startingDepth++;
-                }
-
-                st.depth = startingDepth;
-                startingDepth++;
-            }
-        }
     }
 
     /*
@@ -191,48 +89,21 @@ public class PlayerInterface : MonoBehaviour {
      * @param superTab The SuperTab whose index we're returning
      * @return The index of the passed SuperTab in superTabs
      */
-    public int GetSuperTabIndex(SuperTab superTab)
+    public int GetSuperTabIndex(GameObject superTab)
     {
         return superTabs.IndexOf(superTab);
     }
-    
+
     /*
-     * Returns the SuperTab whose depth is anywhere from 0-7, these ints corresponding to the depth of the passed SuperTab relative to all others
-     * @param depth The depth by which we're grabbing the SuperTab
-     * @return The SuperTab whose depth corresponds to the passed depth
+     * Method by which SuperTab headers are organized so as to be always next to one another, thus disallowing dead space amongst SuperTab headers
      */
-    public SuperTab GetSuperTabByDepth(int depth)
+    public void OrganizeSuperTabHeaders()
     {
-        SuperTab superTabToReturn = null;
-
-        foreach(SuperTab superTab in superTabs)
+        foreach (GameObject superTabObject in superTabs)
         {
-            List<SuperTab> superTabsBelow = GetSuperTabsBelow(superTab);
-            if(superTabsBelow.Count == depth)
-            {
-                superTabToReturn = superTab;
-            }
+            SuperTab superTab = superTabObject.GetComponent<SuperTab>();
+            superTab.hrt.anchoredPosition = new Vector2(superTab.rt.anchoredPosition.x + (GetSuperTabIndex(superTab.gameObject) * superTab.hrt.sizeDelta.x), superTab.hrt.anchoredPosition.y);
         }
-
-        return superTabToReturn;
-    }
-
-    /*
-    * Returns a list containing all of those SuperTabs which have a depth less than the SuperTab passed as a parameter
-    * @param superTab The SuperTab below whose depth we're grabbing all of the other SuperTabs
-    * @return A list of SuperTabs whose depths are less than the passed SuperTab
-    */
-    public List<SuperTab> GetSuperTabsBelow(SuperTab superTab)
-    {
-        List<SuperTab> superTabsBelow = new List<SuperTab>();
-        foreach(SuperTab st in superTabs)
-        {
-            if(st.depth < superTab.depth)
-            {
-                superTabsBelow.Add(st);
-            }
-        }
-        return superTabsBelow;
     }
 
     /*
@@ -240,53 +111,56 @@ public class PlayerInterface : MonoBehaviour {
     */
     public void SetAppropriateCursor()
     {
-        SuperTab currentSuperTab = GetSuperTabByDepth(0);
-        Texture2D cursorToUse = null;
-        Vector2 hotSpot = Vector2.zero;
+        if (canvas.transform.childCount > 0) {
+            SuperTab currentSuperTab = canvas.transform.GetChild(canvas.transform.childCount - 1).gameObject.GetComponent<SuperTab>();
+            Texture2D cursorToUse = null;
+            Vector2 hotSpot = Vector2.zero;
 
-        foreach(SubTab subTab in currentSuperTab.subTabs)
-        {
-            if(!subTab.headerRect.Contains(Event.current.mousePosition))
+            foreach (GameObject subTabObject in currentSuperTab.subTabs)
             {
-                if (subTab.resizeRects[0].Contains(Event.current.mousePosition)
-                    || subTab.resizeRects[1].Contains(Event.current.mousePosition)
-                    || subTab.resizingWhat == SubTab.Left
-                    || subTab.resizingWhat == SubTab.Right)
+                SubTab subTab = subTabObject.GetComponent<SubTab>();
+                if (!RectTransformUtility.RectangleContainsScreenPoint(subTab.hrt, Input.mousePosition))
                 {
-                    //Left or right
-                    cursorToUse = resizeHorizontalCursor;
-                    hotSpot = new Vector2(resizeHorizontalCursor.width / 2, 5);
-                }
-                else if (subTab.resizeRects[2].Contains(Event.current.mousePosition)
-                         || subTab.resizeRects[3].Contains(Event.current.mousePosition)
-                         || subTab.resizingWhat == SubTab.Upper
-                         || subTab.resizingWhat == SubTab.Lower)
-                {
-                    //Top or bottom
-                    cursorToUse = resizeVerticalCursor;
-                    hotSpot = new Vector2(5, resizeVerticalCursor.height / 2);
-                }
-                else if (subTab.resizeRects[4].Contains(Event.current.mousePosition)
-                         || subTab.resizeRects[6].Contains(Event.current.mousePosition)
-                         || subTab.resizingWhat == SubTab.LowerLeft
-                         || subTab.resizingWhat == SubTab.UpperRight)
-                {
-                    //Bottom-left or top-right
-                    cursorToUse = resizeUpRightCursor;
-                    hotSpot = new Vector2(11.5f, 11.5f);
-                }
-                else if (subTab.resizeRects[5].Contains(Event.current.mousePosition)
-                         || subTab.resizeRects[7].Contains(Event.current.mousePosition)
-                         || subTab.resizingWhat == SubTab.UpperLeft
-                         || subTab.resizingWhat == SubTab.LowerRight)
-                {
-                    //Top-left or bottom-right
-                    cursorToUse = resizeUpLeftCursor;
-                    hotSpot = new Vector2(11.5f, 11.5f);
+                    if (subTab.resizeRects[0].Contains(Input.mousePosition)
+                        || subTab.resizeRects[1].Contains(Input.mousePosition)
+                        || subTab.resizingWhat == SubTab.Left
+                        || subTab.resizingWhat == SubTab.Right)
+                    {
+                        //Left or right
+                        cursorToUse = resizeHorizontalCursor;
+                        hotSpot = new Vector2(resizeHorizontalCursor.width / 2, 5);
+                    }
+                    else if (subTab.resizeRects[2].Contains(Input.mousePosition)
+                             || subTab.resizeRects[3].Contains(Input.mousePosition)
+                             || subTab.resizingWhat == SubTab.Upper
+                             || subTab.resizingWhat == SubTab.Lower)
+                    {
+                        //Top or bottom
+                        cursorToUse = resizeVerticalCursor;
+                        hotSpot = new Vector2(5, resizeVerticalCursor.height / 2);
+                    }
+                    else if (subTab.resizeRects[4].Contains(Input.mousePosition)
+                             || subTab.resizeRects[6].Contains(Input.mousePosition)
+                             || subTab.resizingWhat == SubTab.LowerLeft
+                             || subTab.resizingWhat == SubTab.UpperRight)
+                    {
+                        //Bottom-left or top-right
+                        cursorToUse = resizeUpRightCursor;
+                        hotSpot = new Vector2(11.5f, 11.5f);
+                    }
+                    else if (subTab.resizeRects[5].Contains(Input.mousePosition)
+                             || subTab.resizeRects[7].Contains(Input.mousePosition)
+                             || subTab.resizingWhat == SubTab.UpperLeft
+                             || subTab.resizingWhat == SubTab.LowerRight)
+                    {
+                        //Top-left or bottom-right
+                        cursorToUse = resizeUpLeftCursor;
+                        hotSpot = new Vector2(11.5f, 11.5f);
+                    }
                 }
             }
-        }
 
-        Cursor.SetCursor(cursorToUse, hotSpot, CursorMode.Auto);
+            Cursor.SetCursor(cursorToUse, hotSpot, CursorMode.Auto);
+        }
     }
 }
