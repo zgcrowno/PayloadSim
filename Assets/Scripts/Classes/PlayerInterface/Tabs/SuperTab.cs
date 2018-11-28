@@ -8,7 +8,7 @@ public class SuperTab : Tab {
 
     public const int MaxSubTabs = 8;
 
-    public List<GameObject> subTabs = new List<GameObject>(MaxSubTabs); //The SubTabs of which this SuperTab is a parent
+    public List<SubTab> subTabs = new List<SubTab>(MaxSubTabs); //The SubTabs of which this SuperTab is a parent
 
     public Image headerBodyImage;
     
@@ -40,14 +40,13 @@ public class SuperTab : Tab {
             body.SetActive(false);
             hrt.anchoredPosition = new Vector2(Input.mousePosition.x - (hrt.sizeDelta.x / 2), Input.mousePosition.y - (hrt.sizeDelta.y / 2));
 
-            foreach(GameObject superTabObject in pi.superTabs)
+            foreach(SuperTab superTab in pi.superTabs)
             {
-                SuperTab superTab = superTabObject.GetComponent<SuperTab>();
                 if(superTab != this && RectTransformUtility.RectangleContainsScreenPoint(superTab.hrt, Input.mousePosition))
                 {
-                    CollectionsUtil.Swap(pi.superTabs, pi.GetSuperTabIndex(gameObject), pi.GetSuperTabIndex(superTab.gameObject));
-                    superTab.hrt.anchoredPosition = new Vector2(superTab.rt.anchoredPosition.x + (pi.GetSuperTabIndex(superTab.gameObject) * superTab.hrt.sizeDelta.x), superTab.hrt.anchoredPosition.y);
-                    superTab.gameObject.transform.SetSiblingIndex(transform.GetSiblingIndex() - 1);
+                    CollectionsUtil.Swap(pi.superTabs, pi.GetSuperTabIndex(this), pi.GetSuperTabIndex(superTab));
+                    superTab.hrt.anchoredPosition = new Vector2(superTab.rt.anchoredPosition.x + (pi.GetSuperTabIndex(superTab) * superTab.hrt.sizeDelta.x), superTab.hrt.anchoredPosition.y);
+                    superTab.transform.SetSiblingIndex(transform.GetSiblingIndex() - 1);
                 }
             }
         }
@@ -73,7 +72,7 @@ public class SuperTab : Tab {
         rt.anchoredPosition = new Vector2(pos.x, pos.y);
         rt.sizeDelta = new Vector2(size.x, size.y);
         prt = rt;
-        hrt.anchoredPosition = new Vector2(pi.GetSuperTabIndex(gameObject) * (Screen.width / PlayerInterface.MaxSuperTabs), rt.sizeDelta.y - (Screen.height / 20));
+        hrt.anchoredPosition = new Vector2(pi.GetSuperTabIndex(this) * (Screen.width / PlayerInterface.MaxSuperTabs), rt.sizeDelta.y - (Screen.height / 20));
         hrt.sizeDelta = new Vector2(Screen.width / PlayerInterface.MaxSuperTabs, Screen.height / 20);
         brt.anchoredPosition = Vector2.zero;
         brt.sizeDelta = new Vector2(rt.sizeDelta.x, rt.sizeDelta.y - hrt.sizeDelta.y);
@@ -101,9 +100,8 @@ public class SuperTab : Tab {
                     bool addingAsSubTab = false;
 
                     //Place this SuperTab's contents within another SuperTab if placeable criteria are met
-                    foreach(GameObject subTabObject in superTabToBecomeParent.subTabs)
+                    foreach(SubTab subTab in superTabToBecomeParent.subTabs)
                     {
-                        SubTab subTab = subTabObject.GetComponent<SubTab>();
                         if(RectTransformUtility.RectangleContainsScreenPoint(subTab.rt, Input.mousePosition))
                         {
                             SubTab firstSubTab = subTabs[0].GetComponent<SubTab>();
@@ -127,18 +125,18 @@ public class SuperTab : Tab {
                             }
                             else if(subTab.SideOfCursor() == SubTab.Upper && subTab.HasSpace(SubTab.Vertical))
                             {
-                                firstSubTab.SetUp(new Vector2(subTab.rt.anchoredPosition.x, subTab.rt.anchoredPosition.y),
+                                firstSubTab.SetUp(new Vector2(subTab.rt.anchoredPosition.x, subTab.rt.anchoredPosition.y + (subTab.rt.sizeDelta.y / 2)),
                                     new Vector2(subTab.rt.sizeDelta.x, subTab.rt.sizeDelta.y / 2));
-                                subTab.SetUp(new Vector2(subTab.rt.anchoredPosition.x, subTab.rt.anchoredPosition.y + (subTab.rt.sizeDelta.y / 2)),
+                                subTab.SetUp(new Vector2(subTab.rt.anchoredPosition.x, subTab.rt.anchoredPosition.y),
                                     new Vector2(subTab.rt.sizeDelta.x, subTab.rt.sizeDelta.y / 2));
 
                                 addingAsSubTab = true;
                             }
                             else if(subTab.SideOfCursor() == SubTab.Lower && subTab.HasSpace(SubTab.Vertical))
                             {
-                                firstSubTab.SetUp(new Vector2(subTab.rt.anchoredPosition.x, subTab.rt.anchoredPosition.y + (subTab.rt.sizeDelta.y / 2)),
+                                firstSubTab.SetUp(new Vector2(subTab.rt.anchoredPosition.x, subTab.rt.anchoredPosition.y),
                                     new Vector2(subTab.rt.sizeDelta.x, subTab.rt.sizeDelta.y / 2));
-                                subTab.SetUp(new Vector2(subTab.rt.anchoredPosition.x, subTab.rt.anchoredPosition.y),
+                                subTab.SetUp(new Vector2(subTab.rt.anchoredPosition.x, subTab.rt.anchoredPosition.y + (subTab.rt.sizeDelta.y / 2)),
                                     new Vector2(subTab.rt.sizeDelta.x, subTab.rt.sizeDelta.y / 2));
 
                                 addingAsSubTab = true;
@@ -177,14 +175,13 @@ public class SuperTab : Tab {
      */
     public void AddAsSubTab(SuperTab superTabToBecomeParent)
     {
-        GameObject firstSubTabObject = subTabs[0];
-        SubTab firstSubTab = firstSubTabObject.GetComponent<SubTab>();
-        firstSubTabObject.transform.parent = superTabToBecomeParent.body.transform;
-        firstSubTab.superTab = superTabToBecomeParent.gameObject;
-        superTabToBecomeParent.subTabs.Add(firstSubTab.gameObject);
-        pi.superTabs.Remove(gameObject);
+        SubTab firstSubTab = subTabs[0];
+        firstSubTab.transform.SetParent(superTabToBecomeParent.body.transform);
+        firstSubTab.superTab = superTabToBecomeParent;
+        superTabToBecomeParent.subTabs.Add(firstSubTab);
+        pi.superTabs.Remove(this);
         pi.OrganizeSuperTabHeaders();
-        superTabToBecomeParent.gameObject.transform.SetAsLastSibling();
+        superTabToBecomeParent.transform.SetAsLastSibling();
         Destroy(gameObject);
     }
 
@@ -193,9 +190,9 @@ public class SuperTab : Tab {
      */
     public new void FillDeadSpace()
     {
-        foreach (GameObject subTab in subTabs)
+        foreach (SubTab subTab in subTabs)
         {
-            subTab.GetComponent<SubTab>().FillDeadSpace();
+            subTab.FillDeadSpace();
         }
     }
 }

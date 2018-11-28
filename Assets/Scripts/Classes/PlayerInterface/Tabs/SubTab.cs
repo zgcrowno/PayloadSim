@@ -26,7 +26,7 @@ public class SubTab : Tab {
     public Rect[] quadrants = new Rect[4];
     public Rect[] resizeRects = new Rect[8];
 
-    public GameObject superTab; //The SuperTab of which this SubTab is a child
+    public SuperTab superTab; //The SuperTab of which this SubTab is a child
     
     public float minWidth; //The minimum allowable width of the SubTab
     public float minHeight; //The minimum allowable height of the SubTab
@@ -56,11 +56,10 @@ public class SubTab : Tab {
                 body.SetActive(false);
                 hrt.position = new Vector2(Input.mousePosition.x - (hrt.sizeDelta.x / 2), Input.mousePosition.y - (hrt.sizeDelta.y / 2));
 
-                foreach (GameObject subTabObject in superTab.GetComponent<SuperTab>().subTabs)
+                foreach (SubTab subTab in superTab.GetComponent<SuperTab>().subTabs)
                 {
-                    if (subTabObject != gameObject)
+                    if (subTab != this)
                     {
-                        SubTab subTab = subTabObject.GetComponent<SubTab>();
                         if (RectTransformUtility.RectangleContainsScreenPoint(subTab.rt, Input.mousePosition)) {
                             Vector4 prevSubTabRT = new Vector4
                             {
@@ -74,7 +73,7 @@ public class SubTab : Tab {
                                 new Vector2(prt.sizeDelta.x, prt.sizeDelta.y));
                             SetUp(new Vector2(prevSubTabRT.x, prevSubTabRT.y),
                                 new Vector2(prevSubTabRT.w, prevSubTabRT.z));
-                            subTabObject.transform.SetSiblingIndex(transform.GetSiblingIndex() - 1);
+                            subTab.transform.SetSiblingIndex(transform.GetSiblingIndex() - 1);
                         }
                     }
                 }
@@ -217,7 +216,7 @@ public class SubTab : Tab {
         else if (pi.superTabs.Count < PlayerInterface.MaxSuperTabs)
         {
             //Adding as new SuperTab since the mouse cursor isn't contained within superTab's brt
-            AddAsSuperTab(Instantiate(Resources.Load("Prefabs/SuperTabPrefab") as GameObject));
+            AddAsSuperTab(Instantiate(Resources.Load("Prefabs/SuperTabPrefab") as GameObject).GetComponent<SuperTab>());
         }
         else
         {
@@ -437,9 +436,8 @@ public class SubTab : Tab {
     {
         List<SubTab> sideAdjacentSubTabs = new List<SubTab>();
 
-        foreach (GameObject subTabObject in superTab.GetComponent<SuperTab>().subTabs)
+        foreach (SubTab subTab in superTab.GetComponent<SuperTab>().subTabs)
         {
-            SubTab subTab = subTabObject.GetComponent<SubTab>();
             if (subTab != this && SubTabIsSideAdjacent(subTab, side))
             {
                 sideAdjacentSubTabs.Add(subTab);
@@ -819,21 +817,19 @@ public class SubTab : Tab {
      * 
      * @param superTabToBecomeParent A SuperTab object which will be formatted from this SubTab's data
      */
-    public void AddAsSuperTab(GameObject superTabToBecomeParent)
+    public void AddAsSuperTab(SuperTab superTabToBecomeParent)
     {
-        SuperTab superTabScript = superTab.GetComponent<SuperTab>();
-        SuperTab superTabToBecomeParentScript = superTabToBecomeParent.GetComponent<SuperTab>();
-        transform.parent = superTabToBecomeParentScript.body.transform;
-        superTabScript.subTabs.Remove(gameObject);
-        if (superTabScript.subTabs.Count < 1)
+        transform.SetParent(superTabToBecomeParent.body.transform);
+        superTab.subTabs.Remove(this);
+        if (superTab.subTabs.Count < 1)
         {
             Destroy(superTab.gameObject);
         }
-        superTabToBecomeParentScript.headerText.text = "New Text";
-        pi.superTabs.Add(superTabToBecomeParent.gameObject);
+        superTabToBecomeParent.headerText.text = "New Text";
+        pi.superTabs.Add(superTabToBecomeParent.GetComponent<SuperTab>());
 
-        superTab = superTabToBecomeParent;
-        superTabToBecomeParentScript.subTabs.Add(gameObject);
+        superTab = superTabToBecomeParent.GetComponent<SuperTab>();
+        superTabToBecomeParent.subTabs.Add(this);
 
         SetUp(Vector2.zero, new Vector2(Screen.width, Screen.height - hrt.sizeDelta.y));
 
@@ -893,11 +889,11 @@ public class SubTab : Tab {
      */
     public bool HasSideAdjacentSubTab(int side)
     {
-        foreach (GameObject subTab in superTab.GetComponent<SuperTab>().subTabs)
+        foreach (SubTab subTab in superTab.GetComponent<SuperTab>().subTabs)
         {
-            if (subTab != gameObject)
+            if (subTab != this)
             {
-                if (SubTabIsSideAdjacent(subTab.GetComponent<SubTab>(), side))
+                if (SubTabIsSideAdjacent(subTab, side))
                 {
                     return true;
                 }
@@ -947,9 +943,8 @@ public class SubTab : Tab {
     {
         SubTab subTabToReturn = null;
 
-        foreach (GameObject subTabObject in superTab.GetComponent<SuperTab>().subTabs)
+        foreach (SubTab subTab in superTab.GetComponent<SuperTab>().subTabs)
         {
-            SubTab subTab = subTabObject.GetComponent<SubTab>();
             if (subTab != this)
             {
                 bool subTabIsToSide = false;
@@ -1061,72 +1056,69 @@ public class SubTab : Tab {
      */
     public new void FillDeadSpace()
     {
-        //if (!IsFrontmost()) //Ensure SubTab is not frontmost so that SubTab does not try to fill dead space created by modifying itself
-        //{
-            if (HasDeadSpaceToSide(Left))
-            {
-                SubTab subTabToLeft = GetNearestSubTabToSide(Left);
-            
-                if (subTabToLeft != null)
-                {
-                    SetUp(new Vector2(subTabToLeft.rt.anchoredPosition.x + subTabToLeft.rt.sizeDelta.x,
-                                   rt.anchoredPosition.y),
-                                   new Vector2(rt.sizeDelta.x + (rt.anchoredPosition.x - (subTabToLeft.rt.anchoredPosition.x + subTabToLeft.rt.sizeDelta.x)),
-                                   rt.sizeDelta.y));
-                }
-                else
-                {
-                    SetUp(new Vector2(0, rt.anchoredPosition.y),
-                                   new Vector2(rt.anchoredPosition.x + rt.sizeDelta.x, rt.sizeDelta.y));
-                }
-            }
-            if (HasDeadSpaceToSide(Right))
-            {
-                SubTab subTabToRight = GetNearestSubTabToSide(Right);
+        if (HasDeadSpaceToSide(Left))
+        {
+            SubTab subTabToLeft = GetNearestSubTabToSide(Left);
 
-                if (subTabToRight != null)
-                {
-                    SetUp(new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y),
-                                   new Vector2(rt.sizeDelta.x + (subTabToRight.rt.anchoredPosition.x - (rt.anchoredPosition.x + rt.sizeDelta.x)), rt.sizeDelta.y));
-                }
-                else
-                {
-                    SetUp(new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y),
-                                   new Vector2(Screen.width - rt.anchoredPosition.x, rt.sizeDelta.y));
-                }
-            }
-            if (HasDeadSpaceToSide(Upper))
+            if (subTabToLeft != null)
             {
-                SubTab subTabAbove = GetNearestSubTabToSide(Upper);
-
-                if (subTabAbove != null)
-                {
-                    SetUp(new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y),
-                                   new Vector2(rt.sizeDelta.x, rt.sizeDelta.y + (subTabAbove.rt.anchoredPosition.y - (rt.anchoredPosition.y + rt.sizeDelta.y))));
-                }
-                else
-                {
-                    SetUp(new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y),
-                                   new Vector2(rt.sizeDelta.x, Screen.height - hrt.sizeDelta.y - rt.anchoredPosition.y));
-                }
+                SetUp(new Vector2(subTabToLeft.rt.anchoredPosition.x + subTabToLeft.rt.sizeDelta.x,
+                               rt.anchoredPosition.y),
+                               new Vector2(rt.sizeDelta.x + (rt.anchoredPosition.x - (subTabToLeft.rt.anchoredPosition.x + subTabToLeft.rt.sizeDelta.x)),
+                               rt.sizeDelta.y));
             }
-            if (HasDeadSpaceToSide(Lower))
+            else
             {
-                SubTab subTabBelow = GetNearestSubTabToSide(Lower);
-
-                if (subTabBelow != null)
-                {
-                    SetUp(new Vector2(rt.anchoredPosition.x,
-                                   subTabBelow.rt.anchoredPosition.y + subTabBelow.rt.sizeDelta.y),
-                                   new Vector2(rt.sizeDelta.x,
-                                   rt.sizeDelta.y + (rt.anchoredPosition.y - (subTabBelow.rt.anchoredPosition.y + subTabBelow.rt.sizeDelta.y))));
-                }
-                else
-                {
-                    SetUp(new Vector2(rt.anchoredPosition.x, 0),
-                                   new Vector2(rt.sizeDelta.x, rt.anchoredPosition.y + rt.sizeDelta.y));
-                }
+                SetUp(new Vector2(0, rt.anchoredPosition.y),
+                               new Vector2(rt.anchoredPosition.x + rt.sizeDelta.x, rt.sizeDelta.y));
             }
-        //}
+        }
+        if (HasDeadSpaceToSide(Right))
+        {
+            SubTab subTabToRight = GetNearestSubTabToSide(Right);
+
+            if (subTabToRight != null)
+            {
+                SetUp(new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y),
+                               new Vector2(rt.sizeDelta.x + (subTabToRight.rt.anchoredPosition.x - (rt.anchoredPosition.x + rt.sizeDelta.x)), rt.sizeDelta.y));
+            }
+            else
+            {
+                SetUp(new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y),
+                               new Vector2(Screen.width - rt.anchoredPosition.x, rt.sizeDelta.y));
+            }
+        }
+        if (HasDeadSpaceToSide(Upper))
+        {
+            SubTab subTabAbove = GetNearestSubTabToSide(Upper);
+
+            if (subTabAbove != null)
+            {
+                SetUp(new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y),
+                               new Vector2(rt.sizeDelta.x, rt.sizeDelta.y + (subTabAbove.rt.anchoredPosition.y - (rt.anchoredPosition.y + rt.sizeDelta.y))));
+            }
+            else
+            {
+                SetUp(new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y),
+                               new Vector2(rt.sizeDelta.x, Screen.height - hrt.sizeDelta.y - rt.anchoredPosition.y));
+            }
+        }
+        if (HasDeadSpaceToSide(Lower))
+        {
+            SubTab subTabBelow = GetNearestSubTabToSide(Lower);
+
+            if (subTabBelow != null)
+            {
+                SetUp(new Vector2(rt.anchoredPosition.x,
+                               subTabBelow.rt.anchoredPosition.y + subTabBelow.rt.sizeDelta.y),
+                               new Vector2(rt.sizeDelta.x,
+                               rt.sizeDelta.y + (rt.anchoredPosition.y - (subTabBelow.rt.anchoredPosition.y + subTabBelow.rt.sizeDelta.y))));
+            }
+            else
+            {
+                SetUp(new Vector2(rt.anchoredPosition.x, 0),
+                               new Vector2(rt.sizeDelta.x, rt.anchoredPosition.y + rt.sizeDelta.y));
+            }
+        }
     }
 }

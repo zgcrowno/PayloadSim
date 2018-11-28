@@ -22,8 +22,8 @@ public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHan
         pi = GameObject.Find("/PlayerInterfacePrefab").GetComponent<PlayerInterface>();
         body = Instantiate(Resources.Load("Prefabs/BodyPrefab") as GameObject);
         header = Instantiate(Resources.Load("Prefabs/HeaderPrefab") as GameObject);
-        body.transform.SetParent(gameObject.transform);
-        header.transform.SetParent(gameObject.transform);
+        body.transform.SetParent(transform);
+        header.transform.SetParent(transform);
         rt = GetComponent<RectTransform>();
         prt = rt;
         brt = body.GetComponent<RectTransform>();
@@ -65,9 +65,9 @@ public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHan
      */
     public void FillDeadSpace()
     {
-        foreach (GameObject superTab in pi.superTabs)
+        foreach (SuperTab superTab in pi.superTabs)
         {
-            superTab.GetComponent<SuperTab>().FillDeadSpace();
+            superTab.FillDeadSpace();
         }
     }
 

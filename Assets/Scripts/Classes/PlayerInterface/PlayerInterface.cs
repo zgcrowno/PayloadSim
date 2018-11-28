@@ -7,7 +7,7 @@ public class PlayerInterface : MonoBehaviour {
     public const int MinSuperTabs = 1;
     public const int MaxSuperTabs = 8;
 
-    public List<GameObject> superTabs = new List<GameObject>(MaxSuperTabs);
+    public List<SuperTab> superTabs = new List<SuperTab>(MaxSuperTabs);
 
     public Canvas canvas;
     public Texture2D resizeHorizontalCursor;
@@ -23,7 +23,7 @@ public class PlayerInterface : MonoBehaviour {
         for(int i = 0; i < MaxSuperTabs; i++)
         {
             GameObject superTab = Instantiate(Resources.Load("Prefabs/SuperTabPrefab") as GameObject);
-            superTabs.Add(superTab);
+            superTabs.Add(superTab.GetComponent<SuperTab>());
             GameObject subTab = new GameObject();
             switch (i)
             {
@@ -68,8 +68,8 @@ public class PlayerInterface : MonoBehaviour {
                     superTab.gameObject.name = "HelpSuperTab";
                     break;
             }
-            subTab.GetComponent<SubTab>().superTab = superTab;
-            superTab.GetComponent<SuperTab>().subTabs.Add(subTab);
+            subTab.GetComponent<SubTab>().superTab = superTab.GetComponent<SuperTab>();
+            superTab.GetComponent<SuperTab>().subTabs.Add(subTab.GetComponent<SubTab>());
         }
 
         //Set up various cursor textures
@@ -89,7 +89,7 @@ public class PlayerInterface : MonoBehaviour {
      * @param superTab The SuperTab whose index we're returning
      * @return The index of the passed SuperTab in superTabs
      */
-    public int GetSuperTabIndex(GameObject superTab)
+    public int GetSuperTabIndex(SuperTab superTab)
     {
         return superTabs.IndexOf(superTab);
     }
@@ -99,10 +99,9 @@ public class PlayerInterface : MonoBehaviour {
      */
     public void OrganizeSuperTabHeaders()
     {
-        foreach (GameObject superTabObject in superTabs)
+        foreach (SuperTab superTab in superTabs)
         {
-            SuperTab superTab = superTabObject.GetComponent<SuperTab>();
-            superTab.hrt.anchoredPosition = new Vector2(superTab.rt.anchoredPosition.x + (GetSuperTabIndex(superTab.gameObject) * superTab.hrt.sizeDelta.x), superTab.hrt.anchoredPosition.y);
+            superTab.hrt.anchoredPosition = new Vector2(superTab.rt.anchoredPosition.x + (GetSuperTabIndex(superTab) * superTab.hrt.sizeDelta.x), superTab.hrt.anchoredPosition.y);
         }
     }
 
@@ -116,9 +115,8 @@ public class PlayerInterface : MonoBehaviour {
             Texture2D cursorToUse = null;
             Vector2 hotSpot = Vector2.zero;
 
-            foreach (GameObject subTabObject in currentSuperTab.subTabs)
+            foreach (SubTab subTab in currentSuperTab.subTabs)
             {
-                SubTab subTab = subTabObject.GetComponent<SubTab>();
                 if (!RectTransformUtility.RectangleContainsScreenPoint(subTab.hrt, Input.mousePosition))
                 {
                     if (subTab.resizeRects[0].Contains(Input.mousePosition)
