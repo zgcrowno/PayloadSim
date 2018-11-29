@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler {
 
@@ -13,7 +14,7 @@ public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHan
     public RectTransform prt; //The RectTransform representing rt's previously held values (for snapping back to previous position)
     public RectTransform brt; //The RectTransform of this tab's body
     public RectTransform hrt; //The RectTransform of this tab's header
-    public Text headerText;
+    public TextMeshProUGUI headerText;
 
     public bool beingDragged;
 
@@ -28,7 +29,7 @@ public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHan
         prt = rt;
         brt = body.GetComponent<RectTransform>();
         hrt = header.GetComponent<RectTransform>();
-        headerText = header.transform.Find("Text").GetComponent<Text>();
+        headerText = header.transform.Find("TextMeshPro Text").GetComponent<TextMeshProUGUI>();
 
         beingDragged = false;
     }

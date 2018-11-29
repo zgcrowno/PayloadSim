@@ -79,6 +79,25 @@ public class SuperTab : Tab {
     }
 
     /*
+     * Sets this SuperTabs' header's text to its appropriate, context-sensitive value
+     */
+    public void SetHeaderText()
+    {
+        if (subTabs.Count == 1)
+        {
+            headerText.text = subTabs[0].headerText.text;
+        }
+        else
+        {
+            headerText.text = "";
+            foreach (SubTab subTab in subTabs)
+            {
+                headerText.text += subTab.headerText.text.Substring(0, 1);
+            }
+        }
+    }
+
+    /*
      * Method by which a tab is placed in a new location, or its previously held one if it's not being placed appropriately
      */ 
     public override void Place()
@@ -183,6 +202,7 @@ public class SuperTab : Tab {
         pi.OrganizeSuperTabHeaders();
         superTabToBecomeParent.transform.SetAsLastSibling();
         Destroy(gameObject);
+        pi.SetHeaderTexts();
     }
 
     /*

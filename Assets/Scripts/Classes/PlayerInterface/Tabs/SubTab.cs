@@ -41,7 +41,7 @@ public class SubTab : Tab {
         maxWidth = Screen.width;
         maxHeight = Screen.height - (Screen.height / 20);
         resizingWhat = None;
-        transform.SetParent(superTab.transform.Find("BodyPrefab(Clone)"));
+        transform.SetParent(superTab.body.transform);
 
         RectTransform superTabBodyRect = superTab.GetComponent<SuperTab>().brt;
         SetUp(new Vector2(superTabBodyRect.anchoredPosition.x, superTabBodyRect.anchoredPosition.y), new Vector2(superTabBodyRect.sizeDelta.x, superTabBodyRect.sizeDelta.y));
@@ -205,15 +205,14 @@ public class SubTab : Tab {
      */
     public override void Place()
     {
-        SuperTab superTabScript = superTab.GetComponent<SuperTab>();
         //This SubTab is onle placeable if it's being moved within its current superTab or it's being added to the PlayerInterface's superTabs list, and that list is not full
-        if (RectTransformUtility.RectangleContainsScreenPoint(superTabScript.brt, Input.mousePosition))
+        if (RectTransformUtility.RectangleContainsScreenPoint(superTab.brt, Input.mousePosition))
         {
             //Setting to previous position here since the previous position's value is changed in the OnDrag() method
             SnapToPreviousPosition();
             superTab.transform.SetAsLastSibling();
         }
-        else if (pi.superTabs.Count < PlayerInterface.MaxSuperTabs)
+        else if (pi.superTabs.Count < PlayerInterface.MaxSuperTabs && superTab.subTabs.Count > 1)
         {
             //Adding as new SuperTab since the mouse cursor isn't contained within superTab's brt
             AddAsSuperTab(Instantiate(Resources.Load("Prefabs/SuperTabPrefab") as GameObject).GetComponent<SuperTab>());
@@ -825,7 +824,6 @@ public class SubTab : Tab {
         {
             Destroy(superTab.gameObject);
         }
-        superTabToBecomeParent.headerText.text = "New Text";
         pi.superTabs.Add(superTabToBecomeParent.GetComponent<SuperTab>());
 
         superTab = superTabToBecomeParent.GetComponent<SuperTab>();
@@ -835,6 +833,8 @@ public class SubTab : Tab {
 
         pi.OrganizeSuperTabHeaders();
         superTab.transform.SetAsLastSibling();
+
+        pi.SetHeaderTexts();
     }
 
     /*

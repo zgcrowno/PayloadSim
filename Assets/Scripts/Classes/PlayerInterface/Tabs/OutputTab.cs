@@ -8,5 +8,6 @@ public class OutputTab : SubTab {
     
 	new void Start() {
         base.Start();
+        headerText.text = HeaderText;
     }
 }

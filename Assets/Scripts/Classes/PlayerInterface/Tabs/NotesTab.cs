@@ -8,5 +8,6 @@ public class NotesTab : SubTab {
     
 	new public void Start() {
         base.Start();
+        headerText.text = HeaderText;
     }
 }

@@ -31,41 +31,49 @@ public class PlayerInterface : MonoBehaviour {
                     subTab = Instantiate(Resources.Load("Prefabs/InputTabPrefab") as GameObject);
                     subTab.gameObject.name = "InputSubTab";
                     superTab.gameObject.name = "InputSuperTab";
+                    superTabs[i].headerText.text = InputTab.HeaderText;
                     break;
                 case 1:
-                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab = Instantiate(Resources.Load("Prefabs/OutputTabPrefab") as GameObject);
                     subTab.gameObject.name = "OutputSubTab";
                     superTab.gameObject.name = "OutputSuperTab";
+                    superTabs[i].headerText.text = OutputTab.HeaderText;
                     break;
                 case 2:
-                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab = Instantiate(Resources.Load("Prefabs/FocusTabPrefab") as GameObject);
                     subTab.gameObject.name = "FocusSubTab";
                     superTab.gameObject.name = "FocusSuperTab";
+                    superTabs[i].headerText.text = FocusTab.HeaderText;
                     break;
                 case 3:
-                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab = Instantiate(Resources.Load("Prefabs/LevelsTabPrefab") as GameObject);
                     subTab.gameObject.name = "LevelsSubTab";
                     superTab.gameObject.name = "LevelsSuperTab";
+                    superTabs[i].headerText.text = LevelsTab.HeaderText;
                     break;
                 case 4:
-                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab = Instantiate(Resources.Load("Prefabs/ScriptsTabPrefab") as GameObject);
                     subTab.gameObject.name = "ScriptsSubTab";
                     superTab.gameObject.name = "ScriptsSuperTab";
+                    superTabs[i].headerText.text = ScriptsTab.HeaderText;
                     break;
                 case 5:
-                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab = Instantiate(Resources.Load("Prefabs/ProgramTabPrefab") as GameObject);
                     subTab.gameObject.name = "ProgramSubTab";
                     superTab.gameObject.name = "ProgramSuperTab";
+                    superTabs[i].headerText.text = ProgramTab.HeaderText;
                     break;
                 case 6:
-                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab = Instantiate(Resources.Load("Prefabs/NotesTabPrefab") as GameObject);
                     subTab.gameObject.name = "NotesSubTab";
                     superTab.gameObject.name = "NotesSuperTab";
+                    superTabs[i].headerText.text = NotesTab.HeaderText;
                     break;
                 case 7:
-                    subTab = Instantiate(Resources.Load("Prefabs/SubTabPrefab") as GameObject);
+                    subTab = Instantiate(Resources.Load("Prefabs/HelpTabPrefab") as GameObject);
                     subTab.gameObject.name = "HelpSubTab";
                     superTab.gameObject.name = "HelpSuperTab";
+                    superTabs[i].headerText.text = HelpTab.HeaderText;
                     break;
             }
             subTab.GetComponent<SubTab>().superTab = superTab.GetComponent<SuperTab>();
@@ -92,6 +100,17 @@ public class PlayerInterface : MonoBehaviour {
     public int GetSuperTabIndex(SuperTab superTab)
     {
         return superTabs.IndexOf(superTab);
+    }
+
+    /*
+     * Sets all of the PlayerInterface's SuperTabs' headers' texts to their appropriate, context-sensitive values
+     */ 
+    public void SetHeaderTexts()
+    {
+        foreach(SuperTab superTab in superTabs)
+        {
+            superTab.SetHeaderText();
+        }
     }
 
     /*

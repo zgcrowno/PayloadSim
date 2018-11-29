@@ -8,5 +8,6 @@ public class LevelsTab : SubTab {
     
 	new public void Start() {
         base.Start();
+        headerText.text = HeaderText;
     }
 }
