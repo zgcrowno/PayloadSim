@@ -10,8 +10,6 @@ public class InputTab : SubTab
 
     public const string HeaderText = "INPUT";
 
-    public const float ScrollSpeed = 100;
-
     public List<string> prevInputs = new List<string>();
 
     public GameObject iFieldObject;
