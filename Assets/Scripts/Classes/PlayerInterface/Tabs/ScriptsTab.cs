@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScriptsTab : SubTab {
+public class ScriptsTab : TextInputTab {
 
     public const string HeaderText = "SCRIPTS";
     

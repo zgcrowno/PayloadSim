@@ -5,36 +5,30 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
-public class InputTab : SubTab
+public class InputTab : TextInputTab
 {
 
     public const string HeaderText = "INPUT";
 
     public List<string> prevInputs = new List<string>();
 
-    public GameObject iFieldObject;
-    public TMP_InputField iField;
-    public RectTransform ifrt;
-    public TMP_Text input;
-
     new public void Start()
     {
         base.Start();
         headerText.text = HeaderText;
-        iFieldObject = Instantiate(Resources.Load("Prefabs/InputTabInputFieldPrefab") as GameObject);
-        iFieldObject.transform.SetParent(body.transform);
-        iField = iFieldObject.GetComponent<TMP_InputField>();
+        iField.lineType = TMP_InputField.LineType.MultiLineSubmit;
         iField.onSubmit.AddListener(ProcessInput);
-        ifrt = iFieldObject.GetComponent<RectTransform>();
-        ifrt.anchoredPosition = Vector2.zero;
-        ifrt.sizeDelta = Vector2.zero;
-        input = iField.textComponent;
     }
 
     public void ProcessInput(string str)
     {
+        OutputTab outputTab = (OutputTab) pi.GetSubTabByType(typeof(OutputTab));
+
         prevInputs.Add(str);
         iField.text = "";
+
+        outputTab.FormulateOutput(str);
+
         iField.ActivateInputField();
     }
 }

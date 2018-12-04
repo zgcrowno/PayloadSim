@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FocusTab : SubTab {
+public class FocusTab : ObjectTab {
 
     public const string HeaderText = "FOCUS";
     

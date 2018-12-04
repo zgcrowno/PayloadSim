@@ -15,8 +15,10 @@ public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHan
     public RectTransform brt; //The RectTransform of this tab's body
     public RectTransform hrt; //The RectTransform of this tab's header
     public TextMeshProUGUI headerText;
+    public Image headerBodyImage;
 
     public bool beingDragged;
+    public bool seen; //Represents whether or not this Tab has been seen since its data has been updated in some way which is meaningful to the player
 
     public void Awake()
     {
@@ -30,8 +32,10 @@ public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHan
         brt = body.GetComponent<RectTransform>();
         hrt = header.GetComponent<RectTransform>();
         headerText = header.transform.Find("TextMeshPro Text").GetComponent<TextMeshProUGUI>();
+        headerBodyImage = header.transform.Find("Body").GetComponent<Image>();
 
         beingDragged = false;
+        seen = true;
     }
 
     public void Start () {
@@ -79,6 +83,8 @@ public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHan
     public abstract void OnPointerUp(PointerEventData ped);
 
     public abstract void SetUp(Vector2 pos, Vector2 size);
+
+    public abstract void HeaderBehavior();
 
     public abstract void Place();
 }

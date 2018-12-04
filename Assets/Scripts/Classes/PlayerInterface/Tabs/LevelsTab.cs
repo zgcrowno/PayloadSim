@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelsTab : SubTab {
+public class LevelsTab : ObjectTab {
 
     public const string HeaderText = "LEVELS";
     

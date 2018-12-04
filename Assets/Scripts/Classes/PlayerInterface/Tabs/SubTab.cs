@@ -23,16 +23,22 @@ public class SubTab : Tab {
     public const int ResizeOffset = 5;
     public const int HeaderRectOffset = 20;
 
+    public const float SeenTimerLimit = 120;
+
     public Rect[] quadrants = new Rect[4];
     public Rect[] resizeRects = new Rect[8];
 
     public SuperTab superTab; //The SuperTab of which this SubTab is a child
+    public GameObject contentBody; //The object whose RectTransform will house whatever content the SubTab's meant to display
+    public RectTransform crt; //The RectTransform of the contentBody
     
     public float minWidth; //The minimum allowable width of the SubTab
     public float minHeight; //The minimum allowable height of the SubTab
     public float maxWidth; //The maximum allowable width of the SubTab
     public float maxHeight; //The maximum allowable height of the SubTab
+    public float seenTimer; //A timer which is set to SeenTimerLimit when relevant data is updated, so as to indicate to the player that important information has just been added to this SubTab
     public int resizingWhat; //The int representing which, if any, of this SubTab's sides/corners is currently being resized with the mouse by the player
+    public bool decrementSeenTimer; //A bool representing whether or not the seenTimer ought to be decremented
     
     new public void Start () {
         base.Start();
@@ -40,11 +46,18 @@ public class SubTab : Tab {
         minHeight = (Screen.height - (Screen.height / 20)) / 4;
         maxWidth = Screen.width;
         maxHeight = Screen.height - (Screen.height / 20);
+        seenTimer = 0;
         resizingWhat = None;
-        transform.SetParent(superTab.body.transform);
+        decrementSeenTimer = false;
+        transform.SetParent(superTab.brt);
+        contentBody = Instantiate(Resources.Load("Prefabs/ContentBodyPrefab") as GameObject);
+        contentBody.transform.SetParent(brt);
+        crt = contentBody.GetComponent<RectTransform>();
+    }
 
-        RectTransform superTabBodyRect = superTab.GetComponent<SuperTab>().brt;
-        SetUp(new Vector2(superTabBodyRect.anchoredPosition.x, superTabBodyRect.anchoredPosition.y), new Vector2(superTabBodyRect.sizeDelta.x, superTabBodyRect.sizeDelta.y));
+    public void Update()
+    {
+        HeaderBehavior();
     }
 
     public override void OnDrag(PointerEventData ped)
@@ -126,6 +139,8 @@ public class SubTab : Tab {
         hrt.sizeDelta = new Vector2(Screen.width / PlayerInterface.MaxSuperTabs, Screen.height / 20);
         brt.anchoredPosition = Vector2.zero;
         brt.sizeDelta = new Vector2(rt.sizeDelta.x, rt.sizeDelta.y - (hrt.sizeDelta.y / 2));
+        crt.anchoredPosition = new Vector2(brt.anchoredPosition.x + ResizeOffset, brt.anchoredPosition.y + ResizeOffset);
+        crt.sizeDelta = new Vector2(brt.sizeDelta.x - (2 * ResizeOffset), brt.sizeDelta.y - (hrt.sizeDelta.y / 2) - ResizeOffset);
 
         //Left quadrant
         quadrants[0].x = rt.position.x;
@@ -198,6 +213,39 @@ public class SubTab : Tab {
         resizeRects[7].y = brt.position.y;
         resizeRects[7].width = ResizeOffset;
         resizeRects[7].height = ResizeOffset;
+    }
+
+    public override void HeaderBehavior()
+    {
+        if (superTab.IsFrontmost())
+        {
+            if (!seen)
+            {
+                seen = true;
+                decrementSeenTimer = true;
+                seenTimer = SeenTimerLimit;
+            }
+        }
+        if (decrementSeenTimer)
+        {
+            if (seenTimer > 0)
+            {
+                seenTimer--;
+            }
+            else
+            {
+                seenTimer = 0;
+                decrementSeenTimer = false;
+            }
+        }
+        if (seenTimer > 0)
+        {
+            headerBodyImage.color = new Color(seenTimer / SeenTimerLimit, 0, 0, 1);
+        }
+        else
+        {
+            headerBodyImage.color = Color.black;
+        }
     }
 
     /*

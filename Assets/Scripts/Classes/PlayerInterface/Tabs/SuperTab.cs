@@ -9,28 +9,16 @@ public class SuperTab : Tab {
     public const int MaxSubTabs = 8;
 
     public List<SubTab> subTabs = new List<SubTab>(MaxSubTabs); //The SubTabs of which this SuperTab is a parent
-
-    public Image headerBodyImage;
     
     new public void Start () {
         base.Start();
         transform.SetParent(pi.canvas.transform);
         SetUp(new Vector2(0, 0), new Vector2(Screen.width, Screen.height));
-        headerBodyImage = header.transform.Find("Body").GetComponent<Image>();
     }
 
     void Update()
     {
-        if (IsFrontmost())
-        {
-            headerBodyImage.color = Color.white;
-            headerText.color = Color.black;
-        }
-        else
-        {
-            headerBodyImage.color = Color.black;
-            headerText.color = Color.white;
-        }
+        HeaderBehavior();
     }
 
     public override void OnDrag(PointerEventData ped)
@@ -79,6 +67,22 @@ public class SuperTab : Tab {
     }
 
     /*
+     * Returns whether or not this SuperTab contains any unseen SubTabs
+     * @return A bool representing whether or not this SuperTab contains any unseen SubTabs
+     */ 
+    public bool ContainsUnseenSubTab()
+    {
+        foreach(SubTab subTab in subTabs)
+        {
+            if(!subTab.seen)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
      * Sets this SuperTabs' header's text to its appropriate, context-sensitive value
      */
     public void SetHeaderText()
@@ -97,9 +101,32 @@ public class SuperTab : Tab {
         }
     }
 
+    public override void HeaderBehavior()
+    {
+        if (IsFrontmost())
+        {
+            headerBodyImage.color = Color.white;
+            headerText.color = Color.black;
+            seen = true;
+        }
+        else
+        {
+            if (seen)
+            {
+                headerBodyImage.color = Color.black;
+            }
+            else
+            {
+                headerBodyImage.color = Color.red;
+            }
+            headerText.color = Color.white;
+            seen = !ContainsUnseenSubTab();
+        }
+    }
+
     /*
      * Method by which a tab is placed in a new location, or its previously held one if it's not being placed appropriately
-     */ 
+     */
     public override void Place()
     {
         //This SuperTab is only placeable if it isn't the only SuperTab currently in the PlayerInterface

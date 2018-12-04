@@ -93,6 +93,27 @@ public class PlayerInterface : MonoBehaviour {
     }
 
     /*
+     * Returns the SubTab of the designated type
+     * @param type The type of SubTab for which we're searching
+     * @return The SubTab of the designated type
+     */ 
+    public SubTab GetSubTabByType(System.Type type)
+    {
+        foreach (SuperTab superTab in superTabs)
+        {
+            foreach (SubTab subTab in superTab.subTabs)
+            {
+                if (subTab.GetType() == type)
+                {
+                    return subTab;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /*
      * Returns the index of the passed SuperTab in superTabs
      * @param superTab The SuperTab whose index we're returning
      * @return The index of the passed SuperTab in superTabs
