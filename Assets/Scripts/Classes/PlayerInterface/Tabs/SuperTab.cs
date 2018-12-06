@@ -94,6 +94,7 @@ public class SuperTab : Tab {
         else
         {
             headerText.text = "";
+            subTabs.Sort((t1, t2) => string.Compare(t1.headerText.text, t2.headerText.text, true)); //Sorting the SubTabs lexicographically
             foreach (SubTab subTab in subTabs)
             {
                 headerText.text += subTab.headerText.text.Substring(0, 1);

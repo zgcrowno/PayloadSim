@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HelpTab : ObjectTab {
+public class HelpTab : TextListTab {
 
     public const string HeaderText = "HELP";
     
