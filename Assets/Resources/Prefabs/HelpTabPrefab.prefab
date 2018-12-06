@@ -46,7 +46,9 @@ MonoBehaviour:
   brt: {fileID: 0}
   hrt: {fileID: 0}
   headerText: {fileID: 0}
+  headerBodyImage: {fileID: 0}
   beingDragged: 0
+  seen: 0
   quadrants:
   - serializedVersion: 2
     x: 0
@@ -110,11 +112,15 @@ MonoBehaviour:
     width: 0
     height: 0
   superTab: {fileID: 0}
+  contentBody: {fileID: 0}
+  crt: {fileID: 0}
   minWidth: 0
   minHeight: 0
   maxWidth: 0
   maxHeight: 0
+  seenTimer: 0
   resizingWhat: 0
+  decrementSeenTimer: 0
 --- !u!224 &224277290015827138
 RectTransform:
   m_ObjectHideFlags: 1
