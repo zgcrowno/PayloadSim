@@ -7,7 +7,8 @@ public class LevelsTab : ObjectTab {
     public const string HeaderText = "LEVELS";
     
 	new public void Start() {
-        base.Start();
+        objectCamera = GameObject.Find("LevelsCamera").GetComponent<Camera>();
         headerText.text = HeaderText;
+        base.Start();
     }
 }
