@@ -346,7 +346,7 @@ public class SubTab : Tab {
                 firstAdjacentSide = Left;
                 secondAdjacentSide = Right;
 
-                minVal = superTab.GetComponent<SuperTab>().brt.anchoredPosition.x;
+                minVal = superTab.brt.anchoredPosition.x;
                 maxVal = rt.anchoredPosition.x + rt.sizeDelta.x - minWidth;
                 break;
             case Right:
@@ -367,7 +367,7 @@ public class SubTab : Tab {
                 firstAdjacentSide = Lower;
                 secondAdjacentSide = Upper;
 
-                minVal = superTab.GetComponent<SuperTab>().brt.anchoredPosition.y;
+                minVal = superTab.brt.anchoredPosition.y;
                 maxVal = rt.anchoredPosition.y + rt.sizeDelta.y - minHeight;
                 break;
         }
@@ -524,119 +524,67 @@ public class SubTab : Tab {
         switch (side)
         {
             case Left:
-                switch (pass)
+                if(pass % 2 == 0)
                 {
-                    case First:
-                        if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.x + minWidth, val))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.x + minWidth;
-                        }
-                        break;
-                    case Second:
-                        if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth;
-                        }
-                        break;
-                    case Third:
-                        if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.x + minWidth, val))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.x + minWidth;
-                        }
-                        break;
-                    case Fourth:
-                        if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth;
-                        }
-                        break;
+                    if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.x + minWidth, val))
+                    {
+                        val = adjacentSubTab.rt.anchoredPosition.x + minWidth;
+                    }
+                }
+                else
+                {
+                    if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth))
+                    {
+                        val = adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth;
+                    }
                 }
                 break;
             case Right:
-                switch (pass)
+                if(pass % 2 == 0)
                 {
-                    case First:
-                        if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth - rt.anchoredPosition.x))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth - rt.anchoredPosition.x;
-                        }
-                        break;
-                    case Second:
-                        if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.x + minWidth - rt.anchoredPosition.x, val))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.x + minWidth - rt.anchoredPosition.x;
-                        }
-                        break;
-                    case Third:
-                        if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth - rt.anchoredPosition.x))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth - rt.anchoredPosition.x;
-                        }
-                        break;
-                    case Fourth:
-                        if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.x + minWidth - rt.anchoredPosition.x, val))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.x + minWidth - rt.anchoredPosition.x;
-                        }
-                        break;
+                    if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth - rt.anchoredPosition.x))
+                    {
+                        val = adjacentSubTab.rt.anchoredPosition.x + adjacentSubTab.rt.sizeDelta.x - minWidth - rt.anchoredPosition.x;
+                    }
+                }
+                else
+                {
+                    if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.x + minWidth - rt.anchoredPosition.x, val))
+                    {
+                        val = adjacentSubTab.rt.anchoredPosition.x + minWidth - rt.anchoredPosition.x;
+                    }
                 }
                 break;
             case Upper:
-                switch (pass)
+                if(pass % 2 == 0)
                 {
-                    case First:
-                        if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight - rt.anchoredPosition.y))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight - rt.anchoredPosition.y;
-                        }
-                        break;
-                    case Second:
-                        if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.y + minHeight - rt.anchoredPosition.y, val))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.y + minHeight - rt.anchoredPosition.y;
-                        }
-                        break;
-                    case Third:
-                        if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight - rt.anchoredPosition.y))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight - rt.anchoredPosition.y;
-                        }
-                        break;
-                    case Fourth:
-                        if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.y + minHeight - rt.anchoredPosition.y, val))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.y + minHeight - rt.anchoredPosition.y;
-                        }
-                        break;
+                    if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight - rt.anchoredPosition.y))
+                    {
+                        val = adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight - rt.anchoredPosition.y;
+                    }
+                }
+                else
+                {
+                    if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.y + minHeight - rt.anchoredPosition.y, val))
+                    {
+                        val = adjacentSubTab.rt.anchoredPosition.y + minHeight - rt.anchoredPosition.y;
+                    }
                 }
                 break;
             case Lower:
-                switch (pass)
+                if(pass % 2 == 0)
                 {
-                    case First:
-                        if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.y + minHeight, val))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.y + minHeight;
-                        }
-                        break;
-                    case Second:
-                        if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight;
-                        }
-                        break;
-                    case Third:
-                        if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.y + minHeight, val))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.y + minHeight;
-                        }
-                        break;
-                    case Fourth:
-                        if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight))
-                        {
-                            val = adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight;
-                        }
-                        break;
+                    if (FloatUtil.GT(adjacentSubTab.rt.anchoredPosition.y + minHeight, val))
+                    {
+                        val = adjacentSubTab.rt.anchoredPosition.y + minHeight;
+                    }
+                }
+                else
+                {
+                    if (FloatUtil.GT(val, adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight))
+                    {
+                        val = adjacentSubTab.rt.anchoredPosition.y + adjacentSubTab.rt.sizeDelta.y - minHeight;
+                    }
                 }
                 break;
         }

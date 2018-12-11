@@ -7,7 +7,7 @@ using TMPro;
 
 public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler {
 
-    public PlayerInterface pi; //The overarching PlayerInterface of whose object all Tabs are children
+    public PlayerInterface pi; //The overarching PlayerInterface of which all Tabs are children (though not in terms of the hierarchy
     public GameObject body;
     public GameObject header;
     public RectTransform rt; //The RectTransform of the whole Tab
