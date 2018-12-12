@@ -38,10 +38,10 @@ public class ObjectTab : SubTab {
         //Reassign RenderTexture to get correct size
         if (objectCamera.targetTexture != null)
         {
-            renderTexture = new RenderTexture(Mathf.FloorToInt(ort.sizeDelta.x), Mathf.FloorToInt(ort.sizeDelta.y), renderTexture.depth);
             objectCamera.targetTexture.Release();
-            objectCamera.targetTexture = renderTexture;
-            objectImageRaw.texture = renderTexture;
         }
+        renderTexture = new RenderTexture(Mathf.FloorToInt(ort.sizeDelta.x), Mathf.FloorToInt(ort.sizeDelta.y), renderTexture.depth);
+        objectCamera.targetTexture = renderTexture;
+        objectImageRaw.texture = renderTexture;
     }
 }

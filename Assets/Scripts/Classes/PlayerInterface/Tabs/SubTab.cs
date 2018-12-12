@@ -26,8 +26,8 @@ public class SubTab : Tab {
 
     public const float SeenTimerLimit = 120;
 
-    public Rect[] quadrants = new Rect[4];
-    public Rect[] resizeRects = new Rect[8];
+    public PlaceQuadrant[] placeQuadrants = new PlaceQuadrant[4];
+    public ResizeOctant[] resizeOctants = new ResizeOctant[8];
 
     public SuperTab superTab; //The SuperTab of which this SubTab is a child
     public GameObject contentBody; //The object whose RectTransform will house whatever content the SubTab's meant to display
@@ -51,9 +51,23 @@ public class SubTab : Tab {
         resizingWhat = None;
         decrementSeenTimer = false;
         transform.SetParent(superTab.brt);
-        contentBody = Instantiate(Resources.Load("Prefabs/ContentBodyPrefab") as GameObject);
+        contentBody = Instantiate(Resources.Load("Prefabs/BottomLeftPrefab") as GameObject);
+        contentBody.name = "ContentBody";
         contentBody.transform.SetParent(brt);
         crt = contentBody.GetComponent<RectTransform>();
+        for(int i = 0; i < placeQuadrants.Length; i++)
+        {
+            placeQuadrants[i] = Instantiate(Resources.Load("Prefabs/BottomLeftPrefab") as GameObject).AddComponent<PlaceQuadrant>();
+            placeQuadrants[i].transform.SetParent(brt);
+            placeQuadrants[i].name = "PlaceQuadrant" + i;
+        }
+        for(int i = 0; i < resizeOctants.Length; i++)
+        {
+            resizeOctants[i] = Instantiate(Resources.Load("Prefabs/BottomLeftPrefab") as GameObject).AddComponent<ResizeOctant>();
+            resizeOctants[i].transform.SetParent(brt);
+            resizeOctants[i].type = i;
+            resizeOctants[i].name = "ResizeOctant" + i;
+        }
     }
 
     public void Update()
@@ -106,16 +120,6 @@ public class SubTab : Tab {
         {
             beingDragged = true;
         }
-        else
-        {
-            foreach (Rect resizeRect in resizeRects)
-            {
-                if (resizeRect.Contains(Input.mousePosition))
-                {
-                    resizingWhat = Array.IndexOf(resizeRects, resizeRect);
-                }
-            }
-        }
     }
 
     public override void OnPointerUp(PointerEventData ped)
@@ -125,7 +129,7 @@ public class SubTab : Tab {
             beingDragged = false;
             Place();
         }
-        else if(resizingWhat != None)
+        else
         {
             resizingWhat = None;
         }
@@ -133,8 +137,8 @@ public class SubTab : Tab {
 
     public override void SetUp(Vector2 pos, Vector2 size)
     {
-        rt.anchoredPosition = new Vector2(pos.x, pos.y);
-        rt.sizeDelta = new Vector2(size.x, size.y);
+        rt.anchoredPosition = pos;
+        rt.sizeDelta = size;
         prt = rt;
         hrt.anchoredPosition = new Vector2(HeaderRectOffset, rt.sizeDelta.y - (Screen.height / 20));
         hrt.sizeDelta = new Vector2(Screen.width / PlayerInterface.MaxSuperTabs, Screen.height / 20);
@@ -143,77 +147,53 @@ public class SubTab : Tab {
         crt.anchoredPosition = new Vector2(brt.anchoredPosition.x + ResizeOffset, brt.anchoredPosition.y + ResizeOffset);
         crt.sizeDelta = new Vector2(brt.sizeDelta.x - (2 * ResizeOffset), brt.sizeDelta.y - (hrt.sizeDelta.y / 2) - ResizeOffset);
 
-        //Left quadrant
-        quadrants[0].x = rt.position.x;
-        quadrants[0].y = rt.position.y;
-        quadrants[0].width = rt.sizeDelta.x / 3;
-        quadrants[0].height = rt.sizeDelta.y;
+        //Left placeQuadrant
+        placeQuadrants[0].rt.anchoredPosition = brt.anchoredPosition;
+        placeQuadrants[0].rt.sizeDelta = new Vector2(brt.sizeDelta.x / 3, brt.sizeDelta.y);
 
-        //Right quadrant
-        quadrants[1].x = rt.position.x + rt.sizeDelta.x - (rt.sizeDelta.x / 3);
-        quadrants[1].y = rt.position.y;
-        quadrants[1].width = rt.sizeDelta.x / 3;
-        quadrants[1].height = rt.sizeDelta.y;
+        //Right placeQuadrant
+        placeQuadrants[1].rt.anchoredPosition = new Vector2(brt.anchoredPosition.x + brt.sizeDelta.x - (brt.sizeDelta.x / 3), brt.anchoredPosition.y);
+        placeQuadrants[1].rt.sizeDelta = new Vector2(brt.sizeDelta.x / 3, brt.sizeDelta.y);
 
-        //Upper quadrant
-        quadrants[2].x = rt.position.x + (rt.sizeDelta.x / 3);
-        quadrants[2].y = rt.position.y + (rt.sizeDelta.y / 2);
-        quadrants[2].width = rt.sizeDelta.x / 3;
-        quadrants[2].height = rt.sizeDelta.y / 2;
+        //Upper placeQuadrant
+        placeQuadrants[2].rt.anchoredPosition = new Vector2(brt.anchoredPosition.x + (brt.sizeDelta.x / 3), brt.anchoredPosition.y + (brt.sizeDelta.y / 2));
+        placeQuadrants[2].rt.sizeDelta = new Vector2(brt.sizeDelta.x / 3, brt.sizeDelta.y / 2);
 
-        //Lower quadrant
-        quadrants[3].x = rt.position.x + (rt.sizeDelta.x / 3);
-        quadrants[3].y = rt.position.y;
-        quadrants[3].width = rt.sizeDelta.x / 3;
-        quadrants[3].height = rt.sizeDelta.y / 2;
+        //Lower placeQuadrant
+        placeQuadrants[3].rt.anchoredPosition = new Vector2(brt.anchoredPosition.x + (brt.sizeDelta.x / 3), brt.anchoredPosition.y);
+        placeQuadrants[3].rt.sizeDelta = new Vector2(brt.sizeDelta.x / 3, brt.sizeDelta.y / 2);
 
-        //Left resizeRect
-        resizeRects[0].x = brt.position.x;
-        resizeRects[0].y = brt.position.y + ResizeOffset;
-        resizeRects[0].width = ResizeOffset;
-        resizeRects[0].height = brt.sizeDelta.y - (ResizeOffset * 2);
+        //Left resizeOctant
+        resizeOctants[0].rt.anchoredPosition = new Vector2(brt.anchoredPosition.x, brt.anchoredPosition.y + ResizeOffset);
+        resizeOctants[0].rt.sizeDelta = new Vector2(ResizeOffset, brt.sizeDelta.y - (ResizeOffset * 2));
 
-        //Right resizeRect
-        resizeRects[1].x = brt.position.x + brt.sizeDelta.x - ResizeOffset;
-        resizeRects[1].y = brt.position.y + ResizeOffset;
-        resizeRects[1].width = ResizeOffset;
-        resizeRects[1].height = brt.sizeDelta.y - (ResizeOffset * 2);
+        //Right resizeOctant
+        resizeOctants[1].rt.anchoredPosition = new Vector2(brt.anchoredPosition.x + brt.sizeDelta.x - ResizeOffset, brt.anchoredPosition.y + ResizeOffset);
+        resizeOctants[1].rt.sizeDelta = new Vector2(ResizeOffset, brt.sizeDelta.y - (ResizeOffset * 2));
 
-        //Top resizeRect
-        resizeRects[2].x = brt.position.x + ResizeOffset;
-        resizeRects[2].y = brt.position.y + brt.sizeDelta.y - ResizeOffset;
-        resizeRects[2].width = brt.sizeDelta.x - (ResizeOffset * 2);
-        resizeRects[2].height = ResizeOffset;
+        //Top resizeOctant
+        resizeOctants[2].rt.anchoredPosition = new Vector2(brt.anchoredPosition.x + ResizeOffset, brt.anchoredPosition.y + brt.sizeDelta.y - ResizeOffset);
+        resizeOctants[2].rt.sizeDelta = new Vector2(brt.sizeDelta.x - (ResizeOffset * 2), ResizeOffset);
 
-        //Bottom resizeRect
-        resizeRects[3].x = brt.position.x + ResizeOffset;
-        resizeRects[3].y = brt.position.y;
-        resizeRects[3].width = brt.sizeDelta.x - (ResizeOffset * 2);
-        resizeRects[3].height = ResizeOffset;
+        //Bottom resizeOctant
+        resizeOctants[3].rt.anchoredPosition = new Vector2(brt.anchoredPosition.x + ResizeOffset, brt.anchoredPosition.y);
+        resizeOctants[3].rt.sizeDelta = new Vector2(brt.sizeDelta.x - (ResizeOffset * 2), ResizeOffset);
 
-        //Bottom-left resizeRect
-        resizeRects[4].x = brt.position.x;
-        resizeRects[4].y = brt.position.y;
-        resizeRects[4].width = ResizeOffset;
-        resizeRects[4].height = ResizeOffset;
+        //Bottom-left resizeOctant
+        resizeOctants[4].rt.anchoredPosition = brt.anchoredPosition;
+        resizeOctants[4].rt.sizeDelta = new Vector2(ResizeOffset, ResizeOffset);
 
-        //Top-left resizeRect
-        resizeRects[5].x = brt.position.x;
-        resizeRects[5].y = brt.position.y + brt.sizeDelta.y - ResizeOffset;
-        resizeRects[5].width = ResizeOffset;
-        resizeRects[5].height = ResizeOffset;
+        //Top-left resizeOctant
+        resizeOctants[5].rt.anchoredPosition = new Vector2(brt.anchoredPosition.x, brt.anchoredPosition.y + brt.sizeDelta.y - ResizeOffset);
+        resizeOctants[5].rt.sizeDelta = new Vector2(ResizeOffset, ResizeOffset);
 
-        //Top-right resizeRect
-        resizeRects[6].x = brt.position.x + brt.sizeDelta.x - ResizeOffset;
-        resizeRects[6].y = brt.position.y + brt.sizeDelta.y - ResizeOffset;
-        resizeRects[6].width = ResizeOffset;
-        resizeRects[6].height = ResizeOffset;
+        //Top-right resizeOctant
+        resizeOctants[6].rt.anchoredPosition = new Vector2(brt.anchoredPosition.x + brt.sizeDelta.x - ResizeOffset, brt.anchoredPosition.y + brt.sizeDelta.y - ResizeOffset);
+        resizeOctants[6].rt.sizeDelta = new Vector2(ResizeOffset, ResizeOffset);
 
-        //Bottom-right resizeRect
-        resizeRects[7].x = brt.position.x + brt.sizeDelta.x - ResizeOffset;
-        resizeRects[7].y = brt.position.y;
-        resizeRects[7].width = ResizeOffset;
-        resizeRects[7].height = ResizeOffset;
+        //Bottom-right resizeOctant
+        resizeOctants[7].rt.anchoredPosition = new Vector2(brt.anchoredPosition.x + brt.sizeDelta.x - ResizeOffset, brt.anchoredPosition.y);
+        resizeOctants[7].rt.sizeDelta = new Vector2(ResizeOffset, ResizeOffset);
     }
 
     public override void HeaderBehavior()
@@ -264,7 +244,7 @@ public class SubTab : Tab {
         else if (pi.superTabs.Count < PlayerInterface.MaxSuperTabs && superTab.subTabs.Count > 1)
         {
             //Adding as new SuperTab since the mouse cursor isn't contained within superTab's brt
-            AddAsSuperTab(Instantiate(Resources.Load("Prefabs/SuperTabPrefab") as GameObject).GetComponent<SuperTab>());
+            AddAsSuperTab(Instantiate(Resources.Load("Prefabs/BottomLeftPrefab") as GameObject).AddComponent<SuperTab>());
         }
         else
         {
@@ -924,19 +904,19 @@ public class SubTab : Tab {
      */
     public int SideOfCursor()
     {
-        if (quadrants[0].Contains(Input.mousePosition))
+        if (RectTransformUtility.RectangleContainsScreenPoint(placeQuadrants[0].rt, Input.mousePosition))
         {
             return Left;
         }
-        else if (quadrants[1].Contains(Input.mousePosition))
+        else if (RectTransformUtility.RectangleContainsScreenPoint(placeQuadrants[1].rt, Input.mousePosition))
         {
             return Right;
         }
-        else if (quadrants[2].Contains(Input.mousePosition))
+        else if (RectTransformUtility.RectangleContainsScreenPoint(placeQuadrants[2].rt, Input.mousePosition))
         {
             return Upper;
         }
-        else //quadrants[3].Contains(Input.mousePosition)
+        else //RectTransformUtility.RectangleContainsScreenPoint(placeQuadrants[3].rt, Input.mousePosition)
         {
             return Lower;
         }

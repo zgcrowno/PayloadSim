@@ -18,10 +18,4 @@ public class TextListTab : SubTab {
         viewportContent = viewport.transform.Find("ViewportContent").gameObject;
         SetUp(new Vector2(superTab.brt.anchoredPosition.x, superTab.brt.anchoredPosition.y), new Vector2(superTab.brt.sizeDelta.x, superTab.brt.sizeDelta.y));
     }
-
-    // Update is called once per frame
-    new public void Update()
-    {
-
-    }
 }

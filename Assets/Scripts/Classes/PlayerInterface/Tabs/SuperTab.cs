@@ -234,10 +234,49 @@ public class SuperTab : Tab {
     }
 
     /*
+     * Returns a list of all of those SubTabs within this SuperTab which have dead space to one of their sides
+     * @return A list of all of those SubTabs within this SuperTab which have dead space to one of their sides
+     */ 
+    public List<SubTab> GetSubTabsWithDeadSpace()
+    {
+        List<SubTab> subTabsWithDeadSpace = new List<SubTab>();
+
+        foreach(SubTab subTab in subTabs)
+        {
+            if(subTab.HasDeadSpaceToSide(SubTab.Left) || subTab.HasDeadSpaceToSide(SubTab.Right) || subTab.HasDeadSpaceToSide(SubTab.Upper) || subTab.HasDeadSpaceToSide(SubTab.Lower))
+            {
+                subTabsWithDeadSpace.Add(subTab);
+            }
+        }
+
+        return subTabsWithDeadSpace;
+    }
+
+    /*
      * Method by which a SuperTab alters its own bodyRect to fill up any dead/unoccupied/overlapped space which is adjacent to it
      */
     public new void FillDeadSpace()
     {
+        bool fillingLateralDeadSpace = false;
+
+        foreach(SubTab subTab in GetSubTabsWithDeadSpace())
+        {
+            if(subTab.HasDeadSpaceToSide(SubTab.Left) || subTab.HasDeadSpaceToSide(SubTab.Right))
+            {
+                fillingLateralDeadSpace = true;
+                break;
+            }
+        }
+
+        if(fillingLateralDeadSpace)
+        {
+            subTabs.Sort((t1, t2) => -t1.rt.sizeDelta.y.CompareTo(t2.rt.sizeDelta.y));
+        }
+        else //fillingVerticalDeadSpace
+        {
+            subTabs.Sort((t1, t2) => -t1.rt.sizeDelta.x.CompareTo(t2.rt.sizeDelta.x));
+        }
+
         foreach (SubTab subTab in subTabs)
         {
             subTab.FillDeadSpace();
