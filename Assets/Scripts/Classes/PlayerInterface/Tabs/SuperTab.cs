@@ -151,7 +151,7 @@ public class SuperTab : Tab {
                     {
                         if(RectTransformUtility.RectangleContainsScreenPoint(subTab.rt, Input.mousePosition))
                         {
-                            SubTab firstSubTab = subTabs[0].GetComponent<SubTab>();
+                            SubTab firstSubTab = subTabs[0];
                             if(subTab.SideOfCursor() == SubTab.Left && subTab.HasSpace(SubTab.Lateral))
                             {
                                 firstSubTab.SetUp(new Vector2(subTab.rt.anchoredPosition.x, subTab.rt.anchoredPosition.y),
@@ -267,14 +267,15 @@ public class SuperTab : Tab {
                 break;
             }
         }
-
+        
+        //Sort this SuperTab's SubTabs in such a way that the order in which those SubTabs call their FillDeadSpace() methods guarantees that no dead space will be left over (We're sorting in descending order of how many SubTabs are to these individual SubTabs' Left-and-Right/Lateral or Upper-and-Lower/Vertical orientations)
         if(fillingLateralDeadSpace)
         {
-            subTabs.Sort((t1, t2) => -t1.rt.sizeDelta.y.CompareTo(t2.rt.sizeDelta.y));
+            subTabs.Sort((t1, t2) => -t1.GetNumNearestSubTabsOnEitherSide(SubTab.Lateral).CompareTo(t2.GetNumNearestSubTabsOnEitherSide(SubTab.Lateral)));
         }
         else //fillingVerticalDeadSpace
         {
-            subTabs.Sort((t1, t2) => -t1.rt.sizeDelta.x.CompareTo(t2.rt.sizeDelta.x));
+            subTabs.Sort((t1, t2) => -t1.GetNumNearestSubTabsOnEitherSide(SubTab.Vertical).CompareTo(t2.GetNumNearestSubTabsOnEitherSide(SubTab.Vertical)));
         }
 
         foreach (SubTab subTab in subTabs)

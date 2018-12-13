@@ -84,7 +84,7 @@ public class SubTab : Tab {
                 body.SetActive(false);
                 hrt.position = new Vector2(Input.mousePosition.x - (hrt.sizeDelta.x / 2), Input.mousePosition.y - (hrt.sizeDelta.y / 2));
 
-                foreach (SubTab subTab in superTab.GetComponent<SuperTab>().subTabs)
+                foreach (SubTab subTab in superTab.subTabs)
                 {
                     if (subTab != this)
                     {
@@ -480,7 +480,7 @@ public class SubTab : Tab {
     {
         List<SubTab> sideAdjacentSubTabs = new List<SubTab>();
 
-        foreach (SubTab subTab in superTab.GetComponent<SuperTab>().subTabs)
+        foreach (SubTab subTab in superTab.subTabs)
         {
             if (subTab != this && SubTabIsSideAdjacent(subTab, side))
             {
@@ -490,6 +490,42 @@ public class SubTab : Tab {
 
         return sideAdjacentSubTabs;
     }
+
+    /*
+     * Returns a list of all of those SubTabs which are adjacent to this one laterally (either on the left or right) or vertically (either above or below)
+     * @param orientation The variable which determines whether we're checking for adjacency laterally or vertically
+     * @return A list of all of those SubTabs which are adjacent to this one laterally (either on the left or right) or vertically (either above or below)
+     */ 
+    public List<SubTab> GetAdjacentSubTabsByOrientation(int orientation)
+    {
+        List<SubTab> relevantAdjacentSubTabs = new List<SubTab>();
+
+        switch(orientation)
+        {
+            case Lateral:
+                foreach(SubTab subTab in GetSideAdjacentSubTabs(Left))
+                {
+                    relevantAdjacentSubTabs.Add(subTab);
+                }
+                foreach(SubTab subTab in GetSideAdjacentSubTabs(Right))
+                {
+                    relevantAdjacentSubTabs.Add(subTab);
+                }
+                break;
+            case Vertical:
+                foreach (SubTab subTab in GetSideAdjacentSubTabs(Upper))
+                {
+                    relevantAdjacentSubTabs.Add(subTab);
+                }
+                foreach (SubTab subTab in GetSideAdjacentSubTabs(Lower))
+                {
+                    relevantAdjacentSubTabs.Add(subTab);
+                }
+                break;
+        }
+
+        return relevantAdjacentSubTabs;
+    } 
 
     /*
      * Returns a float representing the min or max resize value determined by the passed parameters
@@ -593,20 +629,8 @@ public class SubTab : Tab {
                 {
                     retVal = mousePos.x;
 
-                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Upper);
-                    foreach (SubTab subTab in relevantAdjacentSubTabs)
-                    {
-                        if (FloatUtil.LT(Mathf.Abs(mousePos.x - subTab.rt.anchoredPosition.x), ResizeOffset))
-                        {
-                            retVal = subTab.rt.anchoredPosition.x;
-                        }
-                        else if (FloatUtil.LT(Mathf.Abs(mousePos.x - (subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x)), ResizeOffset))
-                        {
-                            retVal = subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x;
-                        }
-                    }
-
-                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Lower);
+                    //Snap SubTab to upper/lower-adjacent SubTab if close enough
+                    relevantAdjacentSubTabs = GetAdjacentSubTabsByOrientation(Vertical);
                     foreach (SubTab subTab in relevantAdjacentSubTabs)
                     {
                         if (FloatUtil.LT(Mathf.Abs(mousePos.x - subTab.rt.anchoredPosition.x), ResizeOffset))
@@ -633,20 +657,8 @@ public class SubTab : Tab {
                 {
                     retVal = mousePos.x - rt.anchoredPosition.x;
 
-                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Upper);
-                    foreach (SubTab subTab in relevantAdjacentSubTabs)
-                    {
-                        if (FloatUtil.LT(Mathf.Abs(mousePos.x - subTab.rt.anchoredPosition.x), ResizeOffset))
-                        {
-                            retVal = subTab.rt.anchoredPosition.x - rt.anchoredPosition.x;
-                        }
-                        else if (FloatUtil.LT(Mathf.Abs(mousePos.x - (subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x)), ResizeOffset))
-                        {
-                            retVal = subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x - rt.anchoredPosition.x;
-                        }
-                    }
-
-                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Lower);
+                    //Snap SubTab to upper/lower-adjacent SubTab if close enough
+                    relevantAdjacentSubTabs = GetAdjacentSubTabsByOrientation(Vertical);
                     foreach (SubTab subTab in relevantAdjacentSubTabs)
                     {
                         if (FloatUtil.LT(Mathf.Abs(mousePos.x - subTab.rt.anchoredPosition.x), ResizeOffset))
@@ -673,20 +685,8 @@ public class SubTab : Tab {
                 {
                     retVal = mousePos.y - rt.anchoredPosition.y;
 
-                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Upper);
-                    foreach (SubTab subTab in relevantAdjacentSubTabs)
-                    {
-                        if (FloatUtil.LT(Mathf.Abs(mousePos.y - subTab.rt.anchoredPosition.y), ResizeOffset))
-                        {
-                            retVal = subTab.rt.anchoredPosition.y - rt.anchoredPosition.y;
-                        }
-                        else if (FloatUtil.LT(Mathf.Abs(mousePos.y - (subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y)), ResizeOffset))
-                        {
-                            retVal = subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y - rt.anchoredPosition.y;
-                        }
-                    }
-
-                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Lower);
+                    //Snap SubTab to left/right-adjacent SubTab if close enough
+                    relevantAdjacentSubTabs = GetAdjacentSubTabsByOrientation(Lateral);
                     foreach (SubTab subTab in relevantAdjacentSubTabs)
                     {
                         if (FloatUtil.LT(Mathf.Abs(mousePos.y - subTab.rt.anchoredPosition.y), ResizeOffset))
@@ -713,20 +713,8 @@ public class SubTab : Tab {
                 {
                     retVal = mousePos.y;
 
-                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Upper);
-                    foreach (SubTab subTab in relevantAdjacentSubTabs)
-                    {
-                        if (FloatUtil.LT(Mathf.Abs(mousePos.y - subTab.rt.anchoredPosition.y), ResizeOffset))
-                        {
-                            retVal = subTab.rt.anchoredPosition.y;
-                        }
-                        else if (FloatUtil.LT(Mathf.Abs(mousePos.y - (subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y)), ResizeOffset))
-                        {
-                            retVal = subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y;
-                        }
-                    }
-
-                    relevantAdjacentSubTabs = GetSideAdjacentSubTabs(Lower);
+                    //Snap SubTab to left/right-adjacent SubTab if close enough
+                    relevantAdjacentSubTabs = GetAdjacentSubTabsByOrientation(Lateral);
                     foreach (SubTab subTab in relevantAdjacentSubTabs)
                     {
                         if (FloatUtil.LT(Mathf.Abs(mousePos.y - subTab.rt.anchoredPosition.y), ResizeOffset))
@@ -864,9 +852,9 @@ public class SubTab : Tab {
         {
             Destroy(superTab.gameObject);
         }
-        pi.superTabs.Add(superTabToBecomeParent.GetComponent<SuperTab>());
+        pi.superTabs.Add(superTabToBecomeParent);
 
-        superTab = superTabToBecomeParent.GetComponent<SuperTab>();
+        superTab = superTabToBecomeParent;
         superTabToBecomeParent.subTabs.Add(this);
 
         SetUp(Vector2.zero, new Vector2(Screen.width, Screen.height - hrt.sizeDelta.y));
@@ -929,7 +917,7 @@ public class SubTab : Tab {
      */
     public bool HasSideAdjacentSubTab(int side)
     {
-        foreach (SubTab subTab in superTab.GetComponent<SuperTab>().subTabs)
+        foreach (SubTab subTab in superTab.subTabs)
         {
             if (subTab != this)
             {
@@ -983,22 +971,14 @@ public class SubTab : Tab {
     {
         SubTab subTabToReturn = null;
 
-        foreach (SubTab subTab in superTab.GetComponent<SuperTab>().subTabs)
+        foreach (SubTab subTab in superTab.subTabs)
         {
             if (subTab != this)
             {
-                bool subTabIsToSide = false;
-
                 switch (side)
                 {
                     case Left:
-                        subTabIsToSide = FloatUtil.LT(subTab.rt.anchoredPosition.x, rt.anchoredPosition.x)
-                                         && ((FloatUtil.GTE(rt.anchoredPosition.y, subTab.rt.anchoredPosition.y)
-                                              && FloatUtil.LT(rt.anchoredPosition.y, subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y))
-                                             || (FloatUtil.GT(rt.anchoredPosition.y + rt.sizeDelta.y, subTab.rt.anchoredPosition.y)
-                                                 && FloatUtil.LTE(rt.anchoredPosition.y + rt.sizeDelta.y, subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y)));
-
-                        if (subTabIsToSide)
+                        if (SubTabIsToSide(subTab, side))
                         {
                             if (subTabToReturn == null || FloatUtil.GT(subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x, subTabToReturn.rt.anchoredPosition.x + subTabToReturn.rt.sizeDelta.x))
                             {
@@ -1007,13 +987,7 @@ public class SubTab : Tab {
                         }
                         break;
                     case Right:
-                        subTabIsToSide = FloatUtil.GT(subTab.rt.anchoredPosition.x, rt.anchoredPosition.x)
-                                         && ((FloatUtil.GTE(rt.anchoredPosition.y, subTab.rt.anchoredPosition.y)
-                                              && FloatUtil.LT(rt.anchoredPosition.y, subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y))
-                                             || (FloatUtil.GT(rt.anchoredPosition.y + rt.sizeDelta.y, subTab.rt.anchoredPosition.y)
-                                                 && FloatUtil.LTE(rt.anchoredPosition.y + rt.sizeDelta.y, subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y)));
-
-                        if (subTabIsToSide)
+                        if (SubTabIsToSide(subTab, side))
                         {
                             if (subTabToReturn == null || FloatUtil.LT(subTab.rt.anchoredPosition.x, subTabToReturn.rt.anchoredPosition.x))
                             {
@@ -1022,13 +996,7 @@ public class SubTab : Tab {
                         }
                         break;
                     case Upper:
-                        subTabIsToSide = FloatUtil.GT(subTab.rt.anchoredPosition.y, rt.anchoredPosition.y)
-                                         && ((FloatUtil.GTE(rt.anchoredPosition.x, subTab.rt.anchoredPosition.x)
-                                              && FloatUtil.LT(rt.anchoredPosition.x, subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x))
-                                             || (FloatUtil.GT(rt.anchoredPosition.x + rt.sizeDelta.x, subTab.rt.anchoredPosition.x)
-                                                 && FloatUtil.LTE(rt.anchoredPosition.x + rt.sizeDelta.x, subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x)));
-
-                        if (subTabIsToSide)
+                        if (SubTabIsToSide(subTab, side))
                         {
                             if (subTabToReturn == null || FloatUtil.LT(subTab.rt.anchoredPosition.y, subTabToReturn.rt.anchoredPosition.y))
                             {
@@ -1037,13 +1005,7 @@ public class SubTab : Tab {
                         }
                         break;
                     case Lower:
-                        subTabIsToSide = FloatUtil.LT(subTab.rt.anchoredPosition.y, rt.anchoredPosition.y)
-                                         && ((FloatUtil.GTE(rt.anchoredPosition.x, subTab.rt.anchoredPosition.x)
-                                              && FloatUtil.LT(rt.anchoredPosition.x, subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x))
-                                             || (FloatUtil.GT(rt.anchoredPosition.x + rt.sizeDelta.x, subTab.rt.anchoredPosition.x)
-                                                 && FloatUtil.LTE(rt.anchoredPosition.x + rt.sizeDelta.x, subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x)));
-
-                        if (subTabIsToSide)
+                        if (SubTabIsToSide(subTab, side))
                         {
                             if (subTabToReturn == null || FloatUtil.GT(subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y, subTabToReturn.rt.anchoredPosition.y + subTabToReturn.rt.sizeDelta.y))
                             {
@@ -1056,6 +1018,160 @@ public class SubTab : Tab {
         }
 
         return subTabToReturn;
+    }
+
+    /*
+     * Returns the number of SubTabs to this SubTab's passed side than which no other SubTabs are closer
+     * @param side The side to which we're checking for the nearest SubTabs
+     * @return An int representing the number of SubTabs to this SubTab's passed side than which no other SubTabs are closer
+     */ 
+    public int GetNumNearestSubTabsToSide(int side)
+    {
+        SubTab nearestSubTabToSide = GetNearestSubTabToSide(side); 
+        float nearestValue = 0;
+        int retValue = 0;
+
+        if (nearestSubTabToSide != null)
+        {
+            switch (side)
+            {
+                case Left:
+                    nearestValue = nearestSubTabToSide.rt.anchoredPosition.x + nearestSubTabToSide.rt.sizeDelta.x;
+
+                    foreach (SubTab subTab in superTab.subTabs)
+                    {
+                        if (subTab != this)
+                        {
+                            if (SubTabIsToSide(subTab, side) && FloatUtil.Equals(subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x, nearestValue))
+                            {
+                                retValue++;
+                            }
+                        }
+                    }
+                    break;
+                case Right:
+                    nearestValue = nearestSubTabToSide.rt.anchoredPosition.x;
+
+                    foreach (SubTab subTab in superTab.subTabs)
+                    {
+                        if (subTab != this)
+                        {
+                            if (SubTabIsToSide(subTab, side) && FloatUtil.Equals(subTab.rt.anchoredPosition.x, nearestValue))
+                            {
+                                retValue++;
+                            }
+                        }
+                    }
+                    break;
+                case Upper:
+                    nearestValue = nearestSubTabToSide.rt.anchoredPosition.y;
+
+                    foreach (SubTab subTab in superTab.subTabs)
+                    {
+                        if (subTab != this)
+                        {
+                            if (SubTabIsToSide(subTab, side) && FloatUtil.Equals(subTab.rt.anchoredPosition.y, nearestValue))
+                            {
+                                retValue++;
+                            }
+                        }
+                    }
+                    break;
+                case Lower:
+                    nearestValue = nearestSubTabToSide.rt.anchoredPosition.y + nearestSubTabToSide.rt.sizeDelta.y;
+
+                    foreach (SubTab subTab in superTab.subTabs)
+                    {
+                        if (subTab != this)
+                        {
+                            if (SubTabIsToSide(subTab, side) && FloatUtil.Equals(subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y, nearestValue))
+                            {
+                                retValue++;
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+        return retValue;
+    }
+
+    /*
+     * Returns the number of SubTabs on either side of this SubTab's passed orientation than which no other SubTabs are closer on their respective sides
+     * @param orientation An int which represents whether we're checking for nearby SubTabs laterally or vertically
+     * @return An int representing the number of SubTabs on either side of this SubTab's passed orientation than which no other SubTabs are closer on their respective sides
+     */
+    public int GetNumNearestSubTabsOnEitherSide(int orientation)
+    {
+        int retValue = 0;
+
+        switch(orientation)
+        {
+            case Lateral:
+                retValue = GetNumNearestSubTabsToSide(Left) + GetNumNearestSubTabsToSide(Right);
+                break;
+            case Vertical:
+                retValue = GetNumNearestSubTabsToSide(Upper) + GetNumNearestSubTabsToSide(Lower);
+                break;
+        }
+
+        return retValue;
+    }
+
+    /*
+     * Returns whether or not the passed SubTab is to the passed side of this SubTab (that is, are they adjacent, or would they be if they were simply closer to one another?)
+     * @param subTab The SubTab which may or may not be to the passed side of this one
+     * @param side The side of this SubTab on which the passed SubTab may or may not be
+     * @return A bool representing whether or not the passed SubTab is to the passed side of this SubTab (that is, are they adjacent, or would they be if they were simply closer to one another?)
+     */
+    public bool SubTabIsToSide(SubTab subTab, int side)
+    {
+        if (subTab != this)
+        {
+            bool subTabIsToSide = false;
+
+            switch (side)
+            {
+                case Left:
+                    subTabIsToSide = FloatUtil.LT(subTab.rt.anchoredPosition.x, rt.anchoredPosition.x)
+                                     && ((FloatUtil.GTE(rt.anchoredPosition.y, subTab.rt.anchoredPosition.y)
+                                          && FloatUtil.LT(rt.anchoredPosition.y, subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y))
+                                         || (FloatUtil.GT(rt.anchoredPosition.y + rt.sizeDelta.y, subTab.rt.anchoredPosition.y)
+                                             && FloatUtil.LTE(rt.anchoredPosition.y + rt.sizeDelta.y, subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y)));
+                    
+                    break;
+                case Right:
+                    subTabIsToSide = FloatUtil.GT(subTab.rt.anchoredPosition.x, rt.anchoredPosition.x)
+                                     && ((FloatUtil.GTE(rt.anchoredPosition.y, subTab.rt.anchoredPosition.y)
+                                          && FloatUtil.LT(rt.anchoredPosition.y, subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y))
+                                         || (FloatUtil.GT(rt.anchoredPosition.y + rt.sizeDelta.y, subTab.rt.anchoredPosition.y)
+                                             && FloatUtil.LTE(rt.anchoredPosition.y + rt.sizeDelta.y, subTab.rt.anchoredPosition.y + subTab.rt.sizeDelta.y)));
+                    
+                    break;
+                case Upper:
+                    subTabIsToSide = FloatUtil.GT(subTab.rt.anchoredPosition.y, rt.anchoredPosition.y)
+                                     && ((FloatUtil.GTE(rt.anchoredPosition.x, subTab.rt.anchoredPosition.x)
+                                          && FloatUtil.LT(rt.anchoredPosition.x, subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x))
+                                         || (FloatUtil.GT(rt.anchoredPosition.x + rt.sizeDelta.x, subTab.rt.anchoredPosition.x)
+                                             && FloatUtil.LTE(rt.anchoredPosition.x + rt.sizeDelta.x, subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x)));
+                    
+                    break;
+                case Lower:
+                    subTabIsToSide = FloatUtil.LT(subTab.rt.anchoredPosition.y, rt.anchoredPosition.y)
+                                     && ((FloatUtil.GTE(rt.anchoredPosition.x, subTab.rt.anchoredPosition.x)
+                                          && FloatUtil.LT(rt.anchoredPosition.x, subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x))
+                                         || (FloatUtil.GT(rt.anchoredPosition.x + rt.sizeDelta.x, subTab.rt.anchoredPosition.x)
+                                             && FloatUtil.LTE(rt.anchoredPosition.x + rt.sizeDelta.x, subTab.rt.anchoredPosition.x + subTab.rt.sizeDelta.x)));
+                    
+                    break;
+            }
+
+            return subTabIsToSide;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /*
@@ -1096,6 +1212,7 @@ public class SubTab : Tab {
      */
     public new void FillDeadSpace()
     {
+        print(name);
         if (HasDeadSpaceToSide(Left))
         {
             SubTab subTabToLeft = GetNearestSubTabToSide(Left);
