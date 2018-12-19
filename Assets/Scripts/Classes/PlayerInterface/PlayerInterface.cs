@@ -18,10 +18,10 @@ public class PlayerInterface : MonoBehaviour {
         //Initialize the Tab objects for testing purposes
         for(int i = 0; i < MaxSuperTabs; i++)
         {
-            GameObject superTab = Instantiate(Resources.Load("Prefabs/BottomLeftPrefab") as GameObject);
+            GameObject superTab = Instantiate(Resources.Load("Prefabs/PlayerInterface/BottomLeftPrefab") as GameObject);
             superTab.AddComponent<SuperTab>();
             superTabs.Add(superTab.GetComponent<SuperTab>());
-            GameObject subTab = Instantiate(Resources.Load("Prefabs/BottomLeftPrefab") as GameObject);
+            GameObject subTab = Instantiate(Resources.Load("Prefabs/PlayerInterface/BottomLeftPrefab") as GameObject);
             switch (i)
             {
                 case 0:

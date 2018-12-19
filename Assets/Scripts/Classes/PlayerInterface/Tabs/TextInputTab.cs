@@ -17,7 +17,7 @@ public class TextInputTab : SubTab {
     // Use this for initialization
     new public void Start () {
         base.Start();
-        iFieldObject = Instantiate(Resources.Load("Prefabs/InputFieldPrefab") as GameObject);
+        iFieldObject = Instantiate(Resources.Load("Prefabs/PlayerInterface/InputFieldPrefab") as GameObject);
         iFieldObject.transform.SetParent(crt);
         iField = iFieldObject.GetComponent<TMP_InputField>();
         iField.onValueChanged.AddListener(delegate { StartCoroutine(UpdateScrollbarVisibility()); });

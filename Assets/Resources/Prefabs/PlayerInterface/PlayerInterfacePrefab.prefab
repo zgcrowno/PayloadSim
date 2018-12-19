@@ -53,7 +53,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   superTabs: []
   canvas: {fileID: 0}
-  resizeHorizontalCursor: {fileID: 0}
-  resizeVerticalCursor: {fileID: 0}
-  resizeUpLeftCursor: {fileID: 0}
-  resizeUpRightCursor: {fileID: 0}

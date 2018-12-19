@@ -51,19 +51,19 @@ public class SubTab : Tab {
         resizingWhat = None;
         decrementSeenTimer = false;
         transform.SetParent(superTab.brt);
-        contentBody = Instantiate(Resources.Load("Prefabs/BottomLeftPrefab") as GameObject);
+        contentBody = Instantiate(Resources.Load("Prefabs/PlayerInterface/BottomLeftPrefab") as GameObject);
         contentBody.name = "ContentBody";
         contentBody.transform.SetParent(brt);
         crt = contentBody.GetComponent<RectTransform>();
         for(int i = 0; i < placeQuadrants.Length; i++)
         {
-            placeQuadrants[i] = Instantiate(Resources.Load("Prefabs/BottomLeftPrefab") as GameObject).AddComponent<PlaceQuadrant>();
+            placeQuadrants[i] = Instantiate(Resources.Load("Prefabs/PlayerInterface/BottomLeftPrefab") as GameObject).AddComponent<PlaceQuadrant>();
             placeQuadrants[i].transform.SetParent(brt);
             placeQuadrants[i].name = "PlaceQuadrant" + i;
         }
         for(int i = 0; i < resizeOctants.Length; i++)
         {
-            resizeOctants[i] = Instantiate(Resources.Load("Prefabs/BottomLeftPrefab") as GameObject).AddComponent<ResizeOctant>();
+            resizeOctants[i] = Instantiate(Resources.Load("Prefabs/PlayerInterface/BottomLeftPrefab") as GameObject).AddComponent<ResizeOctant>();
             resizeOctants[i].transform.SetParent(brt);
             resizeOctants[i].type = i;
             resizeOctants[i].name = "ResizeOctant" + i;
@@ -244,7 +244,7 @@ public class SubTab : Tab {
         else if (pi.superTabs.Count < PlayerInterface.MaxSuperTabs && superTab.subTabs.Count > 1)
         {
             //Adding as new SuperTab since the mouse cursor isn't contained within superTab's brt
-            AddAsSuperTab(Instantiate(Resources.Load("Prefabs/BottomLeftPrefab") as GameObject).AddComponent<SuperTab>());
+            AddAsSuperTab(Instantiate(Resources.Load("Prefabs/PlayerInterface/BottomLeftPrefab") as GameObject).AddComponent<SuperTab>());
         }
         else
         {
@@ -1212,7 +1212,6 @@ public class SubTab : Tab {
      */
     public new void FillDeadSpace()
     {
-        print(name);
         if (HasDeadSpaceToSide(Left))
         {
             SubTab subTabToLeft = GetNearestSubTabToSide(Left);

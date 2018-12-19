@@ -14,7 +14,7 @@ public class ObjectTab : SubTab {
 	// Use this for initialization
 	new public void Start () {
         base.Start();
-        objectImage = Instantiate(Resources.Load("Prefabs/ObjectImagePrefab") as GameObject);
+        objectImage = Instantiate(Resources.Load("Prefabs/PlayerInterface/ObjectImagePrefab") as GameObject);
         objectImage.transform.SetParent(contentBody.transform);
         objectImageRaw = objectImage.GetComponent<RawImage>();
         ort = objectImage.GetComponent<RectTransform>();

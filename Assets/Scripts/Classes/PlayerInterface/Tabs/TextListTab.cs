@@ -12,7 +12,7 @@ public class TextListTab : SubTab {
     new public void Start()
     {
         base.Start();
-        collapsibleListScrollable = Instantiate(Resources.Load("Prefabs/CollapsibleListScrollablePrefab") as GameObject);
+        collapsibleListScrollable = Instantiate(Resources.Load("Prefabs/PlayerInterface/CollapsibleListScrollablePrefab") as GameObject);
         collapsibleListScrollable.transform.SetParent(contentBody.transform);
         viewport = collapsibleListScrollable.transform.Find("Viewport").gameObject;
         viewportContent = viewport.transform.Find("ViewportContent").gameObject;

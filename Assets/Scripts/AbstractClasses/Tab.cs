@@ -23,8 +23,8 @@ public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHan
     public void Awake()
     {
         pi = GameObject.Find("/PlayerInterfacePrefab").GetComponent<PlayerInterface>();
-        body = Instantiate(Resources.Load("Prefabs/BodyPrefab") as GameObject);
-        header = Instantiate(Resources.Load("Prefabs/HeaderPrefab") as GameObject);
+        body = Instantiate(Resources.Load("Prefabs/PlayerInterface/BodyPrefab") as GameObject);
+        header = Instantiate(Resources.Load("Prefabs/PlayerInterface/HeaderPrefab") as GameObject);
         body.transform.SetParent(transform);
         header.transform.SetParent(transform);
         rt = GetComponent<RectTransform>();
