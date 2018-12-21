@@ -1181,7 +1181,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c96819462c0d2c4d941302f09b7ce11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
 --- !u!1 &170076733
 GameObject:
   m_ObjectHideFlags: 0
@@ -2330,7 +2329,7 @@ Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: pb_Mesh-1129492
+  m_Name: pb_Mesh6622
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -3014,16 +3013,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 444698c1e74edd1408de510ef82cc11f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
-  capacity: 0
-  contentSize: 0
-  wasteFriendly: 0
 --- !u!43 &329648474
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: pb_Mesh-543114
+  m_Name: pb_Mesh6500
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -3919,10 +3914,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9390ba1f7960ad64cb653a5d2e12af65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
-  capacity: 0
-  contentSize: 0
-  wasteFriendly: 0
 --- !u!43 &371580482
 Mesh:
   m_ObjectHideFlags: 0
@@ -4798,10 +4789,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fcd5a4d0a2947441b3b5b5eb039294b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
-  capacity: 0
-  contentSize: 0
-  wasteFriendly: 0
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -4851,8 +4838,8 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
-  orthographic: 1
+  field of view: 26.991467
+  orthographic: 0
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -5250,27 +5237,11 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!1 &547895665 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100000, guid: c09052c9b19f0ea4987bc4f4f981252f,
-    type: 3}
-  m_PrefabInternal: {fileID: 1920063819}
 --- !u!4 &547895668 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: c09052c9b19f0ea4987bc4f4f981252f,
     type: 3}
   m_PrefabInternal: {fileID: 1920063819}
---- !u!114 &547895669
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 547895665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bb9046a011dd4747b307433f5f50fa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &589505098
 GameObject:
   m_ObjectHideFlags: 0
@@ -5558,7 +5529,7 @@ Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: pb_Mesh-484512
+  m_Name: pb_Mesh6220
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -6248,6 +6219,7 @@ GameObject:
   m_Component:
   - component: {fileID: 723820815}
   - component: {fileID: 723820814}
+  - component: {fileID: 723820816}
   - component: {fileID: 723820813}
   m_Layer: 0
   m_Name: LevelsCamera
@@ -6273,7 +6245,7 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
-  m_projectionMatrixMode: 2
+  m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
   m_FocalLength: 49.999996
@@ -6285,7 +6257,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 26.99147
+  field of view: 25
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -6310,12 +6282,26 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 723820812}
   m_LocalRotation: {x: 0.18023993, y: 0.37533024, z: -0.07465782, w: 0.90612745}
-  m_LocalPosition: {x: -10.5, y: 10.5, z: -10.5}
+  m_LocalPosition: {x: -17, y: 14, z: -17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 22.5, y: 45, z: 0}
+--- !u!114 &723820816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 723820812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e186b819ea9f974ba26857d672108cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  content: {fileID: 0}
+  cam: {fileID: 0}
+  contentRenderers: []
 --- !u!1 &840141205
 GameObject:
   m_ObjectHideFlags: 0
@@ -7433,8 +7419,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a2d4c269ab961044abb45400ec75968, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  types: 
-  regenRate: 0
 --- !u!1 &971811738
 GameObject:
   m_ObjectHideFlags: 0
@@ -7814,10 +7798,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9390ba1f7960ad64cb653a5d2e12af65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
-  capacity: 0
-  contentSize: 0
-  wasteFriendly: 0
 --- !u!1 &975445869
 GameObject:
   m_ObjectHideFlags: 0
@@ -8205,10 +8185,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd66b41d299912441b8772d589a36a58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
-  capacity: 0
-  contentSize: 0
-  wasteFriendly: 0
 --- !u!1 &983515420
 GameObject:
   m_ObjectHideFlags: 0
@@ -9360,10 +9336,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9390ba1f7960ad64cb653a5d2e12af65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
-  capacity: 0
-  contentSize: 0
-  wasteFriendly: 0
 --- !u!43 &1184607203
 Mesh:
   m_ObjectHideFlags: 0
@@ -11439,8 +11411,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9055ce010ff46f24e8e8baafa16e3e3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  types: 
-  regenRate: 0
 --- !u!1 &1367691886
 GameObject:
   m_ObjectHideFlags: 0
@@ -11884,10 +11854,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9390ba1f7960ad64cb653a5d2e12af65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
-  capacity: 0
-  contentSize: 0
-  wasteFriendly: 0
 --- !u!1 &1481507426
 GameObject:
   m_ObjectHideFlags: 0
@@ -12457,10 +12423,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9be67badfb71aea4cbb40eea3814e857, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
-  capacity: 0
-  contentSize: 0
-  wasteFriendly: 0
 --- !u!1 &1536366391
 GameObject:
   m_ObjectHideFlags: 0
@@ -13084,10 +13046,10 @@ GameObject:
   - component: {fileID: 1583075813}
   - component: {fileID: 1583075812}
   - component: {fileID: 1583075811}
-  - component: {fileID: 1583075817}
   - component: {fileID: 1583075816}
+  - component: {fileID: 1583075817}
   m_Layer: 0
-  m_Name: Cylinder
+  m_Name: Human
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14120,7 +14082,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1583075810}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baad342ad34db1044b6e63845064b73b, type: 3}
+  m_Script: {fileID: 11500000, guid: ad722ade7d9f2834fa77d002bcb1fa4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 0}
@@ -14889,10 +14851,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 444698c1e74edd1408de510ef82cc11f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
-  capacity: 0
-  contentSize: 0
-  wasteFriendly: 0
 --- !u!43 &1650328425
 Mesh:
   m_ObjectHideFlags: 0
@@ -15612,7 +15570,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deda52eae34eed948982b23933d710c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
 --- !u!1 &1777796401
 GameObject:
   m_ObjectHideFlags: 0
@@ -17488,7 +17445,7 @@ Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: pb_Mesh-519856
+  m_Name: pb_Mesh6274
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -18172,8 +18129,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2dcba44bef79ab43af9c86e24d8bb5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  types: 
-  regenRate: 0
 --- !u!1001 &1920063819
 Prefab:
   m_ObjectHideFlags: 0
@@ -18595,7 +18550,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07f5a6a02e82cd94cbbc0bd9562212e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firewallLevel: 0
 --- !u!1 &2013360645
 GameObject:
   m_ObjectHideFlags: 0
@@ -19156,6 +19110,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2067480290}
   - component: {fileID: 2067480288}
+  - component: {fileID: 2067480291}
   - component: {fileID: 2067480289}
   m_Layer: 0
   m_Name: FocusCamera
@@ -19174,7 +19129,7 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
-  m_projectionMatrixMode: 2
+  m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
   m_FocalLength: 49.999996
@@ -19186,7 +19141,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 26.99147
+  field of view: 25
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -19217,13 +19172,27 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2067480287}
-  m_LocalRotation: {x: 0.18023993, y: -0.37533024, z: 0.07465782, w: 0.90612745}
-  m_LocalPosition: {x: 1934, y: 11, z: -14}
+  m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 1938.5, y: 4, z: -18.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 22.5, y: -45, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
+--- !u!114 &2067480291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2067480287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19ac60c7f60697843992794db758903a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  content: {fileID: 0}
+  cam: {fileID: 0}
+  contentRenderer: {fileID: 0}
 --- !u!43 &2070800647
 Mesh:
   m_ObjectHideFlags: 0
