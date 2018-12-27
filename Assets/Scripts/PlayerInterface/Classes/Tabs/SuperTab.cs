@@ -16,9 +16,14 @@ public class SuperTab : Tab {
         SetUp(new Vector2(0, 0), new Vector2(Screen.width, Screen.height));
     }
 
-    void Update()
+    public void FixedUpdate()
     {
         HeaderBehavior();
+    }
+
+    public override void OnPointerClick(PointerEventData ped)
+    {
+
     }
 
     public override void OnDrag(PointerEventData ped)

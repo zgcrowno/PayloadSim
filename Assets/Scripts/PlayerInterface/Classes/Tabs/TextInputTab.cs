@@ -33,9 +33,9 @@ public class TextInputTab : SubTab {
         StartCoroutine(UpdateScrollbarVisibility()); //Ensure the scrollbar has the correct visibility at start
     }
 
-    new public void Update()
+    new public void FixedUpdate()
     {
-        base.Update();
+        base.FixedUpdate();
         UpdateCaretVisibility();
     }
 

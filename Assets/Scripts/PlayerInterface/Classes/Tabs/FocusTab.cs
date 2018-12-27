@@ -8,7 +8,7 @@ public class FocusTab : ObjectTab {
     public const string HeaderText = "FOCUS";
     
 	new public void Start () {
-        objectCamera = GameObject.Find("FocusCamera").GetComponent<Camera>();
+        objectCamera = GameObject.Find("FocusCamera").GetComponent<PayloadCamera>();
         headerText.text = HeaderText;
         base.Start();
     }

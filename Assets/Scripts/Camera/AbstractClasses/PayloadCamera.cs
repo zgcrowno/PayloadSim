@@ -4,19 +4,17 @@ using UnityEngine;
 
 public abstract class PayloadCamera : MonoBehaviour {
 
+    public float orbitSpeed = 4;
+
     public GameObject content; //The object on which this PayloadCamera is focused
     public Camera cam; //The Camera component of this PayloadCamera
     public Renderer[] contentRenderers; //The Renderer components contained within content
     public Bounds contentBounds; //The Bounds object in which is contained all of content's Bounds
+    public Vector2 input; //The MouseDrag input used in orbiting around this PayloadCamera's content
 
     // Use this for initialization
     public void Start () {
         cam = GetComponent<Camera>();
-	}
-	
-	// Update is called once per frame
-	public void FixedUpdate () {
-        
 	}
 
     /*
@@ -54,9 +52,49 @@ public abstract class PayloadCamera : MonoBehaviour {
      */ 
     public void SwitchContent(GameObject newContent)
     {
-        content.layer = LayerMask.NameToLayer("Default");
+        if(content != null)
+        {
+            content.layer = LayerMask.NameToLayer("Default");
+        }
+
         content = newContent;
-        content.layer = LayerMask.NameToLayer("Focus");
-        CenterContent();
+
+        if(content != null)
+        {
+            content.layer = LayerMask.NameToLayer("Focus");
+            contentRenderers = content.GetComponentsInChildren<Renderer>();
+            contentBounds = new Bounds();
+            CenterContent();
+        }
+    }
+
+    /*
+     * Uses raycasting to determine which GameObject in this PayloadCamera's viewport has just been clicked, given the passed Vector2
+     * @param relativeClickPosition The passed Vector2 by which we're determining which GameObject has just been clicked
+     * @return The GameObject which has just been clicked, or null if no GameObject was clicked
+     */ 
+    public GameObject GetClickedContent(Vector2 relativeClickPosition)
+    {
+        RaycastHit hit;
+        Ray ray = cam.ScreenPointToRay(new Vector2(relativeClickPosition.x * cam.pixelWidth, relativeClickPosition.y * cam.pixelHeight));
+
+        if(Physics.Raycast(ray, out hit))
+        {
+            return hit.collider.gameObject;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    /*
+     * Reads mouse input from the player in order to appropriately rotate objectCamera around content
+     */ 
+    public void OrbitAroundContent()
+    {
+        input += new Vector2(Input.GetAxis("Mouse X") * orbitSpeed, Input.GetAxis("Mouse Y") * orbitSpeed);
+        transform.localRotation = Quaternion.Euler(Mathf.Clamp(input.y, 0, 90), input.x, 0);
+        transform.localPosition = contentBounds.center - (transform.localRotation * Vector3.forward * Vector3.Distance(transform.position, contentBounds.center));
     }
 }

@@ -11,9 +11,4 @@ public class LevelsCamera : PayloadCamera {
         contentRenderers = content.GetComponentsInChildren<Renderer>();
         CenterContent();
     }
-	
-	// Update is called once per frame
-	new public void FixedUpdate () {
-        
-	}
 }

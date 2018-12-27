@@ -42,11 +42,6 @@ public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHan
         
     }
 
-    public void OnPointerClick(PointerEventData ped)
-    {
-        
-    }
-
     /*
      * Method by which a Tab's and its associated body's and header's RectTransforms are assigned the values they previously held
      */
@@ -62,7 +57,14 @@ public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHan
      */
     public bool IsFrontmost()
     {
-        return transform.GetSiblingIndex() == transform.parent.childCount - 1;
+        if(transform.parent != null)
+        {
+            return transform.GetSiblingIndex() == transform.parent.childCount - 1;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /*
@@ -75,6 +77,8 @@ public abstract class Tab : MonoBehaviour, IPointerClickHandler, IPointerDownHan
             superTab.FillDeadSpace();
         }
     }
+
+    public abstract void OnPointerClick(PointerEventData ped);
 
     public abstract void OnPointerDown(PointerEventData ped);
 

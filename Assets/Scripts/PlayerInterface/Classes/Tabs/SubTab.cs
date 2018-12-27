@@ -70,9 +70,14 @@ public class SubTab : Tab {
         }
     }
 
-    public void Update()
+    public void FixedUpdate()
     {
         HeaderBehavior();
+    }
+
+    public override void OnPointerClick(PointerEventData ped)
+    {
+
     }
 
     public override void OnDrag(PointerEventData ped)

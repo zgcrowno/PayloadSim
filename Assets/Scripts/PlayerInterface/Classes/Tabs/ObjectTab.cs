@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ObjectTab : SubTab {
+public class ObjectTab : SubTab
+{
 
-    public Camera objectCamera;
+    public PayloadCamera objectCamera;
     public GameObject objectImage;
     public RawImage objectImageRaw;
     public RectTransform ort;
@@ -21,11 +23,6 @@ public class ObjectTab : SubTab {
         renderTexture = (RenderTexture) objectImageRaw.texture;
         SetUp(new Vector2(superTab.brt.anchoredPosition.x, superTab.brt.anchoredPosition.y), new Vector2(superTab.brt.sizeDelta.x, superTab.brt.sizeDelta.y));
     }
-	
-	// Update is called once per frame
-	new public void Update () {
-		
-	}
 
     public override void SetUp(Vector2 pos, Vector2 size)
     {
@@ -36,12 +33,12 @@ public class ObjectTab : SubTab {
         ort.sizeDelta = new Vector2(newDimension, newDimension);
 
         //Reassign RenderTexture to get correct size
-        if (objectCamera.targetTexture != null)
+        if (objectCamera.cam.targetTexture != null)
         {
-            objectCamera.targetTexture.Release();
+            objectCamera.cam.targetTexture.Release();
         }
         renderTexture = new RenderTexture(Mathf.FloorToInt(ort.sizeDelta.x), Mathf.FloorToInt(ort.sizeDelta.y), renderTexture.depth);
-        objectCamera.targetTexture = renderTexture;
+        objectCamera.cam.targetTexture = renderTexture;
         objectImageRaw.texture = renderTexture;
     }
 }
