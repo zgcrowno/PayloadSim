@@ -15,7 +15,11 @@ public abstract class PayloadCamera : MonoBehaviour {
     // Use this for initialization
     public void Start () {
         cam = GetComponent<Camera>();
-	}
+
+        //Set input to the localRotation's eulerAngles here, so there's not a hard reset of the camera when the player begins their first orbit of the PayloadCamera's content
+        input.x = transform.localRotation.eulerAngles.y;
+        input.y = transform.localRotation.eulerAngles.x;
+    }
 
     /*
      * This method ensures that the content on which this PayloadCamera is focused fits perfectly within the viewport
@@ -93,8 +97,8 @@ public abstract class PayloadCamera : MonoBehaviour {
      */ 
     public void OrbitAroundContent()
     {
-        input += new Vector2(Input.GetAxis("Mouse X") * orbitSpeed, Input.GetAxis("Mouse Y") * orbitSpeed);
-        transform.localRotation = Quaternion.Euler(Mathf.Clamp(input.y, 0, 90), input.x, 0);
+        input = new Vector2(input.x + (Input.GetAxis("Mouse X") * orbitSpeed), Mathf.Clamp(input.y + (Input.GetAxis("Mouse Y") * orbitSpeed), 0, 90));
+        transform.localRotation = Quaternion.Euler(input.y, input.x, 0);
         transform.localPosition = contentBounds.center - (transform.localRotation * Vector3.forward * Vector3.Distance(transform.position, contentBounds.center));
     }
 }
