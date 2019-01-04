@@ -11,7 +11,8 @@ public class FocusCamera : PayloadCamera {
     // Use this for initialization
     new public void Start () {
         base.Start();
-        content = GameObject.Find("/Level/Rooms/Kitchen/Fridge");
+        content = GameObject.Find("/Stage/Level/Rooms/Kitchen/Fridge");
+        contentClickable = content.GetComponent<Clickable>();
         contentRenderers = content.GetComponentsInChildren<Renderer>();
         CenterContent();
     }

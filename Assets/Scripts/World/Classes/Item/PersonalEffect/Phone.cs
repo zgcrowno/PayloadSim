@@ -5,8 +5,10 @@ using UnityEngine;
 public class Phone : PersonalEffect, IHackable {
 
 	// Use this for initialization
-	void Start () {
-		
+	public new void Start () {
+        base.Start();
+        designation = "Phone";
+        cls = "Electronics";
 	}
 	
 	// Update is called once per frame

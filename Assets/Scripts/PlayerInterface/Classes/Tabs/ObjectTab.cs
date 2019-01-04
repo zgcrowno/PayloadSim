@@ -21,7 +21,6 @@ public class ObjectTab : SubTab
         objectImageRaw = objectImage.GetComponent<RawImage>();
         ort = objectImage.GetComponent<RectTransform>();
         renderTexture = (RenderTexture) objectImageRaw.texture;
-        SetUp(new Vector2(superTab.brt.anchoredPosition.x, superTab.brt.anchoredPosition.y), new Vector2(superTab.brt.sizeDelta.x, superTab.brt.sizeDelta.y));
     }
 
     public override void SetUp(Vector2 pos, Vector2 size)
@@ -30,6 +29,14 @@ public class ObjectTab : SubTab
 
         //Set up the object to display's RectTransform, based on whether crt's width or height is greater
         float newDimension = crt.sizeDelta.x > crt.sizeDelta.y ? crt.sizeDelta.y : crt.sizeDelta.x;
+        if ((2 * crt.sizeDelta.x) / 3 > crt.sizeDelta.y)
+        {
+            newDimension = crt.sizeDelta.y;
+        }
+        else
+        {
+            newDimension = (2 * crt.sizeDelta.x) / 3;
+        }
         ort.sizeDelta = new Vector2(newDimension, newDimension);
 
         //Reassign RenderTexture to get correct size

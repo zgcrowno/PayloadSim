@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -83,7 +84,7 @@ public class PlayerInterface : MonoBehaviour {
      * @param type The type of SubTab for which we're searching
      * @return The SubTab of the designated type
      */ 
-    public SubTab GetSubTabByType(System.Type type)
+    public SubTab GetSubTabByType(Type type)
     {
         foreach (SuperTab superTab in superTabs)
         {

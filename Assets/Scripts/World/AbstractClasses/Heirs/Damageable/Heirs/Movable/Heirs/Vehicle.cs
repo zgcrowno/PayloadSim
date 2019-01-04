@@ -25,7 +25,8 @@ public abstract class Vehicle : Movable, IContainer, IHackable {
     //END interface properties
 
     // Use this for initialization
-    void Start () {
+    public new void Start () {
+        base.Start();
         contents = new List<Consumable>();
     }
 	

@@ -5,8 +5,10 @@ using UnityEngine;
 public class Illuminator : Immovable, IHackable {
 
 	// Use this for initialization
-	void Start () {
-		
+	public new void Start () {
+        base.Start();
+        designation = "Light";
+        cls = "Fixtures";
 	}
 	
 	// Update is called once per frame

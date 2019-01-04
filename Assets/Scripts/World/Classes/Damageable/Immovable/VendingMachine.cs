@@ -25,10 +25,13 @@ public class VendingMachine : Immovable, IContainer, IHackable {
     //END interface properties
 
     // Use this for initialization
-    void Start () {
+    public new void Start () {
+        base.Start();
         capacity = 80;
         contents = new List<Consumable>();
         wasteFriendly = false;
+        designation = "Vending Machine";
+        cls = "Electronics";
 	}
 	
 	// Update is called once per frame

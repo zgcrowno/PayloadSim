@@ -25,10 +25,13 @@ public class Cabinet : Immovable, IContainer, IHackable {
     //END interface properties
 
     // Use this for initialization
-    void Start () {
+    public new void Start () {
+        base.Start();
         capacity = 35;
         contents = new List<Consumable>();
         wasteFriendly = false;
+        designation = "Cabinet";
+        cls = "Fixtures";
 	}
 	
 	// Update is called once per frame

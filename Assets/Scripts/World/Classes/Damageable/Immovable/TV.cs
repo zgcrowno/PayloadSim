@@ -13,8 +13,10 @@ public class TV : Immovable, IHackable, IRegenerative {
     //END interface properties
 
     // Use this for initialization
-    void Start () {
-		
+    public new void Start () {
+        base.Start();
+        designation = "TV";
+        cls = "Electronics";
 	}
 	
 	// Update is called once per frame

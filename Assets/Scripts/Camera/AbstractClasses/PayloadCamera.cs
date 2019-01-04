@@ -6,15 +6,20 @@ public abstract class PayloadCamera : MonoBehaviour {
 
     public float orbitSpeed = 4;
 
+    public PlayerInterface pi; //The overarching PlayerInterface of which all Tabs are children (though not in terms of the hierarchy)
     public GameObject content; //The object on which this PayloadCamera is focused
+    public Clickable contentClickable; //The Clickable component of this PayloadCamera's content object
     public Camera cam; //The Camera component of this PayloadCamera
     public Renderer[] contentRenderers; //The Renderer components contained within content
     public Bounds contentBounds; //The Bounds object in which is contained all of content's Bounds
     public Vector2 input; //The MouseDrag input used in orbiting around this PayloadCamera's content
+    public FocusTab focusTab;
 
     // Use this for initialization
     public void Start () {
         cam = GetComponent<Camera>();
+        pi = GameObject.Find("/PlayerInterfacePrefab").GetComponent<PlayerInterface>();
+        focusTab = (FocusTab)pi.GetSubTabByType(typeof(FocusTab));
 
         //Set input to the localRotation's eulerAngles here, so there's not a hard reset of the camera when the player begins their first orbit of the PayloadCamera's content
         input.x = transform.localRotation.eulerAngles.y;
@@ -40,7 +45,7 @@ public abstract class PayloadCamera : MonoBehaviour {
             }
         }
 
-        float cameraDistance = 1.75f; // Constant factor
+        float cameraDistance = 2.0f; // Constant factor
         Vector3 objectSizes = contentBounds.max - contentBounds.min;
         float objectSize = Mathf.Max(objectSizes.x, objectSizes.y, objectSizes.z);
         float cameraView = 2.0f * Mathf.Tan(0.5f * Mathf.Deg2Rad * cam.fieldOfView); // Visible height 1 meter in front
@@ -62,6 +67,7 @@ public abstract class PayloadCamera : MonoBehaviour {
         }
 
         content = newContent;
+        contentClickable = newContent.GetComponent<Clickable>();
 
         if(content != null)
         {
@@ -97,7 +103,7 @@ public abstract class PayloadCamera : MonoBehaviour {
      */ 
     public void OrbitAroundContent()
     {
-        input = new Vector2(input.x + (Input.GetAxis("Mouse X") * orbitSpeed), Mathf.Clamp(input.y + (Input.GetAxis("Mouse Y") * orbitSpeed), 0, 90));
+        input = new Vector2(input.x + (Input.GetAxis("Mouse X") * orbitSpeed), Mathf.Clamp(input.y + (-Input.GetAxis("Mouse Y") * orbitSpeed), 0, 90));
         transform.localRotation = Quaternion.Euler(input.y, input.x, 0);
         transform.localPosition = contentBounds.center - (transform.localRotation * Vector3.forward * Vector3.Distance(transform.position, contentBounds.center));
     }

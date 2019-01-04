@@ -13,8 +13,10 @@ public class Bed : Immovable, IRegenerative {
     //END interface properties
 
     // Use this for initialization
-    void Start () {
-		
+    public new void Start () {
+        base.Start();
+        designation = "Bed";
+        cls = "Furniture";
 	}
 	
 	// Update is called once per frame

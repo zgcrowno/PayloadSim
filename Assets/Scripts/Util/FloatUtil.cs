@@ -58,4 +58,36 @@ public class FloatUtil {
     {
         return Equals(f1, f2) || f1 < f2;
     }
+
+    /*
+     * Returns an int representing the percentage f1 is of f2
+     * @param f1 The float whose percentage of f2 is being determined
+     * @param f2 The float of whom f1's percentage is being determined
+     * @return An int representing the percentage f1 is of f2
+     */ 
+    public static int AsPercent(float f1, float f2)
+    {
+        return Mathf.CeilToInt((f1 * 100) / f2);
+    }
+
+    /*
+     * Returns a string representation of the percentage f1 is of f2, complete with percent sign
+     * @param f1 The float whose percentage of f2 is being determined
+     * @param f2 The float of whom f1's percentage is being determined
+     * @return A string representing the percentage f1 is of f2
+     */
+    public static string AsPercentString(float f1, float f2)
+    {
+        return AsPercent(f1, f2) + "%";
+    }
+
+    /*
+     * Returns a string representation of the passed float, complete with degree symbol
+     * @param f The float we're to represent as a degree value
+     * @return A string representing the passed float with a degree symbol appended
+     */
+     public static string AsDegreeString(float f)
+    {
+        return f + "\u00B0";
+    }
 }

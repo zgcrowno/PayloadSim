@@ -8,7 +8,8 @@ public abstract class Movable : Damageable {
     public NavMeshAgent agent;
 
 	// Use this for initialization
-	void Start () {
+	public new void Start () {
+        base.Start();
         agent = GetComponent<NavMeshAgent>();
 	}
 	
@@ -21,8 +22,8 @@ public abstract class Movable : Damageable {
      * Moves this object as close as possible to the passed Transform
      * @param trans The passed Transform towards which this object is moving
      */ 
-    public void MoveTo(Transform trans)
+    public void MoveTo(Vector3 pos)
     {
-
+        agent.SetDestination(pos);
     }
 }

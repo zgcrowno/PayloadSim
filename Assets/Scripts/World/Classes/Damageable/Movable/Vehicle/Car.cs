@@ -5,9 +5,12 @@ using UnityEngine;
 public class Car : Vehicle {
 
 	// Use this for initialization
-	void Start () {
+	public new void Start () {
+        base.Start();
         capacity = 35;
         wasteFriendly = false;
+        designation = "Car";
+        cls = "Vehicle";
     }
 	
 	// Update is called once per frame

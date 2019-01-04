@@ -5,8 +5,8 @@ using UnityEngine;
 public abstract class Immovable : Damageable {
 
 	// Use this for initialization
-	void Start () {
-		
+	public new void Start () {
+        base.Start();
 	}
 	
 	// Update is called once per frame

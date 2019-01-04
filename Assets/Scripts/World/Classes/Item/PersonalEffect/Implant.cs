@@ -5,8 +5,10 @@ using UnityEngine;
 public class Implant : PersonalEffect, IHackable {
 
 	// Use this for initialization
-	void Start () {
-		
+	public new void Start () {
+        base.Start();
+        designation = "B.U.D.I.";
+        cls = "Electronics";
 	}
 	
 	// Update is called once per frame

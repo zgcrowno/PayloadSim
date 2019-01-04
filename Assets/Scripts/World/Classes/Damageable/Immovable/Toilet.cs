@@ -31,10 +31,13 @@ public class Toilet : Immovable, IContainer, IHackable, IRegenerative {
     //END interface properties
 
     // Use this for initialization
-    void Start () {
+    public new void Start () {
+        base.Start();
         capacity = 10;
         contents = new List<Consumable>();
         wasteFriendly = true;
+        designation = "Toilet";
+        cls = "Appliances";
 	}
 	
 	// Update is called once per frame

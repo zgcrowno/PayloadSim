@@ -39,6 +39,15 @@ public class TextInputTab : SubTab {
         UpdateCaretVisibility();
     }
 
+    public override void SetUp(Vector2 pos, Vector2 size)
+    {
+        base.SetUp(pos, size);
+        if(isActiveAndEnabled)
+        {
+            StartCoroutine(UpdateScrollbarVisibility());
+        }
+    }
+
     public IEnumerator UpdateScrollbarVisibility()
     {
         // This needs to be delayed a frame because it relies on the rect

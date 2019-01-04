@@ -13,10 +13,11 @@ public class LevelsTab : ObjectTab
     public FocusTab focusTab;
 
     new public void Start() {
+        base.Start();
         objectCamera = GameObject.Find("LevelsCamera").GetComponent<PayloadCamera>();
         headerText.text = HeaderText;
         focusTab = (FocusTab)pi.GetSubTabByType(typeof(FocusTab));
-        base.Start();
+        SetUp(new Vector2(superTab.brt.anchoredPosition.x, superTab.brt.anchoredPosition.y), new Vector2(superTab.brt.sizeDelta.x, superTab.brt.sizeDelta.y));
     }
 
     public override void OnPointerDown(PointerEventData ped)
@@ -37,11 +38,12 @@ public class LevelsTab : ObjectTab
             Vector2 relativeClickPosition;
             if (RectTransformUtility.RectangleContainsScreenPoint(ort, ped.position, ped.pressEventCamera))
             {
-                absoluteClickPosition = new Vector2(ped.position.x - (ort.position.x - (ort.sizeDelta.x / 2)), ped.position.y - (ort.position.y - (ort.sizeDelta.y / 2)));
+                absoluteClickPosition = new Vector2(ped.position.x - (ort.position.x - ort.sizeDelta.x), ped.position.y - (ort.position.y - (ort.sizeDelta.y / 2)));
                 relativeClickPosition = new Vector2(absoluteClickPosition.x / ort.sizeDelta.x, absoluteClickPosition.y / ort.sizeDelta.y);
 
                 GameObject clickedObject = objectCamera.GetClickedContent(relativeClickPosition);
-                if(clickedObject != null && clickedObject.GetComponent<Clickable>() != null) //Only switch content if the clickedObject is not null, and has a Clickable component, thus being eligible for focus
+                Clickable clickedObjectClickable = clickedObject.GetComponent<Clickable>();
+                if(clickedObject != null && clickedObjectClickable != null) //Only switch content if the clickedObject is not null, and has a Clickable component, thus being eligible for focus
                 {
                     focusTab.objectCamera.SwitchContent(clickedObject);
                 }

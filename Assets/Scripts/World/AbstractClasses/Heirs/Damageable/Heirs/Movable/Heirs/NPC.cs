@@ -9,9 +9,9 @@ using UnityEngine.AI;
 public abstract class NPC : Movable {
 
     // Use this for initialization
-    public void Start()
+    public new void Start()
     {
-        
+        base.Start();
     }
 
     // Update is called once per frame

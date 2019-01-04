@@ -5,8 +5,10 @@ using UnityEngine;
 public class Thermostat : Immovable, IHackable {
 
 	// Use this for initialization
-	void Start () {
-		
+	public new void Start () {
+        base.Start();
+        designation = "Thermostat";
+        cls = "Electronics";
 	}
 	
 	// Update is called once per frame

@@ -25,10 +25,15 @@ public class Fridge : Immovable, IContainer, IHackable {
     //END interface properties
 
     // Use this for initialization
-    void Start () {
+    public new void Start () {
+        base.Start();
         capacity = 50;
         contents = new List<Consumable>();
+        contents.Add(new PuddingSkin());
+        contents.Add(new Water());
         wasteFriendly = false;
+        designation = "Fridge";
+        cls = "Appliances";
 	}
 	
 	// Update is called once per frame

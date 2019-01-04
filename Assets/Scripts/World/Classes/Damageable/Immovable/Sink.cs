@@ -25,10 +25,13 @@ public class Sink : Immovable, IContainer, IHackable {
     //END interface properties
 
     // Use this for initialization
-    void Start () {
+    public new void Start () {
+        base.Start();
         capacity = 20;
         contents = new List<Consumable>();
         wasteFriendly = true;
+        designation = "Sink";
+        cls = "Appliances";
 	}
 	
 	// Update is called once per frame

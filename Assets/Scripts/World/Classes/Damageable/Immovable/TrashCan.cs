@@ -25,10 +25,13 @@ public class TrashCan : Immovable, IContainer, IHackable {
     //END interface properties
 
     // Use this for initialization
-    void Start () {
+    public new void Start () {
+        base.Start();
         capacity = 25;
         contents = new List<Consumable>();
         wasteFriendly = true;
+        designation = "Trash Can";
+        cls = "Fixtures";
 	}
 	
 	// Update is called once per frame

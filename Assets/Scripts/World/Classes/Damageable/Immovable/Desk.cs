@@ -25,10 +25,13 @@ public class Desk : Immovable, IContainer {
     //END interface properties
 
     // Use this for initialization
-    void Start () {
+    public new void Start () {
+        base.Start();
         capacity = 40;
         contents = new List<Consumable>();
         wasteFriendly = false;
+        designation = "Desk";
+        cls = "Furniture";
 	}
 	
 	// Update is called once per frame
