@@ -12,4 +12,9 @@ public class LevelsCamera : PayloadCamera {
         contentRenderers = content.GetComponentsInChildren<Renderer>();
         CenterContent();
     }
+
+    new public void FixedUpdate()
+    {
+        base.FixedUpdate();
+    }
 }

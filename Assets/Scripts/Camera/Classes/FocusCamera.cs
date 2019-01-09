@@ -19,6 +19,8 @@ public class FocusCamera : PayloadCamera {
 	
 	// Update is called once per frame
 	public void FixedUpdate () {
+        base.FixedUpdate();
+
         if(content != null)
         {
             if(rotationTimer < rotationTimerLimit)

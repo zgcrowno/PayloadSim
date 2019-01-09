@@ -22,6 +22,8 @@ public class Human : NPC {
     public const int IntentionSocialize = 7;
     public const int IntentionRelax = 8;
     public const int IntentionWork = 9;
+    public const int IntentionReport = 10;
+    public const int IntentionResolve = 11;
 
     //The various levels of sociability this Human may have, in increasingly dependent order
     public const int Dependence1 = 0;
@@ -100,8 +102,9 @@ public class Human : NPC {
         workDays.Add(Friday);
         perks.Add(Hemorrhoids);
 
-        designation = "Sommers, Harold"; //Setting designation here for testing purposes only
-        cls = "Human"; //Setting cls here for testing purposes only
+        //All of the below values are set here for testing purposes only, but will later simply be set in the inspector
+        designation = "Sommers, Harold"; 
+        cls = "Human"; 
         sex = Male;
         attractedTo = Female;
         intention = IntentionSleep;
@@ -142,75 +145,54 @@ public class Human : NPC {
     {
         if(intention == IntentionDrink)
         {
-            Drink nearestDrink = (Drink)GetNearestObjectOfType(typeof(Drink));
+            Drink nearestDrink = GetNearestObjectOfType(typeof(Drink)) as Drink;
             MoveTo(nearestDrink.transform.position);
         }
         else if(intention == IntentionEat)
         {
-            Food nearestFood = (Food)GetNearestObjectOfType(typeof(Food));
+            Food nearestFood = GetNearestObjectOfType(typeof(Food)) as Food;
             MoveTo(nearestFood.transform.position);
         }
         else if(intention == IntentionUrinate)
         {
-            Toilet nearestToilet = (Toilet)GetNearestObjectOfType(typeof(Toilet));
+            Toilet nearestToilet = GetNearestObjectOfType(typeof(Toilet)) as Toilet;
             MoveTo(nearestToilet.transform.position);
         }
         else if(intention == IntentionDefecate)
         {
-            Toilet nearestToilet = (Toilet)GetNearestObjectOfType(typeof(Toilet));
+            Toilet nearestToilet = GetNearestObjectOfType(typeof(Toilet)) as Toilet;
             MoveTo(nearestToilet.transform.position);
         }
         else if(intention == IntentionTemper)
         {
-            Thermostat nearestThermostat = (Thermostat)GetNearestObjectOfType(typeof(Thermostat));
+            Thermostat nearestThermostat = GetNearestObjectOfType(typeof(Thermostat)) as Thermostat;
             MoveTo(nearestThermostat.transform.position);
         }
         else if(intention == IntentionSleep)
         {
-            Bed nearestBed = (Bed)GetNearestObjectOfType(typeof(Bed));
+            Bed nearestBed = GetNearestObjectOfType(typeof(Bed)) as Bed;
             MoveTo(nearestBed.transform.position);
         }
         else if(intention == IntentionClean)
         {
-            Shower nearestShower = (Shower)GetNearestObjectOfType(typeof(Shower));
+            Shower nearestShower = GetNearestObjectOfType(typeof(Shower)) as Shower;
             MoveTo(nearestShower.transform.position);
         }
         else if(intention == IntentionSocialize)
         {
-            Human nearestHuman = (Human)GetNearestObjectOfType(typeof(Human));
+            Human nearestHuman = GetNearestObjectOfType(typeof(Human)) as Human;
             MoveTo(nearestHuman.transform.position);
         }
         else if(intention == IntentionRelax)
         {
-            Couch nearestCouch = (Couch)GetNearestObjectOfType(typeof(Couch));
+            Couch nearestCouch = GetNearestObjectOfType(typeof(Couch)) as Couch;
             MoveTo(nearestCouch.transform.position);
         }
         else if(intention == IntentionWork)
         {
-            Computer nearestComputer = (Computer)GetNearestObjectOfType(typeof(Computer));
+            Computer nearestComputer = GetNearestObjectOfType(typeof(Computer)) as Computer;
             MoveTo(nearestComputer.transform.position);
         }
-        //Water
-        
-        //Food
-
-        //Wellness
-
-        //Bladder
-
-        //Bowels
-
-        //Temperature
-
-        //Energy
-
-        //Hygiene
-
-        //Sociability/Loneliness
-
-        //Relaxation
-
-        //Perception/Awareness
     }
 
     /*
@@ -220,36 +202,36 @@ public class Human : NPC {
     {
         if(hydration > 0)
         {
-            hydration -= 0.001f;
+            hydration -= 1f;
         }
         else
         {
             hydration = 0;
-            hp -= 0.001f;
+            hp -= 0.1f;
             intention = IntentionDrink;
         }
 
         if(satisfaction > 0)
         {
-            satisfaction -= 0.001f;
+            satisfaction -= 1f;
         }
         else
         {
             satisfaction = 0;
-            hp -= 0.001f;
+            hp -= 0.1f;
             intention = IntentionEat;
         }
 
         if(!well)
         {
             hydration -= 0.01f;
-            hp -= 0.0001f;
+            hp -= 0.1f;
             intention = IntentionSleep;
         }
 
         if (temperature > OptimalTemp)
         {
-            energy -= 0.01f;
+            energy -= 1f;
             intention = IntentionTemper;
         }
         else if(temperature < OptimalTemp)
@@ -263,7 +245,7 @@ public class Human : NPC {
 
         if (energy > 0)
         {
-            energy -= 0.001f;
+            energy -= 1f;
         }
         else
         {
@@ -278,7 +260,7 @@ public class Human : NPC {
 
         if(hygiene > 0)
         {
-            hygiene -= 0.001f;
+            hygiene -= 1f;
         }
         else
         {
@@ -293,7 +275,7 @@ public class Human : NPC {
 
         if(loneliness < MaxValue)
         {
-            loneliness += 0.001f;
+            loneliness += 1f;
         }
         else
         {
@@ -303,7 +285,7 @@ public class Human : NPC {
 
         if(relaxation > 0)
         {
-            relaxation -= 0.001f;
+            relaxation -= 1f;
         }
         else
         {

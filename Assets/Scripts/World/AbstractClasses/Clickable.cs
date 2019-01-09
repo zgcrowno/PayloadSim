@@ -27,7 +27,7 @@ public abstract class Clickable : MonoBehaviour {
     {
         Clickable[] stageClickables = stage.GetComponentsInChildren<Clickable>();
         List<Clickable> stageClickablesOfType = new List<Clickable>();
-        Clickable nearestClickableOfType = stageClickables[0];
+        Clickable nearestClickableOfType = null;
 
         for(int i = 0; i < stageClickables.Length; i++)
         {
@@ -39,12 +39,12 @@ public abstract class Clickable : MonoBehaviour {
 
         foreach(Clickable clickable in stageClickablesOfType)
         {
-            if(Vector3.Distance(transform.position, clickable.transform.position) < Vector3.Distance(transform.position, nearestClickableOfType.transform.position))
+            if(nearestClickableOfType == null || Vector3.Distance(transform.position, clickable.transform.position) < Vector3.Distance(transform.position, nearestClickableOfType.transform.position))
             {
                 nearestClickableOfType = clickable;
             }
         }
-
+        
         return nearestClickableOfType;
     }
 

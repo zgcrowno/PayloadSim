@@ -26,6 +26,20 @@ public abstract class PayloadCamera : MonoBehaviour {
         input.y = transform.localRotation.eulerAngles.x;
     }
 
+    public void FixedUpdate()
+    {
+        //This code is to ensure that this PayloadCamera's content, if moving, is kept centered within the viewport
+        Movable contentMovable = content.GetComponent<Movable>();
+        if(contentMovable != null)
+        {
+            if(contentMovable.agent.destination != contentMovable.transform.position)
+            {
+                //We call SwitchContent() here because that method performs all the operations required to keep this PayloadCamera's moving content centered in the viewport
+                SwitchContent(content);
+            }
+        }
+    }
+
     /*
      * This method ensures that the content on which this PayloadCamera is focused fits perfectly within the viewport
      */
@@ -74,6 +88,7 @@ public abstract class PayloadCamera : MonoBehaviour {
             content.layer = LayerMask.NameToLayer("Focus");
             contentRenderers = content.GetComponentsInChildren<Renderer>();
             contentBounds = new Bounds();
+            transform.SetParent(content.transform); //Setting the Payload camera's parent transform to that of its content's here enables smooth tracking of moving content (no stuttering in the camera's image)
             CenterContent();
         }
     }
