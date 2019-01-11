@@ -24,6 +24,8 @@ public class InputTab : TextInputTab
     {
         OutputTab outputTab = (OutputTab) pi.GetSubTabByType(typeof(OutputTab));
 
+        str = str.Trim();
+
         prevInputs.Add(str);
         iField.text = "";
 

@@ -1,0 +1,348 @@
+1. OVERVIEW:
+	-Payload is a game meant to appease the power fantasy of hacking into variably sized corporations and stealing their information or sacking their accounts. Though it's a hacking game, it is also a stealth game insofar as the objective is not merely the theft of different corps' commodities, but the surreptitious theft thereof.
+	-The player's goal is to acquire targeted information, funds, etc. (or perhaps destroy information, funds, etc.) via numerous means. For instance, the player may install information-gathering malware or gain access to appropriate machines over the corp's shared network. Non-essential information/funds can be gathered during a mission, but a level only ends once the player has achieved its mandatory goal(s) and exited the network. Non-essential information/funds are things such as individual employees' text files (possibly used in between missions for blackmail or extortion), account information, etc. In-between missions, the player may use excess funds obtained from previous missions to purchase helpful information/items for the next mission.
+	-This game will only be playable on PC, Mac and Linux, and will thus support Unity's "Multi-display" functionality in case players wish to display different information on one of up to eight different monitors.
+2. MECHANICS:
+	M1. Malware:
+		-Keylogger:
+			-Used to determine users' inputs, thus gaining access to passwords and other sensitive data.
+			-Implementation:
+				-The player can install this on any compromised computer, after which all user keystrokes are output to the player's notes tab.
+		-Rootkit:
+			-Used to make another software payload undetectable by adding stealth capabilities.
+		-System Monitor:
+			-A hardware or software component used to monitor resources and performance in a computer system. These monitoring systems are often used to keep track of system resources, such as CPU usage and frequency, or the amount of free RAM. They are also used to display items such as free space on one or more hard drives, the temperature of the CPU and other important components, and networking information including the system IP address and current rates of upload and download. Other possible displays may include the date and time, system uptime, computer name, username, hard drive S.M.A.R.T. data, fan speeds, and the voltages being provided by the power supply.
+		-Trojan Horse:
+			-A malicious computer program which misleads users of its true intent. Trojans are generally spread by some form of social engineering--for example, where a user is duped into executing an e-mail attachment disguised to be unsuspicious(e.g. a routine form to be filled in), or by clicking on some fake advertisement on social media or anywhere else. Although their payload can be anything, many modern forms act as a backdoor, contacting a controller which can then have unauthorized access to the affected computer. Trojans may allow an attacker to access users' personal information, such as banking information, passwords, or personal identity. It can infect other devices connected to the network. Ransomware attacks are often carried out using a Trojan. Unlike computer viruses and worms, Trojans generally do not attempt to inject themselves into other files or otherwise propagate themselves.
+		-Virus:
+			-A type of malicious software that, when executed, replicates itself by modifying other computer programs and inserting its own code. When this replication succeeds, the affected areas are then said to be "infected" with a computer virus.
+			-Parts:
+				-Infection Mechanism (AKA Infection Vector):
+					-How the virus spreads or propogates. A virus typically has a search routine which locates new files or disks for infection.
+				-Trigger (AKA Logic Bomb):
+					-The compiled version that could be activated any time an executable file with the virus is run that determines the event or condition for the malicious payload to be activated or delivered, such as a particular date, time, presence of another program, capacity of the disk exceeding some limit, or a double-click that opens a particular file.
+				-Payload:
+					-The actual body or data that perform the actual malicious purpose of the virus. Payload activity might be noticeable (e.g. because it causes the system to slow down or freeze), as most of the time the payload itself is the harmful activity, or sometimes non-destructive but distributive, which is called virus hoax.
+			-Phases:
+				-Dormant Phase:
+					-The virus program is idle during this stage. The virus program has managed to access the target user's computer or software, but during this stage, the virus does not take any action. The virus will eventually be activated by the "trigger" which states which event will execute the virus, such as a date, the presence of another program or file, the capacity of the disk exceeding some limit or the user taking a certain action (e.g., double-clicking on a certain icon, opening an e-mail, etc.). Not all viruses have this stage.
+				-Propagation Phase:
+					-The virus starts propagating--that is, multiplying and replicating itself. The virus places a copy of itself into other programs or into certain system areas on the disk. The copy may not be identical to the propagating version; viruses often "morph" or change to evade detection by IT professionals and anti-virus software. Each infected program will now contain a clone of the virus, which will itself enter a propagation phase.
+				-Triggering Phase:
+					-A dormant virus moves into this phase when it is activated, and will now perform the function for which it was intended. The triggering phase can be caused by a variety of system events, including a count of the number of times that this copy of the virus has made copies of itself.
+				-Execution Phase:
+					-This is the actual work of the virus, where the payload will be released. It can be destructive such as deleting files on disk, crashing the system, or corrupting files or relatively harmless such as popping up humorous or political messages on screen.
+		-Worm:
+			-When infecting one machine on a network (LAN, WAN, intranet), this software spreads to other machines on the network one by one. A worm may cause harm by simply consuming 
+			bandwidth or by executing payloads on individual machines in the network.
+	M2. Network:
+		-Every device with which the player may interact is connected to a network. At the outset of a level, perhaps only one of these devices is hackable, but others will become available through the use coordinated stealth attacks on individual or multiple systems connected to the network.
+		-Device Types:
+			-PC
+				-Example Tangential Uses:
+					-Ordering delivery online, thereby causing an NPC to meet the delivery driver (if either they're within earshot of the door or their phone number has been discovered and used in the order).
+			-Light Switch:
+				-Example Uses:
+					-Causing an NPC to leave their desk in order to flip the light back on, likely logging out of their machine in the process; if a keylogger is currently in place on that machine, the player will gain access to that NPC's password when they log back on.
+					-Scripting a light to activate and deactivate over and over again in quick succession, causing an epileptic NPC to collapse in a fit.
+			-Door:
+				-Example Uses:
+					-Electronically locking a door after an NPC has left the room, affording the player more time to do whatever it is they need to do on that NPC's machine.
+					-Electronically closing a swinging bathroom door, causing an NPC to drop whatever they're holding into the toilet.
+			-Thermostat
+				-Example Uses:
+					-Forcing an NPC to leave a room intermittently to cool down or warm up.
+					-Overheating a server room, resulting in the eventual physical destruction of all devices therein as they combust.
+			-Toilet
+				-Example Uses:
+					-Flush (perhaps an NPC has just dropped a keycard or something in the toilet...)
+			-Phone
+				-Example Uses:
+					-Call the phone, causing the NPC who owns it to pull it out and answer it.
+			-Robotic Helper
+				-Example Uses:
+					-Hack the helper to bring its owner a beer, thereby hampering that person's focus
+		-System Resistances:
+			-Every machine the player encounters has a list of all those actions to which it's resistant. For instance, most computers have a default resistance to zombification (AKA remote control), some have resistances to keyloggers, others to rootkits, etc. It's up to the player to whittle down these machines' resistances in order to achieve their goals.
+		-System Alarm Triggers:
+			-Every machine the player encounters has a list of all those circumstances which will lead to an investigation phase on the part of the computer.
+	M3. Player Actions:
+		-Bypass:
+			-The method by which a player circumvents a machine's firewall, thus granting them remote access to the computer (though passwords may still be required if the player is to make any substantial use of the machine). 
+			-The player may only bypass a firewall if they adopt an IP address which meets its requirements, though those requirements change from machine to machine.
+			-Every machine has a set amount of time in which the player must successfully bypass its firewall (though this amount of time may be lessened by the use of purchased items). If the player attempts to bypass a machine's firewall, but fails to do so before the timer depletes, the network becomes aware of the player's presence, and they must then avoid full-on detection.
+			-Every machine has a set number of mistakes allowed on the part of the player before the network becomes aware of their presence, after which they'll have to try and avoid full-on detection.
+			-Every machine has its own IP requirements, meaning the method by which a player formulates an acceptable IP varies from one computer to another.
+			-The player may bypass a firewall manually (though this is not advisable on higher level firewalls, due to time constraints), or with a pre-purchased script. If attempting to bypass a firewall manually, that firewall's IP requirement will change upon starting the bypass, preventing the player from working out a typeable solution in their head before attempting it. When attempting a manual bypass, a 12x12 (maybe 12x6 or 12x10?) grid of integers and symbols appears, with each changing values rapidly. Though these values are constantly changing, the correct value is always present in its column, becoming more and more visible (occupying more rows more often) as the time limit decreases. These values could be constants, sums, products, differences or functions of previous or subsequent values in the IP.
+			-The player will always have the same amount of time to bypass a firewall, but the level of the firewall determines the complexity of formulating the correct IP.
+			Level 1 Firewalls:
+				-Every entry in the accepted IP will be a constant.
+			Level 2 Firewalls:
+				-At least one entry in the accepted IP will be the result of an arithmetic operation. Any entry that isn't will be a constant.
+			level 3 firewalls:
+				-At least one entry in the accepted IP will be a function of another entry in the accepted IP. Any entry that isn't may be either a constant or the result of an arithmetic operation.
+		-File/Folder Commands:
+			-Note that some of these commands may be renamed/reconfigured to distinguish Payload's commands from similar games'. I may also include a "flavor" option which allows the player to use commands that are more akin to those found in their OS of choice.
+			-cat (concatenate):
+				-Description:
+					-This command is used to display the content of the selected file.
+				-Examples:
+					-cat C://Desktop/Secrets/secret.txt
+				-Form:
+					-cat [filename]
+			-cd (change directory):
+				-Description:
+					-This command is used to navigate folders.
+				-Examples:
+					-cd C://Desktop/Secrets
+					-cd ..
+				-Form:
+					cd [directory (or use .. to navigate up one directory)]
+			-connect:
+				-Description:
+					-This command is used to connect (and subsequently manipulate in some way) to machines other than the player's own.
+				-Examples:
+					-connect 192.168.0.1 -> connects to machine using IPA
+					-connect Highwind -> connects to machine using machine's name
+				-Form:
+					-connect [IPA/NAME]
+			-dc (disconnect):
+				-Description:
+					-This command is used to disconnect the player from the machine to which they're currently connected.
+				-Examples:
+					-dc
+				-Form:
+					-dc
+			-exe (executables):
+				-Description:
+					-This command shows those programs (even those which are hidden) which are available to be executed
+				-Examples:
+					-exe -> Shows those programs which are available to be executed on the system in which the player is currently operating
+					-exe 192.168.0.1 -> Shows those programs which are available to be executed on the system with IPA "192.168.0.1"
+					-exe Highwind -> Shows those programs which are available to be executed on the system with name "Highwind"
+			-help:
+				-Description:
+					-This command is used to display tutorial information to the player
+				-Examples:
+					-help
+				-Form:
+					-help
+			-kill:
+				-Description:
+					-This command is used to terminate a process using that process' PID. Note that some terminations require passwords; the password may be used as an optional parameter to terminate the process in one line, or if the player attempts to terminate a password-protected process without adding this parameter, the player is subsequently prompted for said password.
+				-Examples:
+					-kill 94 -> terminates the password-free process with PID 94
+					-kill 94 p@55W3Rd -> terminates the process with PID 94, which requires the password "p@55W3Rd"
+				-Form:
+					-kill [PID] [OPTIONAL:password]
+			-login:
+				-Description:
+					-This command is used to gain admin access to the connected computer via password entry.
+				-Examples:
+					-login -> Attempts to login to the connected computer. If a password is required, the player will be subsequently prompted for it.
+					-login p@55W3Rd -> Attempts to login to the connected computer with the provided password
+				-Form:
+					-login [OPTIONAL:password]
+			-mv (move):
+				-Description:
+					-This command is used to move or rename a file.
+				-Examples:
+					-mv C://Desktop/Secrets/secret.txt C://Desktop/Secrets/reallySecret.txt -> Renames the file "secret.txt" to "reallySecret.txt"
+					-mv C://Desktop/Secrets/secret.txt C://Desktop/RealSecrets/secret.txt -> Moves the file "secret.txt" to the "RealSecrets" directory
+			-probe:
+				-Description:
+					-This command scans the ports that are open and also shows if there is a firewall and a proxy system present.
+				-Examples:
+					-probe -> Scans system in which player is currently operating
+					-probe 192.168.0.1 -> Scans system by IPA
+					-probe Highwind -> Scans system by name
+				-Form:
+					-probe [OPTIONAL:IPA/NAME]
+			-ps (processes):
+				-Description:
+					-This command displays the current processes that are running, along with those processes associated IDs (PIDs).
+				-Examples:
+					-ps
+				-Form:
+					-ps
+			-replace:
+				-Description:
+					-This command replaces the contents of the open or specified text file with that specified by the player.
+				-Examples:
+					-replace "anyhow" "cmon!" -> replaces all instances of "anyhow" with "cmon!" in the currently open text file
+					-replace C://Desktop/Secrets/secret.txt "anyhow" "cmon!" replaces all instances of "anyhow" with "cmon!" in the file specified by the path provided
+				-Form:
+					-replace [OPTIONAL:filename] "target text" "replacement text"
+			-reboot:
+				-Description:
+					-The Command reboots the connected computer.
+				-Examples:
+					-reboot -> reboots the computer instantaneously.
+					-reboot 5 -> reboots the computer after five seconds.
+				-Form:
+					-reboot [OPTIONAL:seconds]
+			-rm (remove):
+				-Description:
+					-This command is used to delete files within a directory, though it cannot delete directories.
+				-Examples:
+					-rm C://Desktop/Secrets/secret.txt -> deletes the specified file in the directory
+					-rm C://Desktop/Secrets/* -> deletes all files in the directory
+			-save:
+				-Description:
+					-This command saves the player's progress.
+				-Examples:
+					-save -> saves progress by overwriting the autosave slot
+					-save 1 -> saves progress by overwriting save slot 1.
+				-Form:
+					save [OPTIONAL:slot]
+			-scp (secure copy):
+				-Description:
+					-Downloads the selected file to the player's machine. By default, files downloaded in this manner are stored in the ~/home directory, but an optional destination parameter may be used to specify a different destination for the download.
+				-Examples:
+					-scp C://Desktop/Secrets/secret.txt -> will download the specified file to the player's ~/home directory
+					-scp C://Desktop/Secrets/secret.txt ~/home/stolenInfo -> will download the specified file to the player's ~/home/stolenInfo directory
+				-Form:
+					scp [filename] [OPTIONAL:destination] 
+			-upload:
+				-Description:
+					-Attempts to upload a file from the player's computer to another one in the network.
+				-Examples:
+					-upload ~/home/malware/keylogger.exe -> uploads the specified file in the player's computer to the currently open directory of the machine to which the player is connected
+					-upload ~/home/malware/keylogger.exe C://Desktop/Secrets -> uploads the specified file in the player's computer to the specified directory of the machine to which the player is connected.
+				-Form:
+					upload [filename] [OPTIONAL:targetdirectory]
+		-Proxy (Verb):
+			-The method by which a player prevents full-on detection by a network once that network has become suspicious of the player's activities, and started to isolate the player's digital identity.
+			-This mechanic consists of the security software which is pursuing the player starting at a representation of the security software at the left of the screen, and navigating a network of IPs to reach the player at the right of the screen (this is all displayed via GUI). There will be commonalities between all the IPs the security software traverses along its path to the player, and the player must thus use observation to determine what's common between all traversed IPs in order to formulate a new one which fits those criteria, and may be used as a proxy for the security software to isolate instead of the player. Higher level security software moves through the labyrinth more quickly. The security software navigates between sections of IPs instead of the whole thing; four lines representing the four different sections of an IP address navigate from their respective sections to those same sections in other IPs, giving the player a clearer picture of what's common between the different sections.
+			Level 1 Security Software:
+				-The software must make 15 passes to reach the player (four numbers per pass, resulting in one minute to proxy)
+			Level 2 Security Software:
+				-The software must make 10 passes to reach the player (four numbers per pass, resulting in 40 seconds to proxy)
+			Level 3 Security Software:
+				-The software must make 5 passes to reach the player (four numbers per pass, resulting in 20 seconds to proxy)
+			-Possible commonalities:
+				-Constant:
+					-One section of the IP may simply always be a particular number, but not all of the sections can be constants, because this would result in the player's IP and the proxy they're forming being identical, which would kill the believability.
+				-Multiple of something.
+				-Prime number.
+				-Function of another entry (or multiple other entries) in the IP.
+		-Execute Script:
+			-The player may opt to purchase scripts from vendors using funds accumulated from prior missions.
+			-These scripts are of various types, such as bypass script (used to circumvent firewalls), virus script (used to infect a machine with malicious code, such as a keylogger, for instance), propagation script (used to infect other machines on a network with viruses), stealth/redirection script (used to conceal the presence of the player from security software), monitoring script (used to display information about the machine to which the script is attached; this is useful because certain machines will trigger an alarm if their CPU usage reaches a certain percentage or frequency, their uptime or downtime reaches a certain value, etc.), etc.
+3. AESTHETIC:
+	-Any object tab will apply post-processing effects that make its camera's content appear to possess small, pseudo-random artifacts, making the player's tech seem archaic.
+4. INTERFACE:
+	-Payload's GUI consists of a series of tabs which may be either nested within one another or kept wholly separate and switchable. On multi-monitor setups, there may even be one tab per screen. In addition to these tabs, and directly to the right of their supertabs, are an options icon (a gear, perhaps, which takes the player to a separate options menu), as well as information detailing the day of the week, time of day, and outside temperature.
+	-Tabs:
+		-Focus Tab:
+			-The focus tab displays the Clickable object on which the player is currently focused; this may be a fridge, a computer, etc.
+			-Displayed Information:
+				-Clickable:
+					-Designation (name, basically)
+					-Classification(s) (food, human, robot, etc. This may be plural because of interfaces. For instance, something may be both a food and a regenerative)
+				-Damageable:
+					-HP
+				-Consumable:
+					-Quality, hydration, satisfaction, relaxation, warmth, stimulation, socialization, focus, bladderInc, stomachInc, sugar, sodium, gluten, diuretic, laxative, perishable
+				-Human (this information is displayed only if the human has an implant):
+					-Perks, sex, hydration, bladder, satisfaction, stomach, relaxation, temperature, energy, well
+				-IRegenerative:
+					-RegenRate
+				-IHackable:
+					-FirewallLevel, securityLevel, systemResistances, systemAlarmTriggers
+				-IContainer:
+					-Capacity, contents
+		-Query Tab:
+			-This "help" tab displays all the information the player may require to meaningfully engage with the game, such as glossaries and tutorials.
+		-Video Tab:
+			-The video tab displays the various levels of the building which are available for focus.
+		-Notes Tab:
+			-The notes tab is essentially a text file in which the player may write down pertinent information for quick reference, and to which keyloggers send the keys they log.
+		-Comms Tab:
+			-The comms tab displays communication between the player and their friends and/or foes.
+		-Audio Tab:
+			-The audio tab is the tab in which the player manages audio settings, such as whether or not any music is playing, and the volume of SFX and said music. This tab also displays an audio visualizer. (this tab may potentially also log conversations overheard by NPCs, if I incorporate that mechanic).
+		-Scripts Tab:
+			-This tab displays all the purchased/provided scripts the player has at their disposal. This functions much like any other game's "inventory" screen.
+		-Terminal Tab:
+			-The terminal tab is the predominant means by which the player interacts with the game world, assuming they don't wish to use the mouse. Here, the player enters commands by which they both make use of other tabs, and interact with the stage's network. Any appropriate command output is displayed here as well, following input.
+5. METADATA:
+	-World Units:
+		-Unity's default size unit is defined by the following: 1 Unity unit = 1 meter. The world objects should thus be constructed in accordance with this.
+		-Human characters are 2 units tall.
+		-Levels/stories are 3-4 units tall.
+6. NARRATIVE/SETTING:
+	-Payload takes place in a pseudo-near future. One notable feature of this world is that in edition to the insane amount of security cameras stationed everywhere, those cameras also make use of a sort of echolocation technology by which the player may keep an eye on the goings on within any given level.
+7. JOBS:
+	-1. Scour husband's files for evidence of infidelity:
+		-Extremely simple. This mission will teach the player how to navigate file structures and perform basic modification commands.
+	-2. Drain accounts of a corporation, and feed them to an uninvolved 3rd party's account to frame them.
+8. GLOSSARY:
+	-Backdoor:
+		-A means by which one may bypass normal authentication or encryption in a computer system, a product or an embedded device (such as a home router). Used in securing remote
+		access to a computer, or obtaining access to plaintext in cryptographic systems.
+	-Botnet:
+		-A number of internet-connected devices, each of which is running one or more bots, OR simply a network containing a zombie. These can be used to perform DDoS attacks, steal
+		data, send spam, and allow the attacker to access the device and its connection (if remote control hasn't already been achieved).
+	-Firewall:
+		-A network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules. A firewall typically establishes a barrier between a trusted internal network and untrusted external network, such as the Internet. Firewalls are often categorized as either network firewalls or host-based firewalls. Network firewalls filter traffic between two or more networks and run on network hardware. Host-based firewalls run on host computers and control network traffic in and out of those machines.
+	-Internet Protocol Address (IP Address):
+		-A numerical label assigned to each device connected to a computer network that uses the Internet Protocol for communication. An IP address serves two principal functions: Host or network interface identification and location addressing.
+	-Payload:
+		-Malicious code which, once executed, does things such as deleting files on a host system, encrypting files in a ransomware attack, exfiltrating data such as confidential 
+		documents or passwords, or installing a backdoor.
+	-Proxy (Noun):
+		-In computer networks, a proxy server is a server (a computer system or an application) that acts as an intermediary for requests from clients seeking resources from other servers. A client connects to the proxy server, requesting some service, such as a file, connection, web page, or other resource available from a different server and the proxy server evaluates the request as a way to simplify and control its complexity. Today, most proxies are web proxies, facilitating access to content on the World Wide Web, providing anonymity and may be used to bypass IP address blocking.
+	-Virtual Private Network (VPN):
+		-A VPN extends a private network across a public network, and enables users to send and receive data across shared or public networks as if their computing devices were directly connected to the private network. Applications running across a VPN may therefore benefit from the functionality, security, and management of the private network.
+	-Zombie:
+		-A computer connected to a network, and which has been compromised by a hacker, computer virus or trojan horse program, and can thus be used to perform malicious tasks remotely by an unauthorised 3rd party.
+9. TECH STACK:
+	-Engine: Unity (or perhaps MonoGame?)
+	-Wireframe Generation: Probably either BarycentricWireframeUv1 shader or Starscene Software's Vectrosity (though the latter is paid software), although I may opt for a visual style more akin to something like Duskers...
+	-Human Mesh Generation: Probably makehuman?
+	-DAW: Most likely Reaper or Ableton
+	-Audio Interface: Something from the Volca series? Focusrite Scarlett 2i2? Native Instruments Komplete Audio 6?
+	-AI Architecture: Some form of Dual-Utility-AI
+	-Text Parsing Architecture for Script Editor: Either Roslyn (most likely) or ANTLR (C# grammar can be found here: https://github.com/antlr/grammars-v4), assuming simple string coding is too simplistic for such a task.
+10. APPENDIX:
+	A1. Code Advice:
+		-FLOATING POINT CALCULATIONS ARE WEIRD. IF YOU'RE EXPERIENCING A CONFUSING BUG, USE Equals() METHODS INSTEAD OF "==", YA FOOL!!!!!!!
+		-Probably use Unity's ScriptableObject class as base for classes with unchanging (though perhaps variable) data, like audio playback classes, AI classes, etc.
+		-Remember, you'll run into issues when adding another type of agent through Unity's navigation window. I might need to add a NavMeshSurface component or something once I have multiple navigation agents.
+		-If only your GameObject's colliders and such are moving (but not the mesh), make sure that GameObject's static field is set to false (If, that is, you want the object to move).
+		-If ever I want to pass in a method as a parameter, delegates are the means by which I can do that.
+		-Abstract Class vs. Interface:
+			-Generally, I ought to use an Abstract Class when its heirs do at least some of the same things in the same way
+			-Generally, I ought to use an Interface when its implementors do the same things in a different way
+	A2. Task List:
+		-Update and refine GDD
+		-Write up some shader(s) to start nailing down an aesthetic
+		-Refactor tab resizing behavior to vastly increase performance (currently, there are far too many unnecessary and unmaintainable nested loops)
+		-Write and implement player terminal-input behavior
+		-Write and implement FocusTab's display behavior when content is null
+		-Write and implement zoom (in and out) functionality for LevelsTab
+		-Finish writing/implementing and connecting all world-oriented scripts
+		-Write/implement class for interpreting and applying user input, and connect it to appropriate other classes
+		-Write/implement save functionality
+		-Probably make SubTab (and maybe SuperTab) into abstract classes
+		-Add quality-of-life scrollbar behavior where necessary (auto-scrolling and whatnot, though OutputTab is pretty much done)
+		-Improve mouse scroll speed of text tabs on PC (it's probably alright on Mac, though Linux is up in the air)
+		-Remove all script and inspector references to FocusRenderTexture, as we'll be constructing these RenderTextures on the fly
+		-Maybe implement some sort of tweening animation for SubTab placement
+		-Maybe place ort in ObjectTab at extreme side of tab to allow more room for descriptive text in FocusTab?
+		-Ensure font sizes work across all common resolutions (Remember I have AutoSize text prefabs that will help towards this end)
+		-Execute large-scale refactor after all foundational tasks have been completed (perhaps get rid of unnecessary update methods, and place their behavior in less frequently called places)
+	A3. Issue/Bug List:
+		-Fix tab resizing issue in which
+		-Fix NullReferenceException arising from adding SubTab as SuperTab (SubTab update method)
+	A4. Ideas:
+		-Perhaps proxying, avoiding detection, etc. is less of a self-contained minigame, and more of an exercise in deftly using all of those tools the player already has at their disposal, such as changing directories, deleting files, copying information and such while under time constraints.
+		-Perhaps certain areas within a level will be unviewable until the player hacks into the camera/echolocation system.
+		-Potentially combine Input and Output tabs into one Terminal tab, and add correspondence tab with which the player keeps in touch with their employer(s)
+		-Maybe make SuperTab headers shorter to allow room for day of week, time of day, and outside temperature at their far right
+		-Maybe most humans in Payload's world are constantly "connected" via implants which track their vital signs, affording the player the hypothetical ability to see these vitals simply by clicking on an NPC, much like clicking on any piece of hackable tech. Perhaps humans who haven't one of these implants are invisible to the player, since they've no electronics tracking their movements and dimensions (this could lead to some really interesting levels).
+		-Maybe account for little Internet access because of narrative reasons. For instance, maybe Internet access has become prohibitively expensive.
+		-Perhaps some sort of randomly generated password will have to be found in each level, and injected into user-generated scripts to make them viable. Or maybe scripts must conform to some randomly generated form (which is level-specific). This will ensure that user scripting doesn't become overpowered.
+		-The commercial name of the humans' implants in Payload may be BUDI (pronounced "buddy", this is an acronym for Bioelectric Ubiquitous(ly) Dermal Implant). They are self-healing, and contained all throughout their host's skin, making them nigh impossible to remove without killing the host, though they can be deactivated. It's possible that, within Payload's world, because of their self-propogation, they result in cancer-like ailments in a percentage of their hosts.
+		-Consider incorporating Eternal Darkness-style instances of characters addressing the player through the Comms tab before popping up Windows/Mac/Linux style windows which seem to boot the player out of the game.

@@ -21,6 +21,8 @@ public class SubTab : Tab {
     public const int Second = 1;
     public const int Third = 2;
     public const int Fourth = 3;
+    public const int Fifth = 4;
+    public const int Sixth = 5;
     public const int ResizeOffset = 5;
     public const int HeaderRectOffset = 20;
 
@@ -311,6 +313,8 @@ public class SubTab : Tab {
         List<SubTab> secondAdjacentSubTabs = new List<SubTab>();
         List<SubTab> thirdAdjacentSubTabs = new List<SubTab>();
         List<SubTab> fourthAdjacentSubTabs = new List<SubTab>();
+        List<SubTab> fifthAdjacentSubTabs = new List<SubTab>();
+        List<SubTab> sixthAdjacentSubTabs = new List<SubTab>();
 
         Vector2 mousePos = Input.mousePosition;
 
@@ -403,6 +407,9 @@ public class SubTab : Tab {
 
                     foreach(SubTab fourthAdjacentSubTab in fourthAdjacentSubTabs)
                     {
+                        fifthAdjacentSubTabs = fourthAdjacentSubTab.GetSideAdjacentSubTabs(firstAdjacentSide);
+                        fifthAdjacentSubTabs.Remove(thirdAdjacentSubTab);
+
                         if (side == Left || side == Lower)
                         {
                             maxVal = GetResizeMinMaxValue(side, Fourth, fourthAdjacentSubTab, maxVal);
@@ -410,6 +417,33 @@ public class SubTab : Tab {
                         else // side == Right || side == Upper
                         {
                             minVal = GetResizeMinMaxValue(side, Fourth, fourthAdjacentSubTab, minVal);
+                        }
+
+                        foreach(SubTab fifthAdjacentSubTab in fifthAdjacentSubTabs)
+                        {
+                            sixthAdjacentSubTabs = fifthAdjacentSubTab.GetSideAdjacentSubTabs(secondAdjacentSide);
+                            sixthAdjacentSubTabs.Remove(fourthAdjacentSubTab);
+
+                            if (side == Left || side == Lower)
+                            {
+                                minVal = GetResizeMinMaxValue(side, Fifth, fifthAdjacentSubTab, minVal);
+                            }
+                            else // side == Right || side == Upper
+                            {
+                                maxVal = GetResizeMinMaxValue(side, Fifth, fifthAdjacentSubTab, maxVal);
+                            }
+
+                            foreach(SubTab sixthAdjacentSubTab in sixthAdjacentSubTabs)
+                            {
+                                if (side == Left || side == Lower)
+                                {
+                                    maxVal = GetResizeMinMaxValue(side, Sixth, sixthAdjacentSubTab, maxVal);
+                                }
+                                else // side == Right || side == Upper
+                                {
+                                    minVal = GetResizeMinMaxValue(side, Sixth, sixthAdjacentSubTab, minVal);
+                                }
+                            }
                         }
                     }
                 }
@@ -473,7 +507,7 @@ public class SubTab : Tab {
 
         SetUp(new Vector2(newX, newY), new Vector2(newWidth, newHeight));
         
-        SetUpResizedAdjacentWholeRects(side, firstAdjacentSide, secondAdjacentSide, firstAdjacentSubTabs, secondAdjacentSubTabs, thirdAdjacentSubTabs, fourthAdjacentSubTabs);
+        SetUpResizedAdjacentWholeRects(side, firstAdjacentSide, secondAdjacentSide, firstAdjacentSubTabs, secondAdjacentSubTabs, thirdAdjacentSubTabs, fourthAdjacentSubTabs, fifthAdjacentSubTabs, sixthAdjacentSubTabs);
     }
 
     /*
@@ -535,7 +569,7 @@ public class SubTab : Tab {
     /*
      * Returns a float representing the min or max resize value determined by the passed parameters
      * @param side An int representing the side of this SubTab which is being resized
-     * @param pass An int representing which resize pass we're on (first, second, third, fourth), and thus which adjacent SubTabs we're iterating through
+     * @param pass An int representing which resize pass we're on (first, second, third, fourth, fifth, sixth), and thus which adjacent SubTabs we're iterating through
      * @param adjacentSubTab The adjacent SubTab we're currently consulting in our resizing of this one
      * @param val The min or max resize value that has been determined up to the point this method is called
      * @return A float representing the min or max resize value determined by the passed parameters
@@ -756,7 +790,7 @@ public class SubTab : Tab {
      * @param thirdAdjacentSubTabs The third group of adjacentSubTabs which are being resized in response to this SubTab's resizing
      * @param fourthAdjacentSubTabs The fourth group of adjacentSubTabs which are being resized in response to this SubTab's resizing
      */
-    public void SetUpResizedAdjacentWholeRects(int side, int firstAdjacentSide, int secondAdjacentSide, List<SubTab> firstAdjacentSubTabs, List<SubTab> secondAdjacentSubTabs, List<SubTab> thirdAdjacentSubTabs, List<SubTab> fourthAdjacentSubTabs)
+    public void SetUpResizedAdjacentWholeRects(int side, int firstAdjacentSide, int secondAdjacentSide, List<SubTab> firstAdjacentSubTabs, List<SubTab> secondAdjacentSubTabs, List<SubTab> thirdAdjacentSubTabs, List<SubTab> fourthAdjacentSubTabs, List<SubTab> fifthAdjacentSubTabs, List<SubTab> sixthAdjacentSubTabs)
     {
         foreach (SubTab firstAdjacentSubTab in firstAdjacentSubTabs)
         {
@@ -823,6 +857,9 @@ public class SubTab : Tab {
 
                     foreach(SubTab fourthAdjacentSubTab in fourthAdjacentSubTabs)
                     {
+                        fifthAdjacentSubTabs = fourthAdjacentSubTab.GetSideAdjacentSubTabs(firstAdjacentSide);
+                        fifthAdjacentSubTabs.Remove(thirdAdjacentSubTab);
+
                         switch (side)
                         {
                             case Left:
@@ -837,6 +874,47 @@ public class SubTab : Tab {
                             case Lower:
                                 fourthAdjacentSubTab.SetUp(new Vector2(fourthAdjacentSubTab.prt.anchoredPosition.x, thirdAdjacentSubTab.rt.anchoredPosition.y + thirdAdjacentSubTab.rt.sizeDelta.y), new Vector2(fourthAdjacentSubTab.prt.sizeDelta.x, (fourthAdjacentSubTab.prt.anchoredPosition.y + fourthAdjacentSubTab.prt.sizeDelta.y) - (thirdAdjacentSubTab.rt.anchoredPosition.y + thirdAdjacentSubTab.rt.sizeDelta.y)));
                                 break;
+                        }
+
+                        foreach(SubTab fifthAdjacentSubTab in fifthAdjacentSubTabs)
+                        {
+                            sixthAdjacentSubTabs = fifthAdjacentSubTab.GetSideAdjacentSubTabs(secondAdjacentSide);
+                            sixthAdjacentSubTabs.Remove(fourthAdjacentSubTab);
+
+                            switch(side)
+                            {
+                                case Left:
+                                    fifthAdjacentSubTab.SetUp(new Vector2(fifthAdjacentSubTab.prt.anchoredPosition.x, fifthAdjacentSubTab.prt.anchoredPosition.y), new Vector2(fourthAdjacentSubTab.rt.anchoredPosition.x - fifthAdjacentSubTab.rt.anchoredPosition.x, fifthAdjacentSubTab.prt.sizeDelta.y));
+                                    break;
+                                case Right:
+                                    fifthAdjacentSubTab.SetUp(new Vector2(fourthAdjacentSubTab.rt.anchoredPosition.x + fourthAdjacentSubTab.rt.sizeDelta.x, fifthAdjacentSubTab.prt.anchoredPosition.y), new Vector2((fifthAdjacentSubTab.prt.anchoredPosition.x + fifthAdjacentSubTab.prt.sizeDelta.x) - (fourthAdjacentSubTab.rt.anchoredPosition.x + fourthAdjacentSubTab.rt.sizeDelta.x), fifthAdjacentSubTab.prt.sizeDelta.y));
+                                    break;
+                                case Upper:
+                                    fifthAdjacentSubTab.SetUp(new Vector2(fifthAdjacentSubTab.prt.anchoredPosition.x, fourthAdjacentSubTab.rt.anchoredPosition.y + fourthAdjacentSubTab.rt.sizeDelta.y), new Vector2(fifthAdjacentSubTab.prt.sizeDelta.x, (fifthAdjacentSubTab.prt.anchoredPosition.y + fifthAdjacentSubTab.prt.sizeDelta.y) - (fourthAdjacentSubTab.rt.anchoredPosition.y + fourthAdjacentSubTab.rt.sizeDelta.y)));
+                                    break;
+                                case Lower:
+                                    fifthAdjacentSubTab.SetUp(new Vector2(fifthAdjacentSubTab.prt.anchoredPosition.x, fifthAdjacentSubTab.prt.anchoredPosition.y), new Vector2(fifthAdjacentSubTab.prt.sizeDelta.x, fourthAdjacentSubTab.rt.anchoredPosition.y - fifthAdjacentSubTab.rt.anchoredPosition.y));
+                                    break;
+                            }
+
+                            foreach(SubTab sixthAdjacentSubTab in sixthAdjacentSubTabs)
+                            {
+                                switch (side)
+                                {
+                                    case Left:
+                                        sixthAdjacentSubTab.SetUp(new Vector2(fifthAdjacentSubTab.rt.anchoredPosition.x + fifthAdjacentSubTab.rt.sizeDelta.x, sixthAdjacentSubTab.prt.anchoredPosition.y), new Vector2((sixthAdjacentSubTab.prt.anchoredPosition.x + sixthAdjacentSubTab.prt.sizeDelta.x) - (fifthAdjacentSubTab.rt.anchoredPosition.x + fifthAdjacentSubTab.rt.sizeDelta.x), sixthAdjacentSubTab.prt.sizeDelta.y));
+                                        break;
+                                    case Right:
+                                        sixthAdjacentSubTab.SetUp(new Vector2(sixthAdjacentSubTab.prt.anchoredPosition.x, sixthAdjacentSubTab.prt.anchoredPosition.y), new Vector2(fifthAdjacentSubTab.rt.anchoredPosition.x - sixthAdjacentSubTab.prt.anchoredPosition.x, sixthAdjacentSubTab.prt.sizeDelta.y));
+                                        break;
+                                    case Upper:
+                                        sixthAdjacentSubTab.SetUp(new Vector2(sixthAdjacentSubTab.prt.anchoredPosition.x, sixthAdjacentSubTab.prt.anchoredPosition.y), new Vector2(sixthAdjacentSubTab.prt.sizeDelta.x, fifthAdjacentSubTab.rt.anchoredPosition.y - sixthAdjacentSubTab.prt.anchoredPosition.y));
+                                        break;
+                                    case Lower:
+                                        sixthAdjacentSubTab.SetUp(new Vector2(sixthAdjacentSubTab.prt.anchoredPosition.x, fifthAdjacentSubTab.rt.anchoredPosition.y + fifthAdjacentSubTab.rt.sizeDelta.y), new Vector2(sixthAdjacentSubTab.prt.sizeDelta.x, (sixthAdjacentSubTab.prt.anchoredPosition.y + sixthAdjacentSubTab.prt.sizeDelta.y) - (fifthAdjacentSubTab.rt.anchoredPosition.y + fifthAdjacentSubTab.rt.sizeDelta.y)));
+                                        break;
+                                }
+                            }
                         }
                     }
                 }
