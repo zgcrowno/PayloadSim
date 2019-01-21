@@ -22,7 +22,7 @@ public abstract class Movable : Damageable {
      * Moves this object as close as possible to the passed Transform
      * @param trans The passed Transform towards which this object is moving
      */ 
-    public void MoveTo(Vector3 pos)
+    public void SetDestination(Vector3 pos)
     {
         agent.SetDestination(pos);
     }

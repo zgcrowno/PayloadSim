@@ -8,6 +8,8 @@ using UnityEngine.AI;
  */ 
 public abstract class NPC : Movable {
 
+    public Behavior behavior;
+
     // Use this for initialization
     public new void Start()
     {

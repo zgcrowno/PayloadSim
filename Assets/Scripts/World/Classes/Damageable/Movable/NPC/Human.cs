@@ -146,52 +146,52 @@ public class Human : NPC {
         if(intention == IntentionDrink)
         {
             Drink nearestDrink = GetNearestObjectOfType(typeof(Drink)) as Drink;
-            MoveTo(nearestDrink.transform.position);
+            SetDestination(nearestDrink.transform.position);
         }
         else if(intention == IntentionEat)
         {
             Food nearestFood = GetNearestObjectOfType(typeof(Food)) as Food;
-            MoveTo(nearestFood.transform.position);
+            SetDestination(nearestFood.transform.position);
         }
         else if(intention == IntentionUrinate)
         {
             Toilet nearestToilet = GetNearestObjectOfType(typeof(Toilet)) as Toilet;
-            MoveTo(nearestToilet.transform.position);
+            SetDestination(nearestToilet.transform.position);
         }
         else if(intention == IntentionDefecate)
         {
             Toilet nearestToilet = GetNearestObjectOfType(typeof(Toilet)) as Toilet;
-            MoveTo(nearestToilet.transform.position);
+            SetDestination(nearestToilet.transform.position);
         }
         else if(intention == IntentionTemper)
         {
             Thermostat nearestThermostat = GetNearestObjectOfType(typeof(Thermostat)) as Thermostat;
-            MoveTo(nearestThermostat.transform.position);
+            SetDestination(nearestThermostat.transform.position);
         }
         else if(intention == IntentionSleep)
         {
             Bed nearestBed = GetNearestObjectOfType(typeof(Bed)) as Bed;
-            MoveTo(nearestBed.transform.position);
+            SetDestination(nearestBed.transform.position);
         }
         else if(intention == IntentionClean)
         {
             Shower nearestShower = GetNearestObjectOfType(typeof(Shower)) as Shower;
-            MoveTo(nearestShower.transform.position);
+            SetDestination(nearestShower.transform.position);
         }
         else if(intention == IntentionSocialize)
         {
             Human nearestHuman = GetNearestObjectOfType(typeof(Human)) as Human;
-            MoveTo(nearestHuman.transform.position);
+            SetDestination(nearestHuman.transform.position);
         }
         else if(intention == IntentionRelax)
         {
             Couch nearestCouch = GetNearestObjectOfType(typeof(Couch)) as Couch;
-            MoveTo(nearestCouch.transform.position);
+            SetDestination(nearestCouch.transform.position);
         }
         else if(intention == IntentionWork)
         {
             Computer nearestComputer = GetNearestObjectOfType(typeof(Computer)) as Computer;
-            MoveTo(nearestComputer.transform.position);
+            SetDestination(nearestComputer.transform.position);
         }
     }
 
