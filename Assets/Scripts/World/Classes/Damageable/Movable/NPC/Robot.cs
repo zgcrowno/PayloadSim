@@ -16,4 +16,14 @@ public class Robot : NPC, IHackable {
 	void Update () {
 		
 	}
+
+    public override void CalculateUtility(NPC npc)
+    {
+        
+    }
+
+    public override void InitUtilityCurve()
+    {
+        
+    }
 }

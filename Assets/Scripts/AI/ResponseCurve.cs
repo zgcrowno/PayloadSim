@@ -20,7 +20,7 @@ public class ResponseCurve {
         this.buckets = buckets;
         foreach(Bucket bucket in buckets)
         {
-            maxIndex += bucket.width;
+            maxIndex += bucket.size;
         }
         Sort();
         SetStartingBucketIndex();
@@ -32,7 +32,7 @@ public class ResponseCurve {
      */ 
     public void Add(Bucket bucket)
     {
-        maxIndex += bucket.width;
+        maxIndex += bucket.size;
 
         buckets.Add(bucket);
         Sort();
@@ -43,10 +43,10 @@ public class ResponseCurve {
      * Returns a pseudo-random ActionType associated with one of the Bucket objects in buckets
      * @return The ActionType associated with the pseudo-randomly chosen Bucket object in buckets
      */ 
-    public ActionType GetActionType()
+    public BehaviorType GetBehaviorType()
     {
         int index = Random.Range(0, maxIndex);
-        return buckets[GetBucketIndexByValue(index, true)].actionType;
+        return buckets[GetBucketIndexByValue(index, true)].behaviorType;
     }
 
     /*
@@ -61,10 +61,22 @@ public class ResponseCurve {
         int iLow = 0;
         int iGuess;
         bool found = false;
+        bool usedStartingBucketIndex = false; //Once we've used startingBucketIndex in our binary search, we don't wish to use it again
 
         while (!found)
         {
-            iGuess = optimized ? startingBucketIndex : iLow + ((iHigh - iLow) / 2);
+            //In the event that iLow == buckets.Count - 2, set nonOptimizedGuess to buckets.Count - 1 because C#'s always rounds ints down; this is the only way to make [buckets.Count - 1] a retrievable index
+            int nonOptimizedGuess = iLow == buckets.Count - 2 ? buckets.Count - 1 : iLow + ((iHigh - iLow) / 2);
+
+            if(optimized && !usedStartingBucketIndex)
+            {
+                iGuess = startingBucketIndex;
+                usedStartingBucketIndex = true;
+            }
+            else
+            {
+                iGuess = nonOptimizedGuess;
+            }
 
             if (InBucket(iGuess, value))
             {
@@ -118,16 +130,18 @@ public class ResponseCurve {
      */ 
     public void RebuildEdges(int iStartBucket)
     {
-        for(int i = iStartBucket; i < buckets.Count; i++)
+        Sort();
+        for (int i = iStartBucket; i < buckets.Count; i++)
         {
             if(i > 0)
             {
-                buckets[i].edge = buckets[i - 1].edge + buckets[i].width;
+                buckets[i].edge = buckets[i - 1].edge + buckets[i].size;
             } else
             {
-                buckets[i].edge = buckets[i].width;
+                buckets[i].edge = buckets[i].size;
             }
         }
+        maxIndex = buckets[buckets.Count - 1].edge;
         SetStartingBucketIndex();
     }
 
@@ -136,6 +150,20 @@ public class ResponseCurve {
      */ 
     public void Sort()
     {
-        buckets = buckets.OrderBy(b => b.width).ToList();
+        buckets = buckets.OrderBy(b => b.size).ToList();
+    }
+
+    /*
+     * Calculates the utility (size) for every Bucket in buckets for the passed NPC, and subsequently modifies itself accordingly
+     * @param npc The passed NPC for whom we're calculating various utilities
+     */ 
+    public void CalculateUtility(NPC npc)
+    {
+        foreach(Bucket bucket in buckets)
+        {
+            bucket.CalculateUtility(npc);
+        }
+        
+        RebuildEdges(0);
     }
 }

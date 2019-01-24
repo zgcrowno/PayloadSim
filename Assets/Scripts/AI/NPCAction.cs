@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class NPCAction {
 
-    public ActionType type;
-
-    public ResponseCurve responseCurve;
-
+    //TODO: Figure out which, if any, of these data make sense to keep within the class
     public float value;
     public float utility;
     public float weight;
@@ -16,27 +13,6 @@ public class NPCAction {
 
     public NPCAction()
     {
-        this.type = ActionType.Work;
+        
     }
-
-    public NPCAction(ActionType type)
-    {
-        this.type = type;
-    }
-}
-
-public enum ActionType
-{
-    Hydrate,
-    Satisfy,
-    Energize,
-    Urinate,
-    Defecate,
-    Temper,
-    Clean,
-    Socialize,
-    Relax,
-    Work,
-    Report,
-    Resolve
 }

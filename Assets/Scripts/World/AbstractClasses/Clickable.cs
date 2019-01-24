@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class Clickable : MonoBehaviour {
 
-    public const float MaxValue = 1000; //The maximum value any of this Clickable's numerical attributes may reach
+    public const float MaxValue = 100; //The maximum value any of this Clickable's numerical attributes may reach
 
     public GameObject stage; //The stage in which this Clickable resides
 

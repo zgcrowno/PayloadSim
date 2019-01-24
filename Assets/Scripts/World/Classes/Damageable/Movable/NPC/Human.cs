@@ -71,14 +71,14 @@ public class Human : NPC {
     public int sex; //The NPC's sex
     public int attractedTo; //The sex to which this NPC is attracted
     public int intention; //The current intention of this Human (the goal in which they're presently engaged)
-    public float hydration; //Measures how much this NPC needs to hydrate themselves
+    public float thirst; //Measures how much this NPC needs to hydrate themselves
     public float bladder; //Measures how much this NPC needs to urinate
-    public float satisfaction; //Measures how much this NPC needs to feed themselves
+    public float hunger; //Measures how much this NPC needs to feed themselves
     public float stomach; //Measures how much this NPC needs to defecate
-    public float relaxation; //Measures how much this NPC needs to take a break or relax
+    public float stress; //Measures how much this NPC needs to take a break or relax
     public float temperature; //Measures how hot or cold this NPC is
-    public float energy; //Measures how tired this NPC is
-    public float hygiene; //Measures how hygienic this NPC is
+    public float fatigue; //Measures how tired this NPC is
+    public float uncleanliness; //Measures how hygienic this NPC is
     public float sociability; //Measures how quickly this NPC becomes lonely
     public float loneliness; //Measures how in-need of companionship/conversation this NPC is
     public float perception; //Measures how quickly this NPC may become aware/unaware of the player's actions/presence
@@ -108,24 +108,25 @@ public class Human : NPC {
         sex = Male;
         attractedTo = Female;
         intention = IntentionSleep;
-        hydration = MaxValue;
+        thirst = 0;
         bladder = 0;
-        satisfaction = MaxValue;
+        hunger = 0;
         stomach = 0;
-        relaxation = MaxValue;
+        stress = 0;
         temperature = OptimalTemp;
-        energy = MaxValue;
-        hygiene = MaxValue;
+        fatigue = 0;
+        uncleanliness = 0;
         sociability = Dependence2;
         loneliness = 0;
         perception = Perception4;
         awareness = 0;
         well = true;
-	}
+    }
 
     public void FixedUpdate()
     {
         Depreciate();
+        CalculateUtility(this);
         Autonomy();
     }
 
@@ -143,55 +144,91 @@ public class Human : NPC {
      */ 
     public void Autonomy()
     {
-        if(intention == IntentionDrink)
+        BehaviorType currentBehavior = utilityCurve.GetBehaviorType();
+        //print("Current Behavior: " + currentBehavior);
+        //foreach(Bucket bucket in utilityCurve.buckets)
+        //{
+        //    print(bucket.behaviorType + ": " + bucket.size + ", " + bucket.edge);
+        //}
+        if(currentBehavior == BehaviorType.Hydrate)
         {
             Drink nearestDrink = GetNearestObjectOfType(typeof(Drink)) as Drink;
-            SetDestination(nearestDrink.transform.position);
+            if(nearestDrink != null)
+            {
+                SetDestination(nearestDrink.transform.position);
+            }
         }
-        else if(intention == IntentionEat)
+        else if(currentBehavior == BehaviorType.Satisfy)
         {
             Food nearestFood = GetNearestObjectOfType(typeof(Food)) as Food;
-            SetDestination(nearestFood.transform.position);
+            if(nearestFood != null)
+            {
+                SetDestination(nearestFood.transform.position);
+            }
         }
-        else if(intention == IntentionUrinate)
+        else if(currentBehavior == BehaviorType.Urinate)
         {
             Toilet nearestToilet = GetNearestObjectOfType(typeof(Toilet)) as Toilet;
-            SetDestination(nearestToilet.transform.position);
+            if(nearestToilet != null)
+            {
+                SetDestination(nearestToilet.transform.position);
+            }
         }
-        else if(intention == IntentionDefecate)
+        else if(currentBehavior == BehaviorType.Defecate)
         {
             Toilet nearestToilet = GetNearestObjectOfType(typeof(Toilet)) as Toilet;
-            SetDestination(nearestToilet.transform.position);
+            if(nearestToilet != null)
+            {
+                SetDestination(nearestToilet.transform.position);
+            }
         }
-        else if(intention == IntentionTemper)
+        else if(currentBehavior == BehaviorType.Temper)
         {
             Thermostat nearestThermostat = GetNearestObjectOfType(typeof(Thermostat)) as Thermostat;
-            SetDestination(nearestThermostat.transform.position);
+            if(nearestThermostat != null)
+            {
+                SetDestination(nearestThermostat.transform.position);
+            }
         }
-        else if(intention == IntentionSleep)
+        else if(currentBehavior == BehaviorType.Energize)
         {
             Bed nearestBed = GetNearestObjectOfType(typeof(Bed)) as Bed;
-            SetDestination(nearestBed.transform.position);
+            if(nearestBed != null)
+            {
+                SetDestination(nearestBed.transform.position);
+            }
         }
-        else if(intention == IntentionClean)
+        else if(currentBehavior == BehaviorType.Clean)
         {
             Shower nearestShower = GetNearestObjectOfType(typeof(Shower)) as Shower;
-            SetDestination(nearestShower.transform.position);
+            if(nearestShower != null)
+            {
+                SetDestination(nearestShower.transform.position);
+            }
         }
-        else if(intention == IntentionSocialize)
+        else if(currentBehavior == BehaviorType.Socialize)
         {
             Human nearestHuman = GetNearestObjectOfType(typeof(Human)) as Human;
-            SetDestination(nearestHuman.transform.position);
+            if(nearestHuman != null && nearestHuman != this)
+            {
+                SetDestination(nearestHuman.transform.position);
+            }
         }
-        else if(intention == IntentionRelax)
+        else if(currentBehavior == BehaviorType.Relax)
         {
             Couch nearestCouch = GetNearestObjectOfType(typeof(Couch)) as Couch;
-            SetDestination(nearestCouch.transform.position);
+            if(nearestCouch != null)
+            {
+                SetDestination(nearestCouch.transform.position);
+            }
         }
-        else if(intention == IntentionWork)
+        else if(currentBehavior == BehaviorType.Work)
         {
             Computer nearestComputer = GetNearestObjectOfType(typeof(Computer)) as Computer;
-            SetDestination(nearestComputer.transform.position);
+            if(nearestComputer != null)
+            {
+                SetDestination(nearestComputer.transform.position);
+            }
         }
     }
 
@@ -200,38 +237,41 @@ public class Human : NPC {
      */ 
     public void Depreciate()
     {
-        if(hydration > 0)
+        if(thirst < MaxValue)
         {
-            hydration -= 1f;
+            thirst += 0.1f;
         }
         else
         {
-            hydration = 0;
-            hp -= 0.1f;
+            thirst = MaxValue;
+            hp -= 0.01f;
             intention = IntentionDrink;
         }
 
-        if(satisfaction > 0)
+        if(hunger < MaxValue)
         {
-            satisfaction -= 1f;
+            hunger += 0.1f;
         }
         else
         {
-            satisfaction = 0;
-            hp -= 0.1f;
+            hunger = MaxValue;
+            hp -= 0.01f;
             intention = IntentionEat;
         }
 
         if(!well)
         {
-            hydration -= 0.01f;
-            hp -= 0.1f;
+            if(thirst < MaxValue)
+            {
+                thirst += 0.001f;
+            }
+            hp -= 0.01f;
             intention = IntentionSleep;
         }
 
         if (temperature > OptimalTemp)
         {
-            energy -= 1f;
+            fatigue += 0.1f;
             intention = IntentionTemper;
         }
         else if(temperature < OptimalTemp)
@@ -243,13 +283,13 @@ public class Human : NPC {
             intention = IntentionTemper;
         }
 
-        if (energy > 0)
+        if (fatigue < MaxValue)
         {
-            energy -= 1f;
+            fatigue += 0.1f;
         }
         else
         {
-            energy = 0;
+            fatigue = MaxValue;
 
             if (Random.Range(0, MaxValue) < 1)
             {
@@ -258,13 +298,13 @@ public class Human : NPC {
             intention = IntentionSleep;
         }
 
-        if(hygiene > 0)
+        if(uncleanliness < MaxValue)
         {
-            hygiene -= 1f;
+            uncleanliness += 0.1f;
         }
         else
         {
-            hygiene = 0;
+            uncleanliness = MaxValue;
 
             if (Random.Range(0, MaxValue) < 1)
             {
@@ -275,7 +315,7 @@ public class Human : NPC {
 
         if(loneliness < MaxValue)
         {
-            loneliness += 1f;
+            loneliness += 0.1f;
         }
         else
         {
@@ -283,19 +323,47 @@ public class Human : NPC {
             intention = IntentionSocialize;
         }
 
-        if(relaxation > 0)
+        if(stress < MaxValue)
         {
-            relaxation -= 1f;
+            stress += 0.1f;
         }
         else
         {
-            relaxation = 0;
+            stress = MaxValue;
             intention = IntentionRelax;
         }
     }
 
+    public override void CalculateUtility(NPC npc)
+    {
+        utilityCurve.CalculateUtility(npc);
+    }
+
+    public override void InitUtilityCurve()
+    {
+        List<Bucket> behaviorBuckets = new List<Bucket>()
+        {
+            new Bucket(BehaviorType.Hydrate),
+            new Bucket(BehaviorType.Satisfy),
+            new Bucket(BehaviorType.Energize),
+            new Bucket(BehaviorType.Urinate),
+            new Bucket(BehaviorType.Defecate),
+            new Bucket(BehaviorType.Temper),
+            new Bucket(BehaviorType.Clean),
+            new Bucket(BehaviorType.Socialize),
+            new Bucket(BehaviorType.Relax),
+            new Bucket(BehaviorType.Work),
+            new Bucket(BehaviorType.Report),
+            new Bucket(BehaviorType.Resolve)
+        };
+
+        utilityCurve = new ResponseCurve(behaviorBuckets);
+
+        CalculateUtility(this);
+    }
+
     public override string GenerateDescription()
     {
-        return base.GenerateDescription() + "\n" + "SEX: " + (sex == Male ? "M" : "F") + "\n" + "HYDRATION: " + FloatUtil.AsPercentString(hydration, MaxValue) + "\n" + "BLADDER: " + FloatUtil.AsPercentString(bladder, MaxValue) + "\n" + "SATISFACTION: " + FloatUtil.AsPercentString(satisfaction, MaxValue) + "\n" + "STOMACH: " + FloatUtil.AsPercentString(stomach, MaxValue) + "\n" + "RELAXATION: " + FloatUtil.AsPercentString(relaxation, MaxValue) + "\n" + "TEMPERATURE: " + FloatUtil.AsDegreeString(temperature) + "\n" + "ENERGY: " + FloatUtil.AsPercentString(energy, MaxValue) + "\n" + "WELLNESS: " + (well ? "Healthy" : "Ill");
+        return base.GenerateDescription() + "\n" + "SEX: " + (sex == Male ? "M" : "F") + "\n" + "THIRST: " + FloatUtil.AsPercentString(thirst, MaxValue) + "\n" + "BLADDER: " + FloatUtil.AsPercentString(bladder, MaxValue) + "\n" + "HUNGER: " + FloatUtil.AsPercentString(hunger, MaxValue) + "\n" + "STOMACH: " + FloatUtil.AsPercentString(stomach, MaxValue) + "\n" + "STRESS: " + FloatUtil.AsPercentString(stress, MaxValue) + "\n" + "TEMPERATURE: " + FloatUtil.AsDegreeString(temperature) + "\n" + "FATIGUE: " + FloatUtil.AsPercentString(fatigue, MaxValue) + "\n" + "WELLNESS: " + (well ? "Healthy" : "Ill");
     }
 }
