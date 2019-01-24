@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class Damageable : Clickable {
 
     public float hp;
+    public float hpRate; //The rate at which this Damageable loses hp in certain circumstances
 
     // Use this for initialization
     public new void Start()
@@ -24,6 +25,16 @@ public abstract class Damageable : Clickable {
     public void Die()
     {
 
+    }
+
+    public void TakeDamage(float damage)
+    {
+        hp -= damage;
+        if(hp <= 0)
+        {
+            hp = 0;
+            Die();
+        }
     }
 
     public override string GenerateDescription()

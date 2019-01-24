@@ -8,6 +8,10 @@ using UnityEngine.AI;
  */ 
 public abstract class NPC : Movable {
 
+    public float hpWeight; //The weight to be applied to hp, when the latter is considered as a factor in this NPC's decision-making process
+    public float hpRateWeight; //The weight to be applied to hpRate, when the latter is considered as a factor in this NPC's decision-making process
+    public float proximityWeight; //The weight to be applied to this NPC's proximity to its potential behaviors/actions when engaged in the decision-making process
+
     public NPCBehavior behavior; //The current Behavior of this NPC (the multifaceted goal in which they're presently engaged)
     public ResponseCurve utilityCurve; //The ResponseCurve which represents all of this NPC's possible behaviors, and their associated utilities
 

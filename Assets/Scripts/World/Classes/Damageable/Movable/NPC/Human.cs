@@ -11,34 +11,6 @@ public class Human : NPC {
     public const int WorkHoursIn = 0;
     public const int WorkHoursOut = 1;
 
-    //The various intentions a Human may have, and which direct their actions
-    public const int IntentionDrink = 0;
-    public const int IntentionEat = 1;
-    public const int IntentionSleep = 2;
-    public const int IntentionUrinate = 3;
-    public const int IntentionDefecate = 4;
-    public const int IntentionTemper = 5;
-    public const int IntentionClean = 6;
-    public const int IntentionSocialize = 7;
-    public const int IntentionRelax = 8;
-    public const int IntentionWork = 9;
-    public const int IntentionReport = 10;
-    public const int IntentionResolve = 11;
-
-    //The various levels of sociability this Human may have, in increasingly dependent order
-    public const int Dependence1 = 0;
-    public const int Dependence2 = 1;
-    public const int Dependence3 = 2;
-    public const int Dependence4 = 3;
-    public const int Dependence5 = 4;
-
-    //The various levels of perception this Human may have, in increasingly perceptive order
-    public const int Perception1 = 0;
-    public const int Perception2 = 1;
-    public const int Perception3 = 2;
-    public const int Perception4 = 3;
-    public const int Perception5 = 4;
-
     //Days of the week
     public const int Monday = 0;
     public const int Tuesday = 1;
@@ -72,24 +44,56 @@ public class Human : NPC {
     public int attractedTo; //The sex to which this NPC is attracted
     public int intention; //The current intention of this Human (the goal in which they're presently engaged)
     public float thirst; //Measures how much this NPC needs to hydrate themselves
+    public float thirstWeight; //The weight to be applied to thirst, when the latter is considered as a factor in this NPC's decision-making process
+    public float thirstRate; //The rate at which this NPC's thirst increases
+    public float thirstRateWeight; //The weight to be applied to thirstRate, when the latter is considered as a factor in this NPC's decision-making process
     public float bladder; //Measures how much this NPC needs to urinate
+    public float bladderWeight; //The weight to be applied to bladder, when the latter is considered as a factor in this NPC's decision-making process
+    public float bladderRate; //The rate at which this NPC's bladder fills up when consuming certain things
+    public float bladderRateWeight; //The weight to be applied to bladderRate, when the latter is considered as a factor in this NPC's decision-making process
     public float hunger; //Measures how much this NPC needs to feed themselves
+    public float hungerWeight; //The weight to be applied to hunger, when the latter is considered as a factor in this NPC's decision-making process
+    public float hungerRate; //The rate at which this NPC's hunger increases
+    public float hungerRateWeight; //The weight to be applied to hungerRate, when the latter is considered as a factor in this NPC's decision-making process
     public float stomach; //Measures how much this NPC needs to defecate
+    public float stomachWeight; //The weight to be applied to stomach, when the latter is considered as a factor in this NPC's decision-making process
+    public float stomachRate; //The rate at which this NPC's stomach fills up when consuming certain things
+    public float stomachRateWeight; //The weight to be applied to stomachRate, when the latter is considered as a factor in this NPC's decision-making process
     public float stress; //Measures how much this NPC needs to take a break or relax
+    public float stressWeight; //The weight to be applied to stress, when the latter is considered as a factor in this NPC's decision-making process
+    public float stressRate; //The rate at which this NPC accumulates stress
+    public float stressRateWeight; //The weight to be applied to stressRate, when the latter is considered as a factor in this NPC's decision-making process
     public float temperature; //Measures how hot or cold this NPC is
+    public float temperatureWeight; //The weight to be applied to temperature, when the latter is considered as a factor in this NPC's decision-making process
+    public float temperatureRate; //The rate at which this NPC's temperature deviates from the norm under certain circumstances
+    public float temperatureRateWeight; //The weight to be applied to temperatureRate, when the latter is considered as a factor in this NPC's decision-making process
     public float fatigue; //Measures how tired this NPC is
+    public float fatigueWeight; //The weight to be applied to fatigue, when the latter is considered as a factor in this NPC's decision-making process
+    public float fatigueRate; //The rate at which this NPC accumulates fatigue
+    public float fatigueRateWeight; //The weight to be applied to fatigueRate, when the latter is considered as a factor in this NPC's decision-making process
     public float uncleanliness; //Measures how hygienic this NPC is
-    public float sociability; //Measures how quickly this NPC becomes lonely
+    public float uncleanlinessWeight; //The weight to be applied to uncleanliness, when the latter is considered as a factor in this NPC's decision-making process
+    public float uncleanlinessRate; //The rate at which this NPC either becomes dirty or develops body odor
+    public float uncleanlinessRateWeight; //The weight to be applied to uncleanlinessRate, when the latter is considered as a factor in this NPC's decision-making process
     public float loneliness; //Measures how in-need of companionship/conversation this NPC is
-    public float perception; //Measures how quickly this NPC may become aware/unaware of the player's actions/presence
+    public float lonelinessWeight; //The weight to be applied to loneliness, when the latter is considered as a factor in this NPC's decision-making process
+    public float lonelinessRate; //The rate at which this NPC's loneliness increases
+    public float lonelinessRateWeight; //The weight to be applied to lonelinessRate, when the latter is considered as a factor in this NPC's decision-making process
     public float awareness; //Measures how aware this NPC currently is of the player's actions/presence
+    public float awarenessRate; //The rate at which this NPC becomes aware/unaware of the player's actions/presence when witness to evidence thereof
     public bool well; //Whether this NPC is well or ill
+
+    public NPCBehavior currentBehavior;
 
     // Use this for initialization
     public new void Start () {
         //TODO: A lot of this information will be set in specific character classes. We're just setting here for testing purposes
         base.Start();
         hp = MaxValue;
+        hpWeight = 3;
+        hpRate = 0.01f;
+        hpRateWeight = 2.5f;
+        proximityWeight = 1.8f;
 
         circadian.Add(CircadianSleep, 2300);
         circadian.Add(CircadianWake, 0800);
@@ -107,20 +111,47 @@ public class Human : NPC {
         cls = "Human"; 
         sex = Male;
         attractedTo = Female;
-        intention = IntentionSleep;
         thirst = 0;
-        bladder = 0;
+        thirstWeight = 2;
+        thirstRate = 0.1f;
+        thirstRateWeight = 1.75f;
+        bladder = 1;
+        bladderWeight = 1.5f;
+        bladderRate = 5;
+        bladderRateWeight = 1.25f;
         hunger = 0;
+        hungerWeight = 1.8f;
+        hungerRate = 0.1f;
+        hungerRateWeight = 1.6f;
         stomach = 0;
+        stomachWeight = 1.5f;
+        stomachRate = 5;
+        stomachRateWeight = 1.25f;
         stress = 0;
-        temperature = OptimalTemp;
+        stressWeight = 1;
+        stressRate = 0.1f;
+        stressRateWeight = 0.9f;
+        temperature = MaxValue / 2;
+        temperatureWeight = 1;
+        temperatureRate = 0.001f;
+        temperatureRateWeight = 0.9f;
         fatigue = 0;
+        fatigueWeight = 1.2f;
+        fatigueRate = 0.1f;
+        fatigueRateWeight = 1.05f;
         uncleanliness = 0;
-        sociability = Dependence2;
+        uncleanlinessWeight = 0.7f;
+        uncleanlinessRate = 0.1f;
+        uncleanlinessRateWeight = 0.5f;
         loneliness = 0;
-        perception = Perception4;
+        lonelinessWeight = 1.1f;
+        lonelinessRate = 0.1f;
+        lonelinessRateWeight = 0.9f;
         awareness = 0;
+        awarenessRate = 0.5f;
         well = true;
+
+        currentBehavior = new NPCBehavior(BehaviorType.Work);
     }
 
     public void FixedUpdate()
@@ -144,87 +175,87 @@ public class Human : NPC {
      */ 
     public void Autonomy()
     {
-        BehaviorType currentBehavior = utilityCurve.GetBehaviorType();
-        //print("Current Behavior: " + currentBehavior);
-        //foreach(Bucket bucket in utilityCurve.buckets)
-        //{
-        //    print(bucket.behaviorType + ": " + bucket.size + ", " + bucket.edge);
-        //}
-        if(currentBehavior == BehaviorType.Hydrate)
+        currentBehavior.behaviorType = utilityCurve.GetBehaviorType();
+        print("Current Behavior: " + currentBehavior);
+        foreach (Bucket bucket in utilityCurve.buckets)
         {
-            Drink nearestDrink = GetNearestObjectOfType(typeof(Drink)) as Drink;
+            print(bucket.behaviorType + ": " + bucket.size + ", " + bucket.edge);
+        }
+        if (currentBehavior.behaviorType == BehaviorType.Hydrate)
+        {
+            Drink nearestDrink = GetObjectOfTypeWithShortestPath(typeof(Drink)) as Drink;
             if(nearestDrink != null)
             {
                 SetDestination(nearestDrink.transform.position);
             }
         }
-        else if(currentBehavior == BehaviorType.Satisfy)
+        else if(currentBehavior.behaviorType == BehaviorType.Satisfy)
         {
-            Food nearestFood = GetNearestObjectOfType(typeof(Food)) as Food;
+            Food nearestFood = GetObjectOfTypeWithShortestPath(typeof(Food)) as Food;
             if(nearestFood != null)
             {
                 SetDestination(nearestFood.transform.position);
             }
         }
-        else if(currentBehavior == BehaviorType.Urinate)
+        else if(currentBehavior.behaviorType == BehaviorType.Urinate)
         {
-            Toilet nearestToilet = GetNearestObjectOfType(typeof(Toilet)) as Toilet;
+            Toilet nearestToilet = GetObjectOfTypeWithShortestPath(typeof(Toilet)) as Toilet;
             if(nearestToilet != null)
             {
                 SetDestination(nearestToilet.transform.position);
             }
         }
-        else if(currentBehavior == BehaviorType.Defecate)
+        else if(currentBehavior.behaviorType == BehaviorType.Defecate)
         {
-            Toilet nearestToilet = GetNearestObjectOfType(typeof(Toilet)) as Toilet;
+            Toilet nearestToilet = GetObjectOfTypeWithShortestPath(typeof(Toilet)) as Toilet;
             if(nearestToilet != null)
             {
                 SetDestination(nearestToilet.transform.position);
             }
         }
-        else if(currentBehavior == BehaviorType.Temper)
+        else if(currentBehavior.behaviorType == BehaviorType.Temper)
         {
-            Thermostat nearestThermostat = GetNearestObjectOfType(typeof(Thermostat)) as Thermostat;
+            Thermostat nearestThermostat = GetObjectOfTypeWithShortestPath(typeof(Thermostat)) as Thermostat;
             if(nearestThermostat != null)
             {
                 SetDestination(nearestThermostat.transform.position);
             }
         }
-        else if(currentBehavior == BehaviorType.Energize)
+        else if(currentBehavior.behaviorType == BehaviorType.Energize)
         {
-            Bed nearestBed = GetNearestObjectOfType(typeof(Bed)) as Bed;
+            Bed nearestBed = GetObjectOfTypeWithShortestPath(typeof(Bed)) as Bed;
             if(nearestBed != null)
             {
                 SetDestination(nearestBed.transform.position);
             }
         }
-        else if(currentBehavior == BehaviorType.Clean)
+        else if(currentBehavior.behaviorType == BehaviorType.Clean)
         {
-            Shower nearestShower = GetNearestObjectOfType(typeof(Shower)) as Shower;
+            Shower nearestShower = GetObjectOfTypeWithShortestPath(typeof(Shower)) as Shower;
             if(nearestShower != null)
             {
                 SetDestination(nearestShower.transform.position);
             }
         }
-        else if(currentBehavior == BehaviorType.Socialize)
+        else if(currentBehavior.behaviorType == BehaviorType.Socialize)
         {
-            Human nearestHuman = GetNearestObjectOfType(typeof(Human)) as Human;
+            Human nearestHuman = GetObjectOfTypeWithShortestPath(typeof(Human)) as Human;
             if(nearestHuman != null && nearestHuman != this)
             {
                 SetDestination(nearestHuman.transform.position);
             }
         }
-        else if(currentBehavior == BehaviorType.Relax)
+        else if(currentBehavior.behaviorType == BehaviorType.Relax)
         {
-            Couch nearestCouch = GetNearestObjectOfType(typeof(Couch)) as Couch;
+            Couch nearestCouch = GetObjectOfTypeWithShortestPath(typeof(Couch)) as Couch;
             if(nearestCouch != null)
             {
                 SetDestination(nearestCouch.transform.position);
             }
         }
-        else if(currentBehavior == BehaviorType.Work)
+        else if(currentBehavior.behaviorType == BehaviorType.Work)
         {
-            Computer nearestComputer = GetNearestObjectOfType(typeof(Computer)) as Computer;
+            Computer nearestComputer = GetObjectOfTypeWithShortestPath(typeof(Computer)) as Computer;
             if(nearestComputer != null)
             {
                 SetDestination(nearestComputer.transform.position);
@@ -239,40 +270,36 @@ public class Human : NPC {
     {
         if(thirst < MaxValue)
         {
-            thirst += 0.1f;
+            thirst += thirstRate;
         }
         else
         {
             thirst = MaxValue;
-            hp -= 0.01f;
-            intention = IntentionDrink;
+            TakeDamage(hpRate);
         }
 
         if(hunger < MaxValue)
         {
-            hunger += 0.1f;
+            hunger += hungerRate;
         }
         else
         {
             hunger = MaxValue;
-            hp -= 0.01f;
-            intention = IntentionEat;
+            TakeDamage(hpRate);
         }
 
         if(!well)
         {
             if(thirst < MaxValue)
             {
-                thirst += 0.001f;
+                thirst += thirstRate / 100;
             }
-            hp -= 0.01f;
-            intention = IntentionSleep;
+            TakeDamage(hpRate);
         }
 
         if (temperature > OptimalTemp)
         {
-            fatigue += 0.1f;
-            intention = IntentionTemper;
+            fatigue += fatigueRate;
         }
         else if(temperature < OptimalTemp)
         {
@@ -280,12 +307,11 @@ public class Human : NPC {
             {
                 well = false;
             }
-            intention = IntentionTemper;
         }
 
         if (fatigue < MaxValue)
         {
-            fatigue += 0.1f;
+            fatigue += fatigueRate;
         }
         else
         {
@@ -295,12 +321,11 @@ public class Human : NPC {
             {
                 well = false;
             }
-            intention = IntentionSleep;
         }
 
         if(uncleanliness < MaxValue)
         {
-            uncleanliness += 0.1f;
+            uncleanliness += uncleanlinessRate;
         }
         else
         {
@@ -310,27 +335,24 @@ public class Human : NPC {
             {
                 well = false;
             }
-            intention = IntentionClean;
         }
 
         if(loneliness < MaxValue)
         {
-            loneliness += 0.1f;
+            loneliness += lonelinessRate;
         }
         else
         {
             loneliness = MaxValue;
-            intention = IntentionSocialize;
         }
 
         if(stress < MaxValue)
         {
-            stress += 0.1f;
+            stress += stressRate;
         }
         else
         {
             stress = MaxValue;
-            intention = IntentionRelax;
         }
     }
 
@@ -364,6 +386,6 @@ public class Human : NPC {
 
     public override string GenerateDescription()
     {
-        return base.GenerateDescription() + "\n" + "SEX: " + (sex == Male ? "M" : "F") + "\n" + "THIRST: " + FloatUtil.AsPercentString(thirst, MaxValue) + "\n" + "BLADDER: " + FloatUtil.AsPercentString(bladder, MaxValue) + "\n" + "HUNGER: " + FloatUtil.AsPercentString(hunger, MaxValue) + "\n" + "STOMACH: " + FloatUtil.AsPercentString(stomach, MaxValue) + "\n" + "STRESS: " + FloatUtil.AsPercentString(stress, MaxValue) + "\n" + "TEMPERATURE: " + FloatUtil.AsDegreeString(temperature) + "\n" + "FATIGUE: " + FloatUtil.AsPercentString(fatigue, MaxValue) + "\n" + "WELLNESS: " + (well ? "Healthy" : "Ill");
+        return base.GenerateDescription() + "\n" + "SEX: " + (sex == Male ? "M" : "F") + "\n" + "THIRST: " + FloatUtil.AsPercentString(thirst, MaxValue) + "\n" + "BLADDER: " + FloatUtil.AsPercentString(bladder, MaxValue) + "\n" + "HUNGER: " + FloatUtil.AsPercentString(hunger, MaxValue) + "\n" + "STOMACH: " + FloatUtil.AsPercentString(stomach, MaxValue) + "\n" + "STRESS: " + FloatUtil.AsPercentString(stress, MaxValue) + "\n" + "TEMPERATURE: " + FloatUtil.AsDegreeString(98.6f - (((MaxValue / 2) - temperature) / 10)) + "\n" + "FATIGUE: " + FloatUtil.AsPercentString(fatigue, MaxValue) + "\n" + "WELLNESS: " + (well ? "Healthy" : "Ill");
     }
 }

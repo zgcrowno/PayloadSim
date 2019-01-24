@@ -39,7 +39,7 @@ public abstract class Clickable : MonoBehaviour {
 
         foreach(Clickable clickable in stageClickablesOfType)
         {
-            if(nearestClickableOfType == null || Vector3.Distance(transform.position, clickable.transform.position) < Vector3.Distance(transform.position, nearestClickableOfType.transform.position))
+            if((nearestClickableOfType == null || Vector3.Distance(transform.position, clickable.transform.position) < Vector3.Distance(transform.position, nearestClickableOfType.transform.position)) && clickable != this)
             {
                 nearestClickableOfType = clickable;
             }
