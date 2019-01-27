@@ -10,7 +10,7 @@ public class Fridge : Immovable, IContainer, IHackable {
         get;
         set;
     }
-
+    
     public List<Consumable> contents
     {
         get;

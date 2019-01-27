@@ -83,12 +83,11 @@ public class Human : NPC {
     public float awarenessRate; //The rate at which this NPC becomes aware/unaware of the player's actions/presence when witness to evidence thereof
     public bool well; //Whether this NPC is well or ill
 
-    public NPCBehavior currentBehavior;
-
     // Use this for initialization
     public new void Start () {
         //TODO: A lot of this information will be set in specific character classes. We're just setting here for testing purposes
         base.Start();
+        speed = 1;
         hp = MaxValue;
         hpWeight = 3;
         hpRate = 0.01f;
@@ -151,14 +150,13 @@ public class Human : NPC {
         awarenessRate = 0.5f;
         well = true;
 
-        currentBehavior = new NPCBehavior(BehaviorType.Work);
+        currentBehavior = Behavior.Work;
     }
 
-    public void FixedUpdate()
+    new public void FixedUpdate()
     {
+        base.FixedUpdate();
         Depreciate();
-        CalculateUtility(this);
-        Autonomy();
     }
 
     /*
@@ -173,31 +171,30 @@ public class Human : NPC {
     /*
      * The catch-all method by which this Human completely governs themselves and their actions. This method is based on Maslow's hierarchy of needs, with more fundamental physiological needs taking precedence over more cerebral/human ones.
      */ 
-    public void Autonomy()
+    public override void Autonomy()
     {
-        currentBehavior.behaviorType = utilityCurve.GetBehaviorType();
-        print("Current Behavior: " + currentBehavior);
-        foreach (Bucket bucket in utilityCurve.buckets)
+        //print("Current Behavior: " + currentBehavior);
+        //foreach (Bucket bucket in utilityCurve.buckets)
+        //{
+        //    print(bucket.behaviorType + ": " + bucket.size + ", " + bucket.edge);
+        //}
+        if (currentBehavior == Behavior.Hydrate)
         {
-            print(bucket.behaviorType + ": " + bucket.size + ", " + bucket.edge);
-        }
-        if (currentBehavior.behaviorType == BehaviorType.Hydrate)
-        {
-            Drink nearestDrink = GetObjectOfTypeWithShortestPath(typeof(Drink)) as Drink;
-            if(nearestDrink != null)
+            Sink nearestSink = GetObjectOfTypeWithShortestPath(typeof(Sink)) as Sink;
+            if(nearestSink != null)
             {
-                SetDestination(nearestDrink.transform.position);
+                SetDestination(nearestSink.transform.position);
             }
         }
-        else if(currentBehavior.behaviorType == BehaviorType.Satisfy)
+        else if(currentBehavior == Behavior.Satisfy)
         {
-            Food nearestFood = GetObjectOfTypeWithShortestPath(typeof(Food)) as Food;
-            if(nearestFood != null)
+            Fridge nearestFridge = GetObjectOfTypeWithShortestPath(typeof(Fridge)) as Fridge;
+            if(nearestFridge != null)
             {
-                SetDestination(nearestFood.transform.position);
+                SetDestination(nearestFridge.transform.position);
             }
         }
-        else if(currentBehavior.behaviorType == BehaviorType.Urinate)
+        else if(currentBehavior == Behavior.Urinate)
         {
             Toilet nearestToilet = GetObjectOfTypeWithShortestPath(typeof(Toilet)) as Toilet;
             if(nearestToilet != null)
@@ -205,7 +202,7 @@ public class Human : NPC {
                 SetDestination(nearestToilet.transform.position);
             }
         }
-        else if(currentBehavior.behaviorType == BehaviorType.Defecate)
+        else if(currentBehavior == Behavior.Defecate)
         {
             Toilet nearestToilet = GetObjectOfTypeWithShortestPath(typeof(Toilet)) as Toilet;
             if(nearestToilet != null)
@@ -213,7 +210,7 @@ public class Human : NPC {
                 SetDestination(nearestToilet.transform.position);
             }
         }
-        else if(currentBehavior.behaviorType == BehaviorType.Temper)
+        else if(currentBehavior == Behavior.Temper)
         {
             Thermostat nearestThermostat = GetObjectOfTypeWithShortestPath(typeof(Thermostat)) as Thermostat;
             if(nearestThermostat != null)
@@ -221,7 +218,7 @@ public class Human : NPC {
                 SetDestination(nearestThermostat.transform.position);
             }
         }
-        else if(currentBehavior.behaviorType == BehaviorType.Energize)
+        else if(currentBehavior == Behavior.Energize)
         {
             Bed nearestBed = GetObjectOfTypeWithShortestPath(typeof(Bed)) as Bed;
             if(nearestBed != null)
@@ -229,7 +226,7 @@ public class Human : NPC {
                 SetDestination(nearestBed.transform.position);
             }
         }
-        else if(currentBehavior.behaviorType == BehaviorType.Clean)
+        else if(currentBehavior == Behavior.Clean)
         {
             Shower nearestShower = GetObjectOfTypeWithShortestPath(typeof(Shower)) as Shower;
             if(nearestShower != null)
@@ -237,15 +234,15 @@ public class Human : NPC {
                 SetDestination(nearestShower.transform.position);
             }
         }
-        else if(currentBehavior.behaviorType == BehaviorType.Socialize)
+        else if(currentBehavior == Behavior.Socialize)
         {
-            Human nearestHuman = GetObjectOfTypeWithShortestPath(typeof(Human)) as Human;
-            if(nearestHuman != null && nearestHuman != this)
+            TV nearestTV = GetObjectOfTypeWithShortestPath(typeof(TV)) as TV;
+            if(nearestTV != null && nearestTV != this)
             {
-                SetDestination(nearestHuman.transform.position);
+                SetDestination(nearestTV.transform.position);
             }
         }
-        else if(currentBehavior.behaviorType == BehaviorType.Relax)
+        else if(currentBehavior == Behavior.Relax)
         {
             Couch nearestCouch = GetObjectOfTypeWithShortestPath(typeof(Couch)) as Couch;
             if(nearestCouch != null)
@@ -253,13 +250,35 @@ public class Human : NPC {
                 SetDestination(nearestCouch.transform.position);
             }
         }
-        else if(currentBehavior.behaviorType == BehaviorType.Work)
+        else if(currentBehavior == Behavior.Work)
         {
             Computer nearestComputer = GetObjectOfTypeWithShortestPath(typeof(Computer)) as Computer;
             if(nearestComputer != null)
             {
                 SetDestination(nearestComputer.transform.position);
             }
+        }
+        else if(currentBehavior == Behavior.Report)
+        {
+            TrashCan nearestTrashCan = GetObjectOfTypeWithShortestPath(typeof(TrashCan)) as TrashCan;
+            if(nearestTrashCan != null)
+            {
+                SetDestination(nearestTrashCan.transform.position);
+            }
+        }
+        else if(currentBehavior == Behavior.Resolve)
+        {
+            Cabinet nearestCabinet = GetObjectOfTypeWithShortestPath(typeof(Cabinet)) as Cabinet;
+            if(nearestCabinet != null)
+            {
+                SetDestination(nearestCabinet.transform.position);
+            }
+        }
+
+        if (DestinationReached())
+        {
+            executeBehavior = false;
+            incrementUtilityTimer = true;
         }
     }
 
@@ -365,18 +384,18 @@ public class Human : NPC {
     {
         List<Bucket> behaviorBuckets = new List<Bucket>()
         {
-            new Bucket(BehaviorType.Hydrate),
-            new Bucket(BehaviorType.Satisfy),
-            new Bucket(BehaviorType.Energize),
-            new Bucket(BehaviorType.Urinate),
-            new Bucket(BehaviorType.Defecate),
-            new Bucket(BehaviorType.Temper),
-            new Bucket(BehaviorType.Clean),
-            new Bucket(BehaviorType.Socialize),
-            new Bucket(BehaviorType.Relax),
-            new Bucket(BehaviorType.Work),
-            new Bucket(BehaviorType.Report),
-            new Bucket(BehaviorType.Resolve)
+            new Bucket(Behavior.Hydrate),
+            new Bucket(Behavior.Satisfy),
+            new Bucket(Behavior.Energize),
+            new Bucket(Behavior.Urinate),
+            new Bucket(Behavior.Defecate),
+            new Bucket(Behavior.Temper),
+            new Bucket(Behavior.Clean),
+            new Bucket(Behavior.Socialize),
+            new Bucket(Behavior.Relax),
+            new Bucket(Behavior.Work),
+            new Bucket(Behavior.Report),
+            new Bucket(Behavior.Resolve)
         };
 
         utilityCurve = new ResponseCurve(behaviorBuckets);
@@ -386,6 +405,6 @@ public class Human : NPC {
 
     public override string GenerateDescription()
     {
-        return base.GenerateDescription() + "\n" + "SEX: " + (sex == Male ? "M" : "F") + "\n" + "THIRST: " + FloatUtil.AsPercentString(thirst, MaxValue) + "\n" + "BLADDER: " + FloatUtil.AsPercentString(bladder, MaxValue) + "\n" + "HUNGER: " + FloatUtil.AsPercentString(hunger, MaxValue) + "\n" + "STOMACH: " + FloatUtil.AsPercentString(stomach, MaxValue) + "\n" + "STRESS: " + FloatUtil.AsPercentString(stress, MaxValue) + "\n" + "TEMPERATURE: " + FloatUtil.AsDegreeString(98.6f - (((MaxValue / 2) - temperature) / 10)) + "\n" + "FATIGUE: " + FloatUtil.AsPercentString(fatigue, MaxValue) + "\n" + "WELLNESS: " + (well ? "Healthy" : "Ill");
+        return base.GenerateDescription() + "\n" + "SEX: " + (sex == Male ? "M" : "F") + "\n" + "THIRST: " + FloatUtil.AsPercentString(thirst, MaxValue) + "\n" + "BLADDER: " + FloatUtil.AsPercentString(bladder, MaxValue) + "\n" + "HUNGER: " + FloatUtil.AsPercentString(hunger, MaxValue) + "\n" + "STOMACH: " + FloatUtil.AsPercentString(stomach, MaxValue) + "\n" + "STRESS: " + FloatUtil.AsPercentString(stress, MaxValue) + "\n" + "TEMPERATURE: " + FloatUtil.AsDegreeString(OptimalTemp - (((MaxValue / 2) - temperature) / 10)) + "\n" + "FATIGUE: " + FloatUtil.AsPercentString(fatigue, MaxValue) + "\n" + "WELLNESS: " + (well ? "Healthy" : "Ill");
     }
 }

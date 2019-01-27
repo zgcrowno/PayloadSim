@@ -43,10 +43,10 @@ public class ResponseCurve {
      * Returns a pseudo-random ActionType associated with one of the Bucket objects in buckets
      * @return The ActionType associated with the pseudo-randomly chosen Bucket object in buckets
      */ 
-    public BehaviorType GetBehaviorType()
+    public Behavior GetBehavior()
     {
         int index = Random.Range(0, maxIndex);
-        return buckets[GetBucketIndexByValue(index, true)].behaviorType;
+        return buckets[GetBucketIndexByValue(index, true)].behavior;
     }
 
     /*

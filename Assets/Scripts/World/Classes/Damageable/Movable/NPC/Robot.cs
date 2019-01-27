@@ -17,6 +17,11 @@ public class Robot : NPC, IHackable {
 		
 	}
 
+    public override void Autonomy()
+    {
+        
+    }
+
     public override void CalculateUtility(NPC npc)
     {
         

@@ -9,28 +9,28 @@ public class Bucket {
 
     public const float LogitXMin = 0.5f; //The returned y-value of the logit function is 0 at x = 0.5, so we want logitX to always be equal to at least 0.5
 
-    public BehaviorType behaviorType; //The possible action this bucket represents
+    public Behavior behavior; //The possible action this bucket represents
 
     public int size; //The size of this bucket, which has purpose only when compared to the sizes of its overarching data structure's other buckets (synonymous with relative utility)
     public int edge; //The right edge of this bucket, with the left edge being retrievable only by consulting the overarching data structure
 
     public Bucket()
     {
-        behaviorType = BehaviorType.Work;
+        behavior = Behavior.Work;
         size = 0;
         edge = 0;
     }
 
-    public Bucket(BehaviorType behaviorType)
+    public Bucket(Behavior behavior)
     {
-        this.behaviorType = behaviorType;
+        this.behavior = behavior;
         this.size = 0;
         this.edge = 0;
     }
 
-    public Bucket(BehaviorType behaviorType, int size, int edge)
+    public Bucket(Behavior behavior, int size, int edge)
     {
-        this.behaviorType = behaviorType;
+        this.behavior = behavior;
         this.size = size;
         this.edge = edge;
     }
@@ -43,10 +43,10 @@ public class Bucket {
     {
         Human human = (Human)npc;
 
-        Drink nearestDrink;
-        Drink farthestDrink;
-        Food nearestFood;
-        Food farthestFood;
+        Sink nearestSink;
+        Sink farthestSink;
+        Fridge nearestFridge;
+        Fridge farthestFridge;
         Bed nearestBed;
         Bed farthestBed;
         Toilet nearestToilet;
@@ -55,8 +55,8 @@ public class Bucket {
         Thermostat farthestThermostat;
         Shower nearestShower;
         Shower farthestShower;
-        Human nearestHuman;
-        Human farthestHuman;
+        TV nearestTV;
+        TV farthestTV;
         Couch nearestCouch;
         Couch farthestCouch;
         Computer nearestComputer;
@@ -74,17 +74,17 @@ public class Bucket {
 
         int utility;
 
-        switch (behaviorType)
+        switch (behavior)
         {
-            case BehaviorType.Hydrate:
-                nearestDrink = human.GetObjectOfTypeWithShortestPath(typeof(Drink)) as Drink;
-                farthestDrink = human.GetObjectOfTypeWithLongestPath(typeof(Drink)) as Drink;
+            case Behavior.Hydrate:
+                nearestSink = human.GetObjectOfTypeWithShortestPath(typeof(Sink)) as Sink;
+                farthestSink = human.GetObjectOfTypeWithLongestPath(typeof(Sink)) as Sink;
 
                 float normalizedThirst = human.thirst / Clickable.MaxValue;
                 float normalizedThirstRate = human.thirstRate / Clickable.MaxValue;
                 normalizedHP = human.hp / Clickable.MaxValue;
                 normalizedHPRate = human.hpRate / Clickable.MaxValue;
-                normalizedProximity = nearestDrink != null && farthestDrink != null ? human.CalculatePathLength(nearestDrink.transform.position) / human.CalculatePathLength(farthestDrink.transform.position) : 1;
+                normalizedProximity = nearestSink != null && farthestSink != null ? human.CalculatePathLength(nearestSink.transform.position) / human.CalculatePathLength(farthestSink.transform.position) : 1;
                 float thirstFactor = normalizedThirst * human.thirstWeight;
                 float thirstRateFactor = normalizedThirstRate * human.thirstRateWeight;
                 hpFactor = (1 - normalizedHP) * human.hpWeight;
@@ -105,15 +105,15 @@ public class Bucket {
                     size = utility;
                 }
                 break;
-            case BehaviorType.Satisfy:
-                nearestFood = human.GetObjectOfTypeWithShortestPath(typeof(Food)) as Food;
-                farthestFood = human.GetObjectOfTypeWithLongestPath(typeof(Food)) as Food;
+            case Behavior.Satisfy:
+                nearestFridge = human.GetObjectOfTypeWithShortestPath(typeof(Fridge)) as Fridge;
+                farthestFridge = human.GetObjectOfTypeWithLongestPath(typeof(Fridge)) as Fridge;
 
                 float normalizedHunger = human.hunger / Clickable.MaxValue;
                 float normalizedHungerRate = human.hungerRate / Clickable.MaxValue;
                 normalizedHP = human.hp / Clickable.MaxValue;
                 normalizedHPRate = human.hpRate / Clickable.MaxValue;
-                normalizedProximity = nearestFood != null && farthestFood != null ? human.CalculatePathLength(nearestFood.transform.position) / human.CalculatePathLength(farthestFood.transform.position) : 1;
+                normalizedProximity = nearestFridge != null && farthestFridge != null ? human.CalculatePathLength(nearestFridge.transform.position) / human.CalculatePathLength(farthestFridge.transform.position) : 1;
                 float hungerFactor = normalizedHunger * human.hungerWeight;
                 float hungerRateFactor = normalizedHungerRate * human.hungerRateWeight;
                 hpFactor = (1 - normalizedHP) * human.hpWeight;
@@ -134,7 +134,7 @@ public class Bucket {
                     size = utility;
                 }
                 break;
-            case BehaviorType.Energize:
+            case Behavior.Energize:
                 nearestBed = human.GetObjectOfTypeWithShortestPath(typeof(Bed)) as Bed;
                 farthestBed = human.GetObjectOfTypeWithLongestPath(typeof(Bed)) as Bed;
 
@@ -163,7 +163,7 @@ public class Bucket {
                     size = utility;
                 }
                 break;
-            case BehaviorType.Urinate:
+            case Behavior.Urinate:
                 nearestToilet = human.GetObjectOfTypeWithShortestPath(typeof(Toilet)) as Toilet;
                 farthestToilet = human.GetObjectOfTypeWithLongestPath(typeof(Toilet)) as Toilet;
 
@@ -188,7 +188,7 @@ public class Bucket {
                     size = utility;
                 }
                 break;
-            case BehaviorType.Defecate:
+            case Behavior.Defecate:
                 nearestToilet = human.GetObjectOfTypeWithShortestPath(typeof(Toilet)) as Toilet;
                 farthestToilet = human.GetObjectOfTypeWithLongestPath(typeof(Toilet)) as Toilet;
 
@@ -213,7 +213,7 @@ public class Bucket {
                     size = utility;
                 }
                 break;
-            case BehaviorType.Temper:
+            case Behavior.Temper:
                 nearestThermostat = human.GetObjectOfTypeWithShortestPath(typeof(Thermostat)) as Thermostat;
                 farthestThermostat = human.GetObjectOfTypeWithLongestPath(typeof(Thermostat)) as Thermostat;
 
@@ -238,7 +238,7 @@ public class Bucket {
                     size = utility;
                 }
                 break;
-            case BehaviorType.Clean:
+            case Behavior.Clean:
                 nearestShower = human.GetObjectOfTypeWithShortestPath(typeof(Shower)) as Shower;
                 farthestShower = human.GetObjectOfTypeWithLongestPath(typeof(Shower)) as Shower;
 
@@ -263,13 +263,13 @@ public class Bucket {
                     size = utility;
                 }
                 break;
-            case BehaviorType.Socialize:
-                nearestHuman = human.GetObjectOfTypeWithShortestPath(typeof(Human)) as Human;
-                farthestHuman = human.GetObjectOfTypeWithLongestPath(typeof(Human)) as Human;
+            case Behavior.Socialize:
+                nearestTV = human.GetObjectOfTypeWithShortestPath(typeof(TV)) as TV;
+                farthestTV = human.GetObjectOfTypeWithLongestPath(typeof(TV)) as TV;
 
                 float normalizedLoneliness = human.loneliness / Clickable.MaxValue;
                 float normalizedLonelinessRate = human.lonelinessRate / Clickable.MaxValue;
-                normalizedProximity = nearestHuman != null && farthestHuman != null ? human.CalculatePathLength(nearestHuman.transform.position) / human.CalculatePathLength(farthestHuman.transform.position) : 1;
+                normalizedProximity = nearestTV != null && farthestTV != null ? human.CalculatePathLength(nearestTV.transform.position) / human.CalculatePathLength(farthestTV.transform.position) : 1;
                 float lonelinessFactor = normalizedLoneliness * human.lonelinessWeight;
                 float lonelinessRateFactor = normalizedLonelinessRate * human.lonelinessRateWeight;
                 proximityFactor = (1 - normalizedProximity) * human.proximityWeight;
@@ -288,7 +288,7 @@ public class Bucket {
                     size = utility;
                 }
                 break;
-            case BehaviorType.Relax:
+            case Behavior.Relax:
                 nearestCouch = human.GetObjectOfTypeWithShortestPath(typeof(Couch)) as Couch;
                 farthestCouch = human.GetObjectOfTypeWithLongestPath(typeof(Couch)) as Couch;
 
@@ -313,7 +313,7 @@ public class Bucket {
                     size = utility;
                 }
                 break;
-            case BehaviorType.Work:
+            case Behavior.Work:
                 //nearestComputer = human.GetObjectOfTypeWithShortestPath(typeof(Computer)) as Computer;
                 //farthestComputer = human.GetObjectOfTypeWithLongestPath(typeof(Computer)) as Computer;
 
@@ -328,7 +328,7 @@ public class Bucket {
                     size = utility;
                 }
                 break;
-            case BehaviorType.Report:
+            case Behavior.Report:
                 //nearestHuman = human.GetObjectOfTypeWithShortestPath(typeof(Human)) as Human;
                 //farthestHuman = human.GetObjectOfTypeWithLongestPath(typeof(Human)) as Human;
 
@@ -343,7 +343,7 @@ public class Bucket {
                     size = utility;
                 }
                 break;
-            case BehaviorType.Resolve:
+            case Behavior.Resolve:
                 //nearestHuman = human.GetObjectOfTypeWithShortestPath(typeof(Human)) as Human;
                 //farthestHuman = human.GetObjectOfTypeWithLongestPath(typeof(Human)) as Human;
 
