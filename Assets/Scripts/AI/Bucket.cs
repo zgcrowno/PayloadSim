@@ -38,8 +38,9 @@ public class Bucket {
     /*
      * Calculates and sets the utility (size) of this Bucket for the passed NPC
      * @param npc The passed NPC for whom we're calculating various utilities
+     * @param sub This bool represents whether or not we're calculating sub utilities (that is, once we've decided on whether we're hydrating, energizing, etc., we then decide how we hydrate, energize, etc.)
      */
-    public void CalculateUtility(NPC npc)
+    public void CalculateUtility(NPC npc, bool sub)
     {
         Human human = (Human)npc;
 

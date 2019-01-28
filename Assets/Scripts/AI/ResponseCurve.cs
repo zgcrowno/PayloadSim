@@ -156,12 +156,13 @@ public class ResponseCurve {
     /*
      * Calculates the utility (size) for every Bucket in buckets for the passed NPC, and subsequently modifies itself accordingly
      * @param npc The passed NPC for whom we're calculating various utilities
-     */ 
-    public void CalculateUtility(NPC npc)
+     * @param sub This bool represents whether or not we're calculating sub utilities (that is, once we've decided on whether we're hydrating, energizing, etc., we then decide how we hydrate, energize, etc.)
+     */
+    public void CalculateUtility(NPC npc, bool sub)
     {
         foreach(Bucket bucket in buckets)
         {
-            bucket.CalculateUtility(npc);
+            bucket.CalculateUtility(npc, sub);
         }
         
         RebuildEdges(0);

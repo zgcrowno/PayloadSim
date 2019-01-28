@@ -178,107 +178,49 @@ public class Human : NPC {
         //{
         //    print(bucket.behaviorType + ": " + bucket.size + ", " + bucket.edge);
         //}
-        if (currentBehavior == Behavior.Hydrate)
+        switch(currentBehavior)
         {
-            Sink nearestSink = GetObjectOfTypeWithShortestPath(typeof(Sink)) as Sink;
-            if(nearestSink != null)
-            {
-                SetDestination(nearestSink.transform.position);
-            }
-        }
-        else if(currentBehavior == Behavior.Satisfy)
-        {
-            Fridge nearestFridge = GetObjectOfTypeWithShortestPath(typeof(Fridge)) as Fridge;
-            if(nearestFridge != null)
-            {
-                SetDestination(nearestFridge.transform.position);
-            }
-        }
-        else if(currentBehavior == Behavior.Urinate)
-        {
-            Toilet nearestToilet = GetObjectOfTypeWithShortestPath(typeof(Toilet)) as Toilet;
-            if(nearestToilet != null)
-            {
-                SetDestination(nearestToilet.transform.position);
-            }
-        }
-        else if(currentBehavior == Behavior.Defecate)
-        {
-            Toilet nearestToilet = GetObjectOfTypeWithShortestPath(typeof(Toilet)) as Toilet;
-            if(nearestToilet != null)
-            {
-                SetDestination(nearestToilet.transform.position);
-            }
-        }
-        else if(currentBehavior == Behavior.Temper)
-        {
-            Thermostat nearestThermostat = GetObjectOfTypeWithShortestPath(typeof(Thermostat)) as Thermostat;
-            if(nearestThermostat != null)
-            {
-                SetDestination(nearestThermostat.transform.position);
-            }
-        }
-        else if(currentBehavior == Behavior.Energize)
-        {
-            Bed nearestBed = GetObjectOfTypeWithShortestPath(typeof(Bed)) as Bed;
-            if(nearestBed != null)
-            {
-                SetDestination(nearestBed.transform.position);
-            }
-        }
-        else if(currentBehavior == Behavior.Clean)
-        {
-            Shower nearestShower = GetObjectOfTypeWithShortestPath(typeof(Shower)) as Shower;
-            if(nearestShower != null)
-            {
-                SetDestination(nearestShower.transform.position);
-            }
-        }
-        else if(currentBehavior == Behavior.Socialize)
-        {
-            TV nearestTV = GetObjectOfTypeWithShortestPath(typeof(TV)) as TV;
-            if(nearestTV != null && nearestTV != this)
-            {
-                SetDestination(nearestTV.transform.position);
-            }
-        }
-        else if(currentBehavior == Behavior.Relax)
-        {
-            Couch nearestCouch = GetObjectOfTypeWithShortestPath(typeof(Couch)) as Couch;
-            if(nearestCouch != null)
-            {
-                SetDestination(nearestCouch.transform.position);
-            }
-        }
-        else if(currentBehavior == Behavior.Work)
-        {
-            Computer nearestComputer = GetObjectOfTypeWithShortestPath(typeof(Computer)) as Computer;
-            if(nearestComputer != null)
-            {
-                SetDestination(nearestComputer.transform.position);
-            }
-        }
-        else if(currentBehavior == Behavior.Report)
-        {
-            TrashCan nearestTrashCan = GetObjectOfTypeWithShortestPath(typeof(TrashCan)) as TrashCan;
-            if(nearestTrashCan != null)
-            {
-                SetDestination(nearestTrashCan.transform.position);
-            }
-        }
-        else if(currentBehavior == Behavior.Resolve)
-        {
-            Cabinet nearestCabinet = GetObjectOfTypeWithShortestPath(typeof(Cabinet)) as Cabinet;
-            if(nearestCabinet != null)
-            {
-                SetDestination(nearestCabinet.transform.position);
-            }
+            case Behavior.Hydrate:
+                Hydrate();
+                break;
+            case Behavior.Satisfy:
+                Satisfy();
+                break;
+            case Behavior.Urinate:
+                Urinate();
+                break;
+            case Behavior.Defecate:
+                Defecate();
+                break;
+            case Behavior.Temper:
+                Temper();
+                break;
+            case Behavior.Energize:
+                Energize();
+                break;
+            case Behavior.Clean:
+                Clean();
+                break;
+            case Behavior.Socialize:
+                Socialize();
+                break;
+            case Behavior.Relax:
+                Relax();
+                break;
+            case Behavior.Work:
+                Work();
+                break;
+            case Behavior.Report:
+                Report();
+                break;
+            case Behavior.Resolve:
+                Resolve();
+                break;
         }
 
         if (DestinationReached())
         {
-            executeBehavior = false;
-            incrementUtilityTimer = true;
+            FinishBehavior();
         }
     }
 
@@ -375,9 +317,117 @@ public class Human : NPC {
         }
     }
 
-    public override void CalculateUtility(NPC npc)
+    public void Hydrate()
     {
-        utilityCurve.CalculateUtility(npc);
+        Sink nearestSink = GetObjectOfTypeWithShortestPath(typeof(Sink)) as Sink;
+        if (nearestSink != null && agent.destination != nearestSink.transform.position)
+        {
+            SetDestination(nearestSink.transform.position);
+        }
+    }
+
+    public void Satisfy()
+    {
+        Fridge nearestFridge = GetObjectOfTypeWithShortestPath(typeof(Fridge)) as Fridge;
+        if (nearestFridge != null && agent.destination != nearestFridge.transform.position)
+        {
+            SetDestination(nearestFridge.transform.position);
+        }
+    }
+
+    public void Urinate()
+    {
+        Toilet nearestToilet = GetObjectOfTypeWithShortestPath(typeof(Toilet)) as Toilet;
+        if (nearestToilet != null && agent.destination != nearestToilet.transform.position)
+        {
+            SetDestination(nearestToilet.transform.position);
+        }
+    }
+
+    public void Defecate()
+    {
+        Toilet nearestToilet = GetObjectOfTypeWithShortestPath(typeof(Toilet)) as Toilet;
+        if (nearestToilet != null && agent.destination != nearestToilet.transform.position)
+        {
+            SetDestination(nearestToilet.transform.position);
+        }
+    }
+
+    public void Temper()
+    {
+        Thermostat nearestThermostat = GetObjectOfTypeWithShortestPath(typeof(Thermostat)) as Thermostat;
+        if (nearestThermostat != null && agent.destination != nearestThermostat.transform.position)
+        {
+            SetDestination(nearestThermostat.transform.position);
+        }
+    }
+
+    public void Energize()
+    {
+        Bed nearestBed = GetObjectOfTypeWithShortestPath(typeof(Bed)) as Bed;
+        if (nearestBed != null && agent.destination != nearestBed.transform.position)
+        {
+            SetDestination(nearestBed.transform.position);
+        }
+    }
+
+    public void Clean()
+    {
+        Shower nearestShower = GetObjectOfTypeWithShortestPath(typeof(Shower)) as Shower;
+        if (nearestShower != null && agent.destination != nearestShower.transform.position)
+        {
+            SetDestination(nearestShower.transform.position);
+        }
+    }
+
+    public void Socialize()
+    {
+        TV nearestTV = GetObjectOfTypeWithShortestPath(typeof(TV)) as TV;
+        if (nearestTV != null && nearestTV != this && agent.destination != nearestTV.transform.position)
+        {
+            SetDestination(nearestTV.transform.position);
+        }
+    }
+
+    public void Relax()
+    {
+        Couch nearestCouch = GetObjectOfTypeWithShortestPath(typeof(Couch)) as Couch;
+        if (nearestCouch != null && agent.destination != nearestCouch.transform.position)
+        {
+            SetDestination(nearestCouch.transform.position);
+        }
+    }
+
+    public void Work()
+    {
+        Computer nearestComputer = GetObjectOfTypeWithShortestPath(typeof(Computer)) as Computer;
+        if (nearestComputer != null && agent.destination != nearestComputer.transform.position)
+        {
+            SetDestination(nearestComputer.transform.position);
+        }
+    }
+
+    public void Report()
+    {
+        TrashCan nearestTrashCan = GetObjectOfTypeWithShortestPath(typeof(TrashCan)) as TrashCan;
+        if (nearestTrashCan != null && agent.destination != nearestTrashCan.transform.position)
+        {
+            SetDestination(nearestTrashCan.transform.position);
+        }
+    }
+
+    public void Resolve()
+    {
+        Cabinet nearestCabinet = GetObjectOfTypeWithShortestPath(typeof(Cabinet)) as Cabinet;
+        if (nearestCabinet != null && agent.destination != nearestCabinet.transform.position)
+        {
+            SetDestination(nearestCabinet.transform.position);
+        }
+    }
+
+    public override void CalculateUtility(NPC npc, bool sub)
+    {
+        utilityCurve.CalculateUtility(npc, sub);
     }
 
     public override void InitUtilityCurve()
@@ -399,8 +449,6 @@ public class Human : NPC {
         };
 
         utilityCurve = new ResponseCurve(behaviorBuckets);
-
-        CalculateUtility(this);
     }
 
     public override string GenerateDescription()

@@ -40,24 +40,15 @@ public abstract class NPC : Movable
             if (GetType() == typeof(Human)) //This NPC is a human, so we increment utilityTimer to simulate an actual human's reaction time
             {
                 utilityTimer++;
-                if (utilityTimer == UtilityTimerLimit)
+
+                if (utilityTimer >= UtilityTimerLimit)
                 {
-                    CalculateUtility(this);
-                    currentBehavior = utilityCurve.GetBehavior();
-                    executeBehavior = true;
-                }
-                else if (utilityTimer > UtilityTimerLimit)
-                {
-                    utilityTimer = 0;
-                    incrementUtilityTimer = false;
+                    SetNewBehavior();
                 }
             }
             else //This NPC is non-human/robotic, so we execute its utility functions immediately
             {
-                CalculateUtility(this);
-                currentBehavior = utilityCurve.GetBehavior();
-                executeBehavior = true;
-                incrementUtilityTimer = false;
+                SetNewBehavior();
             }
         }
         if(executeBehavior)
@@ -66,9 +57,29 @@ public abstract class NPC : Movable
         }
     }
 
+    public void SetNewBehavior()
+    {
+        CalculateUtility(this, false);
+        currentBehavior = utilityCurve.GetBehavior();
+        executeBehavior = true;
+        ResetUtilityTimer();
+    }
+
+    public void ResetUtilityTimer()
+    {
+        utilityTimer = 0;
+        incrementUtilityTimer = false;
+    }
+
+    public void FinishBehavior()
+    {
+        executeBehavior = false;
+        incrementUtilityTimer = true;
+    }
+
     public abstract void Autonomy();
 
-    public abstract void CalculateUtility(NPC npc);
+    public abstract void CalculateUtility(NPC npc, bool sub);
 
     public abstract void InitUtilityCurve();
 }

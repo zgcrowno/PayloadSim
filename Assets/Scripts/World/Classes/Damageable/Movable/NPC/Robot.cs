@@ -22,7 +22,7 @@ public class Robot : NPC, IHackable {
         
     }
 
-    public override void CalculateUtility(NPC npc)
+    public override void CalculateUtility(NPC npc, bool sub)
     {
         
     }
