@@ -22,6 +22,12 @@ public abstract class Vehicle : Movable, IContainer, IHackable {
         get;
         set;
     }
+
+    public FirewallLevel firewallLevel
+    {
+        get;
+        set;
+    }
     //END interface properties
 
     // Use this for initialization
@@ -29,9 +35,9 @@ public abstract class Vehicle : Movable, IContainer, IHackable {
         base.Start();
         contents = new List<Consumable>();
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 }

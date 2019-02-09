@@ -28,6 +28,12 @@ public class Toilet : Immovable, IContainer, IHackable, IRegenerative {
         get;
         set;
     }
+
+    public FirewallLevel firewallLevel
+    {
+        get;
+        set;
+    }
     //END interface properties
 
     // Use this for initialization
@@ -39,11 +45,11 @@ public class Toilet : Immovable, IContainer, IHackable, IRegenerative {
         designation = "Toilet";
         cls = "Appliances";
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 
     //START interface methods
     public void Regen(NPC npc)

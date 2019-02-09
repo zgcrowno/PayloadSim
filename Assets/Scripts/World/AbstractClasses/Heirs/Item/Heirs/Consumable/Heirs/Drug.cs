@@ -8,9 +8,9 @@ public abstract class Drug : Consumable {
 	public new void Start () {
         base.Start();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 }

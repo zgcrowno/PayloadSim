@@ -16,10 +16,9 @@ public abstract class Movable : Damageable
         agent = GetComponent<NavMeshAgent>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public new void Update()
     {
-
+        base.Update();
     }
 
     /*

@@ -18,11 +18,11 @@ public class Bed : Immovable, IRegenerative {
         designation = "Bed";
         cls = "Furniture";
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 
     //START interface methods
     public void Regen(NPC npc)

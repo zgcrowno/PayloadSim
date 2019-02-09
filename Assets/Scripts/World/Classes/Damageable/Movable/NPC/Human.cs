@@ -153,6 +153,11 @@ public class Human : NPC {
         currentBehavior = Behavior.Work;
     }
 
+    public new void Update()
+    {
+        base.Update();
+    }
+
     new public void FixedUpdate()
     {
         base.FixedUpdate();

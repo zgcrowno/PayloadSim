@@ -32,6 +32,11 @@ public abstract class NPC : Movable
         InitUtilityCurve();
     }
 
+    public new void Update()
+    {
+        base.Update();
+    }
+
     // Update is called once per frame
     public void FixedUpdate()
     {

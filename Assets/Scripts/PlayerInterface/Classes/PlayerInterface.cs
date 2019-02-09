@@ -11,13 +11,17 @@ public class PlayerInterface : MonoBehaviour {
     public List<SuperTab> superTabs = new List<SuperTab>(MaxSuperTabs);
 
     public Canvas canvas;
-    
+    public GameObject stage; //The stage of which this PlayerInterface is a part
+
     void Start () {
         //Load the canvas
         canvas = GameObject.Find("/Canvas").GetComponent<Canvas>();
 
+        //Load the stage
+        stage = GameObject.Find("/Stage");
+
         //Initialize the Tab objects for testing purposes
-        for(int i = 0; i < MaxSuperTabs; i++)
+        for (int i = 0; i < MaxSuperTabs; i++)
         {
             GameObject superTab = Instantiate(Resources.Load("Prefabs/PlayerInterface/BottomLeftPrefab") as GameObject);
             superTab.AddComponent<SuperTab>();
@@ -26,10 +30,10 @@ public class PlayerInterface : MonoBehaviour {
             switch (i)
             {
                 case 0:
-                    subTab.AddComponent<InputTab>();
-                    subTab.gameObject.name = "InputSubTab";
-                    superTab.gameObject.name = "InputSuperTab";
-                    superTabs[i].headerText.text = InputTab.HeaderText;
+                    subTab.AddComponent<TerminalTab>();
+                    subTab.gameObject.name = "TerminalSubTab";
+                    superTab.gameObject.name = "TerminalSuperTab";
+                    superTabs[i].headerText.text = TerminalTab.HeaderText;
                     break;
                 case 1:
                     subTab.AddComponent<OutputTab>();
@@ -80,10 +84,31 @@ public class PlayerInterface : MonoBehaviour {
     }
 
     /*
+     * Returns a list of all objects of Type type in the scene
+     * @param type The Type of object for which we're searching
+     * @return A list of all objects of Type type in the scene
+     */ 
+    public List<Clickable> GetAllObjectsOfType(Type type)
+    {
+        Clickable[] stageClickables = stage.GetComponentsInChildren<Clickable>();
+        List<Clickable> stageClickablesOfType = new List<Clickable>();
+        
+        for (int i = 0; i < stageClickables.Length; i++)
+        {
+            if (stageClickables[i].Is(type))
+            {
+                stageClickablesOfType.Add(stageClickables[i]);
+            }
+        }
+
+        return stageClickablesOfType;
+    }
+
+    /*
      * Returns the SubTab of the designated type
      * @param type The type of SubTab for which we're searching
      * @return The SubTab of the designated type
-     */ 
+     */
     public SubTab GetSubTabByType(Type type)
     {
         foreach (SuperTab superTab in superTabs)

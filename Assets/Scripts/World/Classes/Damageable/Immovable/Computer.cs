@@ -4,15 +4,26 @@ using UnityEngine;
 
 public class Computer : Immovable, IHackable {
 
-	// Use this for initialization
-	public new void Start () {
+    //START interface properties
+    public FirewallLevel firewallLevel
+    {
+        get;
+        set;
+    }
+    //END interface properties
+
+    // Use this for initialization
+    public new void Start () {
         base.Start();
         designation = "Computer";
         cls = "Electronics";
+
+        //Setting this value here for testing purposes
+        firewallLevel = FirewallLevel.One;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 }

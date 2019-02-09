@@ -33,9 +33,9 @@ public class Desk : Immovable, IContainer {
         designation = "Desk";
         cls = "Furniture";
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 }

@@ -37,11 +37,11 @@ public abstract class Consumable : Item, IRegenerative {
 	public new void Start () {
         base.Start();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 
     public override string GenerateDescription()
     {

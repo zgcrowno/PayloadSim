@@ -5,17 +5,25 @@ using UnityEngine.AI;
 
 public class Robot : NPC, IHackable {
 
+    //START interface properties
+    public FirewallLevel firewallLevel
+    {
+        get;
+        set;
+    }
+    //END interface properties
+
     // Use this for initialization
     public new void Start () {
         base.Start();
         designation = "Robot";
         cls = "Electronics";
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 
     public override void Autonomy()
     {

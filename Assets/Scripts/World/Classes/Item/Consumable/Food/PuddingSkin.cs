@@ -10,9 +10,9 @@ public class PuddingSkin : Food {
         designation = "Pudding Skin";
         cls = "Food";
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 }

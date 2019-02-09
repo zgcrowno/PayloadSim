@@ -92,7 +92,7 @@ public class Bucket {
                 hpRateFactor = (1 - normalizedHPRate) * human.hpRateWeight;
                 proximityFactor = (1 - normalizedProximity) * human.proximityWeight;
                 normalizedResult = (thirstFactor + thirstRateFactor + hpFactor + hpRateFactor + proximityFactor) / (human.thirstWeight + human.thirstRateWeight + human.hpWeight + human.hpRateWeight + human.proximityWeight);
-
+                
                 logitX = LogitXMin + (normalizedResult / 2); //Dividing normalizedResult by 2 so as to prevent logitX from exceeding a value of 1
                 logitResult = MathUtil.Logit(logitX, (float)Math.E, false);
                 utility = Mathf.CeilToInt(logitResult * Granularity);

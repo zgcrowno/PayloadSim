@@ -10,9 +10,9 @@ public class Water : Drink {
         designation = "Water";
         cls = "Beverage";
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 }

@@ -22,6 +22,12 @@ public class VendingMachine : Immovable, IContainer, IHackable {
         get;
         set;
     }
+
+    public FirewallLevel firewallLevel
+    {
+        get;
+        set;
+    }
     //END interface properties
 
     // Use this for initialization
@@ -33,9 +39,9 @@ public class VendingMachine : Immovable, IContainer, IHackable {
         designation = "Vending Machine";
         cls = "Electronics";
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 }

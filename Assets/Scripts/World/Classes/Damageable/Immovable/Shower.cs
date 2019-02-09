@@ -10,6 +10,12 @@ public class Shower : Immovable, IHackable, IRegenerative {
         get;
         set;
     }
+
+    public FirewallLevel firewallLevel
+    {
+        get;
+        set;
+    }
     //END interface properties
 
     // Use this for initialization
@@ -18,11 +24,11 @@ public class Shower : Immovable, IHackable, IRegenerative {
         designation = "Shower";
         cls = "Appliances";
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public new void Update()
+    {
+        base.Update();
+    }
 
     //START interface methods
     public void Regen(NPC npc)

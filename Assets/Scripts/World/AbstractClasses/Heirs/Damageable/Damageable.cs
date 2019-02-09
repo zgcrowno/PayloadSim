@@ -13,15 +13,14 @@ public abstract class Damageable : Clickable {
         base.Start();
     }
 
-    // Update is called once per frame
-    void Update()
+    public new void Update()
     {
-
+        base.Update();
     }
 
     /*
      * Method by which this Damageable is destroyed or dies; it's called upon hp reaching zero
-     */ 
+     */
     public void Die()
     {
 
