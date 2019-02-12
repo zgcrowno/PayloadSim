@@ -30,7 +30,6 @@ public class TextInputTab : SubTab {
         scrollbar = ifrt.Find("Scrollbar").gameObject;
         srt = scrollbar.GetComponent<RectTransform>();
         SetUp(new Vector2(superTab.brt.anchoredPosition.x, superTab.brt.anchoredPosition.y), new Vector2(superTab.brt.sizeDelta.x, superTab.brt.sizeDelta.y));
-        StartCoroutine(UpdateScrollbarVisibility()); //Ensure the scrollbar has the correct visibility at start
     }
 
     new public void FixedUpdate()

@@ -23,9 +23,8 @@ public class TerminalTab : SubTab {
     public ScrollRect scrollRect;
     public GameObject scrollbar; //The scrollbar associated with the contentBody
     public RectTransform srt; //The RectTransform of the scrollbar
-
-    public bool connected;
-    public bool bypassing;
+    public IHackable connectedDevice;
+    public IHackable bypassingDevice;
     public bool proxying;
 
     // Use this for initialization
@@ -54,7 +53,6 @@ public class TerminalTab : SubTab {
         inputField.onValueChanged.AddListener(ProcessInput);
 
         SetUp(new Vector2(superTab.brt.anchoredPosition.x, superTab.brt.anchoredPosition.y), new Vector2(superTab.brt.sizeDelta.x, superTab.brt.sizeDelta.y));
-        StartCoroutine(UpdateScrollbarVisibility()); //Ensure the scrollbar has the correct visibility at start
     }
 
     new public void FixedUpdate()
@@ -78,7 +76,7 @@ public class TerminalTab : SubTab {
 
         string[] strArr = str.Split(new char[] { Delimiter.Space }, Command.MaxElements);
 
-        if (!connected)
+        if (connectedDevice == null)
         {
             if (strArr.Length >= 1)
             {
@@ -119,6 +117,8 @@ public class TerminalTab : SubTab {
         {
 
         }
+
+        StartCoroutine(ScrollToBottom());
     }
 
     public void ExecuteInput(string str)
