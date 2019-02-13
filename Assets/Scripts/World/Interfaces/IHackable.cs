@@ -9,6 +9,12 @@ public interface IHackable {
         get;
         set;
     }
+
+    bool bypassed
+    {
+        get;
+        set;
+    }
 }
 
 public enum FirewallLevel

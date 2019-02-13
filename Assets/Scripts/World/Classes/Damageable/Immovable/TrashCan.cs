@@ -28,6 +28,12 @@ public class TrashCan : Immovable, IContainer, IHackable {
         get;
         set;
     }
+
+    public bool bypassed
+    {
+        get;
+        set;
+    }
     //END interface properties
 
     // Use this for initialization

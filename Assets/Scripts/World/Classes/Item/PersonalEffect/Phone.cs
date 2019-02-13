@@ -10,6 +10,12 @@ public class Phone : PersonalEffect, IHackable {
         get;
         set;
     }
+
+    public bool bypassed
+    {
+        get;
+        set;
+    }
     //END interface properties
 
     // Use this for initialization
